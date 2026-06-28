@@ -545,40 +545,106 @@ function SortFilterBar({ lang, sort, setSort, dark }) {
 // =====================================================
 // MAP VIEW
 // =====================================================
+// MAP VIEW — Leaflet real xarita
+// =====================================================
 function MapView({ lang, deals, onDealClick, dark }) {
-  const [selected, setSelected] = useState(null);
   const th = theme(dark);
   const tx = t[lang];
+  const mapRef = useRef(null);
+  const leafletMap = useRef(null);
+  const markersRef = useRef([]);
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    if (!window.L) return;
+    if (leafletMap.current) return;
+
+    const L = window.L;
+    const map = L.map(mapRef.current, {
+      center: [41.299, 69.240],
+      zoom: 13,
+      zoomControl: true,
+    });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(map);
+
+    leafletMap.current = map;
+
+    deals.forEach((deal) => {
+      if (!deal.lat || !deal.lng) return;
+
+      const icon = L.divIcon({
+        className: "",
+        html: `<div style="
+          background:${deal.color};
+          color:#fff;
+          border-radius:50%;
+          width:44px;height:44px;
+          display:flex;align-items:center;justify-content:center;
+          font-size:20px;
+          border:3px solid #fff;
+          box-shadow:0 2px 8px rgba(0,0,0,0.3);
+          cursor:pointer;
+        ">${deal.logo}</div>
+        <div style="
+          background:${deal.color};color:#fff;
+          border-radius:8px;padding:2px 7px;
+          font-size:11px;font-weight:800;
+          text-align:center;margin-top:2px;
+          box-shadow:0 1px 4px rgba(0,0,0,0.2);
+        ">-${deal.discount}%</div>`,
+        iconSize: [44, 60],
+        iconAnchor: [22, 60],
+      });
+
+      const marker = L.marker([deal.lat, deal.lng], { icon }).addTo(map);
+      marker.on("click", () => {
+        setSelected(deal);
+      });
+      markersRef.current.push(marker);
+    });
+
+    // Foydalanuvchi joylashuvi
+    const userIcon = L.divIcon({
+      className: "",
+      html: `<div style="
+        background:#E63946;
+        border-radius:50%;width:18px;height:18px;
+        border:3px solid #fff;
+        box-shadow:0 0 0 4px rgba(230,57,70,0.3);
+      "></div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+    });
+    L.marker([41.299, 69.240], { icon: userIcon }).addTo(map);
+
+  }, []);
+
   return (
     <div style={{ padding: "48px 0 0", background: th.bg, minHeight: "100vh" }}>
-      <div style={{ padding: "0 20px 14px" }}>
+      <div style={{ padding: "0 20px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: th.text }}>🗺️ {tx.nearby}</h2>
+        <span style={{ fontSize: 12, color: th.sub, background: th.card, borderRadius: 20, padding: "4px 12px", border: `1px solid ${th.border}` }}>
+          {deals.length} {lang === "uz" ? "ta joy" : "мест"}
+        </span>
       </div>
-      <div style={{ position: "relative", margin: "0 16px", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.12)" }}>
-        <svg width="100%" viewBox="0 0 380 320" style={{ display: "block", background: "#E8F4E8" }}>
-          <MapBackground />
-          {deals.map((deal) => {
-            const x = toX(deal.lng);
-            const y = toY(deal.lat);
-            const isSel = selected?.key === deal.key;
-            return (
-              <g key={deal.key} onClick={() => setSelected(isSel ? null : deal)} style={{ cursor: "pointer" }}>
-                <circle cx={x} cy={y} r={isSel ? 22 : 18} fill={deal.color} opacity={0.2} />
-                <circle cx={x} cy={y} r={isSel ? 16 : 13} fill={deal.color} stroke="#fff" strokeWidth={2} />
-                <text x={x} y={y + 5} textAnchor="middle" fontSize={isSel ? "13" : "11"}>{deal.logo}</text>
-                {isSel && <text x={x} y={y - 22} textAnchor="middle" fontSize="10" fill="#1A1A2E" fontWeight="bold">-{deal.discount}%</text>}
-              </g>
-            );
-          })}
-          <circle cx="190" cy="175" r="10" fill="#E63946" opacity="0.25" />
-          <circle cx="190" cy="175" r="6" fill="#E63946" stroke="#fff" strokeWidth="2" />
-        </svg>
+
+      {/* Leaflet Map */}
+      <div style={{ margin: "0 16px", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", height: 320 }}>
+        <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
       </div>
+
+      {/* Tanlangan deal kartochkasi */}
       {selected && (
         <div onClick={() => onDealClick(selected)} style={{
           margin: "14px 16px 0", background: th.card, borderRadius: 16,
           padding: 16, display: "flex", alignItems: "center", gap: 14,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.10)", cursor: "pointer",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.12)", cursor: "pointer",
+          border: `2px solid ${selected.color}44`,
+          animation: "slideUp 0.3s ease",
         }}>
           <div style={{
             background: selected.color + "20", borderRadius: 12, width: 52, height: 52,
@@ -598,12 +664,18 @@ function MapView({ lang, deals, onDealClick, dark }) {
           </div>
         </div>
       )}
+
+      {/* Deals ro'yxati */}
       <div style={{ padding: "16px 16px 0" }}>
-        {deals.slice(0, 5).map((deal) => (
-          <div key={deal.key} onClick={() => onDealClick(deal)} style={{
+        <h3 style={{ fontSize: 14, fontWeight: 700, color: th.sub, margin: "0 0 10px" }}>
+          {lang === "uz" ? "📍 Yaqin atrofdagi chegirmalar" : "📍 Ближайшие скидки"}
+        </h3>
+        {deals.slice(0, 6).map((deal) => (
+          <div key={deal.key} onClick={() => { setSelected(deal); onDealClick(deal); }} style={{
             background: th.card, borderRadius: 14, padding: "12px 14px", marginBottom: 10,
             display: "flex", alignItems: "center", gap: 12,
             boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer",
+            border: `1px solid ${th.border}`,
           }}>
             <div style={{
               background: deal.color + "18", borderRadius: 10, width: 44, height: 44,
@@ -614,6 +686,7 @@ function MapView({ lang, deals, onDealClick, dark }) {
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{deal.storeName}</div>
               <div style={{ fontSize: 11, color: th.sub }}>📍 {deal.storeAddress}</div>
+              <div style={{ fontSize: 11, color: th.sub }}>⏰ {daysLeftLabel(deal.expiryDate, lang)} {tx.left}</div>
             </div>
             <div style={{ background: deal.color, color: "#fff", borderRadius: 8, padding: "4px 10px", fontWeight: 800, fontSize: 14 }}>
               -{deal.discount}%
@@ -663,44 +736,171 @@ function MiniMapPicker({ lang, location, onChange }) {
 
 
 // =====================================================
-// PAYMENT MODAL
+// PAYMENT MODAL — Payme / Click / Uzum / Naqd deep link
 // =====================================================
 function PaymentModal({ lang, dark, total, onClose, onSuccess }) {
   const tx = t[lang];
   const th = theme(dark);
   const s = mkStyles(dark);
   const [method, setMethod] = useState("payme");
+  const [paying, setPaying] = useState(false);
+  const [paid, setPaid] = useState(false);
+
+  // Merchantlar (demo). Haqiqiy merchant_id larini shu yerga qo'ying.
+  const PAYME_MERCHANT_ID = "6718fbb84bd9b93acbcb1234"; // demo
+  const CLICK_SERVICE_ID  = "12345";                     // demo
+  const UZUM_SHOP_ID      = "uz_shop_demo";              // demo
+
+  const amountTiyin = Math.round(total * 100); // Payme tiyin hisobida
+
   const methods = [
-    { id: "payme", label: tx.payPayme, icon: "💳", color: "#1BA8FF" },
-    { id: "click", label: tx.payClick, icon: "🔵", color: "#0059A3" },
-    { id: "uzum", label: tx.payUzum, icon: "🟣", color: "#7B2FBE" },
-    { id: "cash", label: tx.payCash, icon: "💵", color: "#00B894" },
+    {
+      id: "payme",
+      label: "Payme",
+      icon: "💳",
+      color: "#00AAFF",
+      logo: "https://payme.uz/favicon.ico",
+      desc: lang === "uz" ? "Payme ilovasi orqali" : "Через приложение Payme",
+    },
+    {
+      id: "click",
+      label: "Click",
+      icon: "🔵",
+      color: "#0575E6",
+      logo: "https://click.uz/favicon.ico",
+      desc: lang === "uz" ? "Click ilovasi orqali" : "Через приложение Click",
+    },
+    {
+      id: "uzum",
+      label: "Uzum Pay",
+      icon: "🟣",
+      color: "#7B2FBE",
+      logo: "",
+      desc: lang === "uz" ? "Uzum Pay orqali" : "Через Uzum Pay",
+    },
+    {
+      id: "cash",
+      label: lang === "uz" ? "Naqd pul" : "Наличные",
+      icon: "💵",
+      color: "#00B894",
+      logo: "",
+      desc: lang === "uz" ? "Do'konda naqd to'lov" : "Оплата наличными в магазине",
+    },
   ];
+
+  const handlePay = () => {
+    if (method === "payme") {
+      // Payme deep link: payme://merchant_id/amount
+      const link = `https://checkout.paycom.uz/${btoa(`m=${PAYME_MERCHANT_ID};ac.order_id=ORD-${Date.now()};a=${amountTiyin};c=https://lito-brown.vercel.app`)}`;
+      window.open(link, "_blank");
+      setPaying(true);
+      setTimeout(() => { setPaying(false); setPaid(true); setTimeout(() => { onSuccess(); }, 1500); }, 2000);
+    } else if (method === "click") {
+      // Click deep link
+      const link = `https://my.click.uz/services/pay?service_id=${CLICK_SERVICE_ID}&merchant_id=${CLICK_SERVICE_ID}&amount=${total}&transaction_param=ORD-${Date.now()}&return_url=https://lito-brown.vercel.app`;
+      window.open(link, "_blank");
+      setPaying(true);
+      setTimeout(() => { setPaying(false); setPaid(true); setTimeout(() => { onSuccess(); }, 1500); }, 2000);
+    } else if (method === "uzum") {
+      const link = `https://uzum.uz/pay?shop=${UZUM_SHOP_ID}&amount=${total}`;
+      window.open(link, "_blank");
+      setPaying(true);
+      setTimeout(() => { setPaying(false); setPaid(true); setTimeout(() => { onSuccess(); }, 1500); }, 2000);
+    } else {
+      // Naqd pul — to'g'ridan-to'g'ri muvaffaqiyat
+      onSuccess();
+    }
+  };
+
+  const selectedMethod = methods.find(m => m.id === method);
+
+  if (paid) return (
+    <ModalSheet onClose={onClose} dark={dark} maxHeight="50vh">
+      <div style={{ textAlign: "center", padding: "20px 0" }}>
+        <div style={{ fontSize: 64, marginBottom: 12 }}>✅</div>
+        <h3 style={{ fontSize: 18, fontWeight: 800, color: th.text, margin: "0 0 8px" }}>
+          {lang === "uz" ? "To'lov tasdiqlandi!" : "Оплата подтверждена!"}
+        </h3>
+        <p style={{ color: th.sub, fontSize: 13 }}>
+          {lang === "uz" ? "Buyurtmangiz qabul qilindi" : "Ваш заказ принят"}
+        </p>
+      </div>
+    </ModalSheet>
+  );
+
   return (
-    <ModalSheet onClose={onClose} dark={dark} maxHeight="75vh">
-      <h3 style={{ ...s.secTitle, textAlign: "center", marginBottom: 20 }}>{tx.payTitle}</h3>
+    <ModalSheet onClose={onClose} dark={dark} maxHeight="85vh">
+      <h3 style={{ ...s.secTitle, textAlign: "center", marginBottom: 6 }}>{tx.payTitle}</h3>
+      <p style={{ textAlign: "center", color: th.sub, fontSize: 13, marginBottom: 20 }}>
+        {lang === "uz" ? "Qulay to'lov usulini tanlang" : "Выберите удобный способ оплаты"}
+      </p>
+
+      {/* To'lov usullari */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
         {methods.map((m) => (
           <button key={m.id} onClick={() => setMethod(m.id)} style={{
-            padding: "14px 10px", borderRadius: 14, cursor: "pointer", textAlign: "center",
-            border: `2px solid ${method === m.id ? m.color : th.border}`,
-            background: method === m.id ? m.color + "15" : th.card,
+            padding: "14px 10px", borderRadius: 16, cursor: "pointer", textAlign: "center",
+            border: `2.5px solid ${method === m.id ? m.color : th.border}`,
+            background: method === m.id ? m.color + "12" : th.card,
+            transition: "all 0.2s",
+            position: "relative",
           }}>
-            <div style={{ fontSize: 24, marginBottom: 4 }}>{m.icon}</div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: method === m.id ? m.color : th.text }}>{m.label}</div>
+            {method === m.id && (
+              <div style={{ position: "absolute", top: 8, right: 8, width: 16, height: 16, borderRadius: 8, background: m.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#fff", fontSize: 10, fontWeight: 900 }}>✓</span>
+              </div>
+            )}
+            <div style={{ fontSize: 28, marginBottom: 6 }}>{m.icon}</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: method === m.id ? m.color : th.text }}>{m.label}</div>
+            <div style={{ fontSize: 10, color: th.sub, marginTop: 3 }}>{m.desc}</div>
           </button>
         ))}
       </div>
+
+      {/* Jami summa */}
       <div style={{
-        background: th.card2, borderRadius: 14, padding: "14px 18px", marginBottom: 20,
+        background: "linear-gradient(135deg, #E63946, #C1121F)",
+        borderRadius: 16, padding: "16px 20px", marginBottom: 20,
         display: "flex", justifyContent: "space-between", alignItems: "center",
-        border: `1px solid ${th.border}`,
       }}>
-        <span style={{ color: th.sub, fontWeight: 600 }}>{tx.total}</span>
-        <span style={{ fontWeight: 900, fontSize: 20, color: "#E63946" }}>{formatPrice(total)} {tx.sumShort}</span>
+        <div>
+          <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 600 }}>{tx.total}</div>
+          <div style={{ color: "#fff", fontWeight: 900, fontSize: 24 }}>{formatPrice(total)} {tx.sumShort}</div>
+        </div>
+        <div style={{ fontSize: 36 }}>{selectedMethod?.icon}</div>
       </div>
-      <button onClick={onSuccess} style={s.btn}>{tx.payNow} — {formatPrice(total)} {tx.sumShort}</button>
-      <button onClick={onClose} style={{ ...s.ghostBtn, marginTop: 10 }}>{tx.cancel}</button>
+
+      {/* Payme/Click haqida izoh */}
+      {(method === "payme" || method === "click" || method === "uzum") && (
+        <div style={{
+          background: selectedMethod.color + "12",
+          border: `1px solid ${selectedMethod.color}40`,
+          borderRadius: 12, padding: "10px 14px", marginBottom: 16,
+          display: "flex", alignItems: "center", gap: 10,
+        }}>
+          <span style={{ fontSize: 20 }}>ℹ️</span>
+          <span style={{ fontSize: 12, color: th.text, lineHeight: 1.5 }}>
+            {lang === "uz"
+              ? `${selectedMethod.label} ilovasi ochiladi. To'lovni amalga oshirgach qaytib keling.`
+              : `Откроется приложение ${selectedMethod.label}. После оплаты вернитесь обратно.`}
+          </span>
+        </div>
+      )}
+
+      <button onClick={handlePay} disabled={paying} style={{
+        ...s.btn,
+        background: paying ? "#AAA" : (selectedMethod?.color || "#E63946"),
+        boxShadow: `0 4px 16px ${(selectedMethod?.color || "#E63946")}50`,
+        marginBottom: 10,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+      }}>
+        {paying ? (
+          <span>{lang === "uz" ? "⏳ Kutilmoqda..." : "⏳ Ожидание..."}</span>
+        ) : (
+          <span>{selectedMethod?.icon} {tx.payNow} — {formatPrice(total)} {tx.sumShort}</span>
+        )}
+      </button>
+      <button onClick={onClose} style={{ ...s.ghostBtn }}>{tx.cancel}</button>
     </ModalSheet>
   );
 }
@@ -764,7 +964,7 @@ function CouponModal({ lang, dark, deal, onClose, onGetCoupon }) {
 
 
 // =====================================================
-// CHECKOUT MODAL
+// CHECKOUT MODAL — Payme/Click to'lov bilan
 // =====================================================
 function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess }) {
   const tx = t[lang];
@@ -772,19 +972,49 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
   const th = theme(dark);
   const [deliveryMethod, setDeliveryMethod] = useState("pickup");
   const [address, setAddress] = useState("");
-  const [payment, setPayment] = useState("cash");
+  const [payment, setPayment] = useState("payme");
   const [loading, setLoading] = useState(false);
   const canOrder = deliveryMethod === "pickup" || address.trim().length > 2;
 
+  const PAYME_MERCHANT_ID = "6718fbb84bd9b93acbcb1234";
+  const CLICK_SERVICE_ID  = "12345";
+
+  const paymentMethods = [
+    { id: "payme",  label: "Payme",    icon: "💳", color: "#00AAFF" },
+    { id: "click",  label: "Click",    icon: "🔵", color: "#0575E6" },
+    { id: "uzum",   label: "Uzum Pay", icon: "🟣", color: "#7B2FBE" },
+    { id: "cash",   label: lang === "uz" ? "Naqd" : "Наличные", icon: "💵", color: "#00B894" },
+  ];
+
   const handleOrder = () => {
     if (!canOrder) return;
-    setLoading(true);
-    setTimeout(() => { setLoading(false); onSuccess("ORD-" + Date.now().toString().slice(-6)); }, 1200);
+    const orderId = "ORD-" + Date.now().toString().slice(-6);
+    if (payment === "payme") {
+      const amountTiyin = Math.round(cartTotal * 100);
+      const encoded = btoa(`m=${PAYME_MERCHANT_ID};ac.order_id=${orderId};a=${amountTiyin};c=https://lito-brown.vercel.app`);
+      window.open(`https://checkout.paycom.uz/${encoded}`, "_blank");
+      setLoading(true);
+      setTimeout(() => { setLoading(false); onSuccess(orderId); }, 1500);
+    } else if (payment === "click") {
+      const link = `https://my.click.uz/services/pay?service_id=${CLICK_SERVICE_ID}&merchant_id=${CLICK_SERVICE_ID}&amount=${cartTotal}&transaction_param=${orderId}&return_url=https://lito-brown.vercel.app`;
+      window.open(link, "_blank");
+      setLoading(true);
+      setTimeout(() => { setLoading(false); onSuccess(orderId); }, 1500);
+    } else if (payment === "uzum") {
+      window.open(`https://uzum.uz/pay?amount=${cartTotal}`, "_blank");
+      setLoading(true);
+      setTimeout(() => { setLoading(false); onSuccess(orderId); }, 1500);
+    } else {
+      setLoading(true);
+      setTimeout(() => { setLoading(false); onSuccess(orderId); }, 1000);
+    }
   };
 
   return (
-    <ModalSheet onClose={onClose} dark={dark} maxHeight="90vh">
+    <ModalSheet onClose={onClose} dark={dark} maxHeight="92vh">
       <h3 style={{ ...s.secTitle, textAlign: "center", marginBottom: 16 }}>{tx.checkoutTitle}</h3>
+
+      {/* Mahsulotlar */}
       <div style={{ background: th.card2, borderRadius: 14, padding: 14, marginBottom: 16 }}>
         {cartDetailed.map((item) => (
           <div key={item.key} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${th.border}` }}>
@@ -797,6 +1027,8 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
           <span style={{ fontWeight: 900, fontSize: 16, color: "#E63946" }}>{formatPrice(cartTotal)} {tx.sumShort}</span>
         </div>
       </div>
+
+      {/* Yetkazib berish */}
       <label style={s.label}>{tx.deliveryMethod}</label>
       <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
         {[["pickup", tx.pickup, "🏪"], ["delivery", tx.delivery, "🚚"]].map(([val, label, icon]) => (
@@ -814,17 +1046,50 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
           <input placeholder={tx.deliveryAddressPh} value={address} onChange={(e) => setAddress(e.target.value)} style={s.input} />
         </>
       )}
+
+      {/* To'lov usuli */}
       <label style={s.label}>{tx.paymentMethod}</label>
-      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-        {[["cash", tx.cash, "💵"], ["card", tx.card, "💳"]].map(([val, label, icon]) => (
-          <button key={val} onClick={() => setPayment(val)} style={{
-            flex: 1, padding: "12px 8px", borderRadius: 12, fontWeight: 700, fontSize: 13, cursor: "pointer",
-            border: payment === val ? "2px solid #E63946" : `2px solid ${th.border}`,
-            background: payment === val ? "#FFF0F0" : th.card,
-            color: payment === val ? "#E63946" : th.sub,
-          }}>{icon} {label}</button>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
+        {paymentMethods.map((m) => (
+          <button key={m.id} onClick={() => setPayment(m.id)} style={{
+            padding: "12px 8px", borderRadius: 14, fontWeight: 700, fontSize: 13, cursor: "pointer",
+            border: payment === m.id ? `2.5px solid ${m.color}` : `2px solid ${th.border}`,
+            background: payment === m.id ? m.color + "12" : th.card,
+            color: payment === m.id ? m.color : th.sub,
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+            position: "relative",
+          }}>
+            {payment === m.id && (
+              <div style={{ position: "absolute", top: 6, right: 6, width: 14, height: 14, borderRadius: 7, background: m.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#fff", fontSize: 9, fontWeight: 900 }}>✓</span>
+              </div>
+            )}
+            <span style={{ fontSize: 22 }}>{m.icon}</span>
+            <span>{m.label}</span>
+          </button>
         ))}
       </div>
+
+      {/* Payme/Click haqida izoh */}
+      {(payment === "payme" || payment === "click" || payment === "uzum") && (
+        <div style={{ background: th.card2, borderRadius: 12, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: th.sub, display: "flex", gap: 8, alignItems: "flex-start" }}>
+          <span>ℹ️</span>
+          <span>
+            {lang === "uz"
+              ? `${paymentMethods.find(m => m.id === payment)?.label} ilovasi ochiladi. To'lovni amalga oshirgach buyurtma tasdiqlanadi.`
+              : `Откроется приложение ${paymentMethods.find(m => m.id === payment)?.label}. После оплаты заказ будет подтверждён.`}
+          </span>
+        </div>
+      )}
+
+      <button onClick={handleOrder} disabled={!canOrder || loading} style={{
+        ...s.btn,
+        opacity: canOrder && !loading ? 1 : 0.6,
+        background: loading ? "#AAA" : "#E63946",
+      }}>
+        {loading ? (lang === "uz" ? "⏳ Kutilmoqda..." : "⏳ Ожидание...") : `${tx.placeOrder} — ${formatPrice(cartTotal)} ${tx.sumShort}`}
+      </button>
+    </ModalSheet>
       <button onClick={handleOrder} style={{ ...s.btn, opacity: canOrder && !loading ? 1 : 0.6 }}>
         {loading ? "⏳..." : tx.placeOrder}
       </button>
@@ -2111,6 +2376,7 @@ export default function App() {
           )}
 
           {[
+            { icon: "👤", label: lang === "uz" ? "Mening profilim" : "Мой профиль", count: 0, action: () => setProfileView("myprofile") },
             { icon: "🎟️", label: tx.myCoupons, count: coupons.filter((c) => !c.used).length, action: () => setProfileView("coupons") },
             { icon: "❤️", label: tx.savedTitle, count: savedKeys.length, action: () => setActiveTab("saved") },
             { icon: "🛒", label: tx.cart, count: cartCount, action: () => setActiveTab("cart") },
@@ -2129,6 +2395,98 @@ export default function App() {
           <button onClick={() => { if (isGuest) { setIsGuest(false); setStep(0); } else { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); } }}
             style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 10 }}>
             {lang === "uz" ? "Chiqish" : "Выйти"}
+          </button>
+        </div>
+      )}
+
+      {/* PROFILE — mening profilim */}
+      {activeTab === "profile" && profileView === "myprofile" && (
+        <div style={{ padding: "48px 20px 20px", background: th.bg, minHeight: "100vh" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+            <button onClick={() => setProfileView("main")} style={{ background: th.card, border: `1.5px solid ${th.border}`, borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: "pointer", color: th.text }}>←</button>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: th.text, margin: 0 }}>
+              {lang === "uz" ? "👤 Mening profilim" : "👤 Мой профиль"}
+            </h2>
+          </div>
+
+          {/* Avatar va asosiy ma'lumot */}
+          <div style={{ background: "linear-gradient(135deg,#E63946,#C1121F)", borderRadius: 24, padding: "28px 20px", marginBottom: 16, textAlign: "center", boxShadow: "0 8px 32px rgba(230,57,70,0.3)" }}>
+            <div style={{ width: 88, height: 88, borderRadius: 44, background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 42, margin: "0 auto 14px", border: "3px solid rgba(255,255,255,0.5)" }}>
+              {userData.photo ? "😊" : "👤"}
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{userData.name} {userData.surname}</div>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.8)", marginTop: 4 }}>📱 {userData.phone || "—"}</div>
+            <button onClick={() => setShowEditProfile(true)} style={{ marginTop: 14, background: "rgba(255,255,255,0.2)", border: "1.5px solid rgba(255,255,255,0.5)", borderRadius: 12, padding: "8px 22px", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+              ✏️ {lang === "uz" ? "Tahrirlash" : "Редактировать"}
+            </button>
+          </div>
+
+          {/* Statistika */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
+            {[
+              { icon: "❤️", value: savedKeys.length, label: lang === "uz" ? "Saqlangan" : "Сохранено" },
+              { icon: "🎟️", value: coupons.filter(c => !c.used).length, label: lang === "uz" ? "Kuponlar" : "Купоны" },
+              { icon: "🛒", value: cartCount, label: lang === "uz" ? "Savat" : "Корзина" },
+            ].map((s, i) => (
+              <div key={i} style={{ background: th.card, borderRadius: 16, padding: "16px 8px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", border: `1px solid ${th.border}` }}>
+                <div style={{ fontSize: 26 }}>{s.icon}</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: "#E63946", marginTop: 4 }}>{s.value}</div>
+                <div style={{ fontSize: 11, color: th.sub, marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Do'konim */}
+          <div style={{ background: th.card, borderRadius: 16, padding: "16px 18px", marginBottom: 10, border: `1px solid ${th.border}`, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: th.sub, marginBottom: 12 }}>{lang === "uz" ? "🏪 DO'KONIM" : "🏪 МОЙ МАГАЗИН"}</div>
+            {myStore ? (
+              <div onClick={() => setViewingStoreId(myStore.id)} style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: myStore.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>{myStore.logo}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: th.text }}>{myStore.name}</div>
+                  <div style={{ fontSize: 12, color: th.sub }}>{myStore.products.length} {tx.productsInStore.toLowerCase()}</div>
+                </div>
+                <span style={{ color: "#E63946", fontSize: 18 }}>›</span>
+              </div>
+            ) : (
+              <div onClick={() => setProfileView("createStore")} style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: "#FFF0F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>🏪</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "#E63946" }}>{tx.createStore}</div>
+                  <div style={{ fontSize: 12, color: th.sub }}>{tx.createStoreSub}</div>
+                </div>
+                <span style={{ color: "#E63946", fontSize: 18 }}>›</span>
+              </div>
+            )}
+          </div>
+
+          {/* Obunalar */}
+          <div style={{ background: th.card, borderRadius: 16, padding: "16px 18px", marginBottom: 10, border: `1px solid ${th.border}`, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: th.sub, marginBottom: 12 }}>{lang === "uz" ? "🔔 OBUNALARIM" : "🔔 МОИ ПОДПИСКИ"}</div>
+            {subscriptions.length === 0 ? (
+              <div style={{ color: th.sub, fontSize: 13 }}>{tx.noSubscribed}</div>
+            ) : subscriptions.slice(0, 3).map((sid) => {
+              const st = stores.find(s => s.id === sid);
+              if (!st) return null;
+              return (
+                <div key={sid} onClick={() => setViewingStoreId(sid)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: `1px solid ${th.border}`, cursor: "pointer" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: st.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{st.logo}</div>
+                  <div style={{ flex: 1, fontSize: 13, fontWeight: 600, color: th.text }}>{st.name}</div>
+                  <span style={{ color: "#CCC" }}>›</span>
+                </div>
+              );
+            })}
+            {subscriptions.length > 3 && (
+              <div onClick={() => setProfileView("subscribed")} style={{ fontSize: 12, color: "#E63946", fontWeight: 700, marginTop: 8, cursor: "pointer", textAlign: "center" }}>
+                {lang === "uz" ? `+ yana ${subscriptions.length - 3} ta ko'rish` : `+ ещё ${subscriptions.length - 3}`}
+              </div>
+            )}
+          </div>
+
+          {/* Chiqish */}
+          <button onClick={() => { if (isGuest) { setIsGuest(false); setStep(0); } else { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); } }}
+            style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 6 }}>
+            {lang === "uz" ? "🚪 Chiqish" : "🚪 Выйти"}
           </button>
         </div>
       )}
