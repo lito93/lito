@@ -791,7 +791,8 @@ function PaymentModal({ lang, dark, total, onClose, onSuccess }) {
   const handlePay = () => {
     if (method === "payme") {
       // Payme deep link: payme://merchant_id/amount
-      const link = `https://checkout.paycom.uz/${btoa(`m=${PAYME_MERCHANT_ID};ac.order_id=ORD-${Date.now()};a=${amountTiyin};c=https://lito-brown.vercel.app`)}`;
+      const paymeStr = "m=" + PAYME_MERCHANT_ID + ";ac.order_id=ORD-" + Date.now() + ";a=" + amountTiyin + ";c=https://lito-brown.vercel.app";
+      const link = "https://checkout.paycom.uz/" + btoa(paymeStr);
       window.open(link, "_blank");
       setPaying(true);
       setTimeout(() => { setPaying(false); setPaid(true); setTimeout(() => { onSuccess(); }, 1500); }, 2000);
@@ -991,7 +992,8 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
     const orderId = "ORD-" + Date.now().toString().slice(-6);
     if (payment === "payme") {
       const amountTiyin = Math.round(cartTotal * 100);
-      const encoded = btoa(`m=${PAYME_MERCHANT_ID};ac.order_id=${orderId};a=${amountTiyin};c=https://lito-brown.vercel.app`);
+      const paymeStr2 = "m=" + PAYME_MERCHANT_ID + ";ac.order_id=" + orderId + ";a=" + amountTiyin + ";c=https://lito-brown.vercel.app";
+      const encoded = btoa(paymeStr2);
       window.open(`https://checkout.paycom.uz/${encoded}`, "_blank");
       setLoading(true);
       setTimeout(() => { setLoading(false); onSuccess(orderId); }, 1500);
