@@ -235,6 +235,30 @@ const t = {
 
 
 // =====================================================
+// OSONTOP LOGO COMPONENT
+// =====================================================
+function OsonTopLogo({ size = 17, iconSize = 32, showIcon = true }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: showIcon ? 8 : 0 }}>
+      {showIcon && (
+        <div style={{
+          width: iconSize, height: iconSize, borderRadius: iconSize * 0.28,
+          background: "linear-gradient(135deg,#16A34A,#15803D)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(22,163,74,0.4)",
+        }}>
+          <span style={{ color: "#fff", fontWeight: 900, fontSize: iconSize * 0.55 }}>O</span>
+        </div>
+      )}
+      <span style={{ fontSize: size, fontWeight: 800, letterSpacing: -0.3 }}>
+        <span style={{ color: "#F1F1F1" }}>Oson</span>
+        <span style={{ color: "#16A34A" }}>Top</span>
+      </span>
+    </div>
+  );
+}
+
+// =====================================================
 // CATEGORIES & HELPERS
 // =====================================================
 const CATEGORY_LIST = [
@@ -2495,10 +2519,14 @@ function OnboardingStep({ step, setStep, lang, setLang, dark, userData, setUserD
           </button>
         ))}
       </div>
-      <div style={{ fontSize: 72, marginBottom: 12, lineHeight: 1 }}>
-        <div style={{ width: 80, height: 80, borderRadius: 24, background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontWeight: 900, fontSize: 42, color: "#fff" }}>O</div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, marginBottom: 20 }}>
+        <div style={{ width: 80, height: 80, borderRadius: 24, background: "linear-gradient(135deg,#16A34A,#15803D)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 8px 32px rgba(22,163,74,0.5)" }}>
+          <span style={{ color: "#fff", fontWeight: 900, fontSize: 42, letterSpacing: -2 }}>O</span>
+        </div>
+        <span style={{ fontSize: 30, fontWeight: 800, letterSpacing: -0.5 }}>
+          <span style={{ color: "#fff" }}>Oson</span><span style={{ color: "#16A34A" }}>Top</span>
+        </span>
       </div>
-      <h1 style={{ fontSize: 36, fontWeight: 900, margin: "0 0 8px", letterSpacing: -1 }}>OsonTop</h1>
       <p style={{ opacity: 0.85, fontSize: 16, textAlign: "center", marginBottom: 48 }}>
         {lang === "uz" ? "O'zbekistondagi barcha bizneslar platformasi" : "Платформа всех бизнесов Узбекистана"}
       </p>
@@ -3025,13 +3053,17 @@ export default function App() {
       {activeTab === "home" && <>
         {/* ─── KARROT STYLE HEADER ─── */}
         <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "50px 16px 0", position: "sticky", top: 0, zIndex: 50 }}>
-          {/* Row 1: shahar + ikonkalar */}
+          {/* Row 1: LOGO + shahar + ikonkalar */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <button onClick={() => {}} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              <span style={{ fontSize: 16 }}>📍</span>
-              <span style={{ fontWeight: 800, fontSize: 17, color: th.text }}>Toshkent</span>
-              <span style={{ fontSize: 12, color: th.sub, marginLeft: 2 }}>›</span>
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <OsonTopLogo size={16} iconSize={28} showIcon={true} />
+              <div style={{ width: 1, height: 16, background: th.border }} />
+              <button onClick={() => {}} style={{ display: "flex", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                <span style={{ fontSize: 12 }}>📍</span>
+                <span style={{ fontWeight: 600, fontSize: 14, color: th.text }}>Toshkent</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 2 }}><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ display: "flex", background: th.card2, borderRadius: 16, padding: 2 }}>
                 {["uz","ru"].map(l => (
@@ -3124,28 +3156,101 @@ export default function App() {
           <div style={{ paddingBottom: 100 }}>
             {/* Yaqin bizneslar — gorizontal scroll */}
             <div style={{ paddingTop: 16 }}>
+              {/* Kategoriya GRID — 3x4 rangli (rasm uslubida) */}
+              <div style={{ padding: "0 16px 16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+                  {[
+                    { id:"all",         uz:"Hammasi",  ru:"Все",      e:"🏷️", c:"#16A34A",  bg:"#16A34A20" },
+                    { id:"food",        uz:"Ovqat",    ru:"Еда",      e:"🍕", c:"#E17055",  bg:"#E1705520" },
+                    { id:"auto",        uz:"Avto",     ru:"Авто",     e:"🚗", c:"#0652DD",  bg:"#0652DD20" },
+                    { id:"pharmacy",    uz:"Dorixona", ru:"Аптека",   e:"💊", c:"#009432",  bg:"#00943220" },
+                    { id:"electronics", uz:"Elektro",  ru:"Электро",  e:"📱", c:"#0984E3",  bg:"#0984E320" },
+                    { id:"services",    uz:"Xizmat",   ru:"Услуги",   e:"🛠️",c:"#636E72",  bg:"#636E7220" },
+                    { id:"restaurant",  uz:"Restoran", ru:"Кафе",     e:"☕", c:"#D4AC0D",  bg:"#FDCB6E20" },
+                    { id:"clothing",    uz:"Kiyim",    ru:"Одежда",   e:"👕", c:"#888888",  bg:"#88888820" },
+                    { id:"beauty",      uz:"Go'zallik",ru:"Красота",  e:"💄", c:"#E84393",  bg:"#E8439320" },
+                    { id:"education",   uz:"Ta'lim",   ru:"Обучение", e:"📚", c:"#F79F1F",  bg:"#F79F1F20" },
+                    { id:"medical",     uz:"Tibbiyot", ru:"Tibbiyot", e:"🏥", c:"#ED4C67",  bg:"#ED4C6720" },
+                    { id:"hotel",       uz:"Hotel",    ru:"Отель",    e:"🏨", c:"#1289A7",  bg:"#1289A720" },
+                  ].map(cat => {
+                    const isActive = activeCategory === cat.id;
+                    return (
+                      <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                        padding: "14px 4px 10px", borderRadius: 14, cursor: "pointer",
+                        background: isActive ? cat.c + "30" : th.card,
+                        border: `1.5px solid ${isActive ? cat.c : th.border}`,
+                        transition: "all 0.15s",
+                      }}>
+                        <div style={{
+                          width: 44, height: 44, borderRadius: 14,
+                          background: cat.bg,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: 22,
+                        }}>{cat.e}</div>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: isActive ? cat.c : th.sub, textAlign: "center", lineHeight: 1.2 }}>
+                          {lang === "uz" ? cat.uz : cat.ru}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 10px" }}>
-                <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>📍 {lang === "uz" ? "Yaqin bizneslar" : "Рядом"}</span>
-                <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang === "uz" ? "Xaritada ko'rish ›" : "На карте ›"}</button>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 16 }}>📍</span>
+                  <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{lang === "uz" ? "Yaqin bizneslar" : "Рядом"}</span>
+                </div>
+                <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang === "uz" ? "Barchasi ›" : "Все ›"}</button>
               </div>
               <div style={{ display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none", padding: "0 16px 4px" }}>
-                {stores.slice(0, 8).map(store => {
+                {stores.filter(s => activeCategory === "all" || s.products.some(p => p.category === activeCategory)).slice(0, 8).map(store => {
                   const isOpen = isStoreOpen(store);
-                  const deals = activeDeals.filter(d => d.storeId === store.id);
+                  const storeDeals = activeDeals.filter(d => d.storeId === store.id);
+                  const rating = avgRating(store.reviews);
+                  const catInfo = CATEGORY_LIST.find(c => store.products[0]?.category === c.id);
                   return (
                     <div key={store.id} onClick={() => setViewingStoreId(store.id)}
-                      style={{ flexShrink: 0, width: 100, cursor: "pointer" }}>
-                      <div style={{ width: 100, height: 100, borderRadius: 16, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, position: "relative", marginBottom: 6, overflow: "hidden" }}>
+                      style={{ flexShrink: 0, width: 180, background: th.card, borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${th.border}` }}>
+                      {/* Rasm */}
+                      <div style={{ height: 100, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 42, position: "relative" }}>
                         {store.photos?.length ? <img src={store.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : store.logo}
-                        {deals.length > 0 && (
-                          <div style={{ position: "absolute", top: 6, right: 6, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "2px 5px", fontSize: 10, fontWeight: 800 }}>-{deals[0].discount}%</div>
+                        {/* Badge */}
+                        <div style={{
+                          position: "absolute", top: 8, right: 8,
+                          background: isOpen ? "#16A34A" : "#555",
+                          color: "#fff", borderRadius: 6, padding: "2px 8px",
+                          fontSize: 11, fontWeight: 700,
+                        }}>
+                          {isOpen ? (lang === "uz" ? "Ochiq" : "Открыто") : (lang === "uz" ? "Yopiq" : "Закрыто")}
+                        </div>
+                        {storeDeals.length > 0 && (
+                          <div style={{ position: "absolute", top: 8, left: 8, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "2px 6px", fontSize: 10, fontWeight: 800 }}>
+                            -{storeDeals[0].discount}%
+                          </div>
                         )}
-                        <div style={{ position: "absolute", bottom: 5, left: 5, display: "flex", alignItems: "center", gap: 3, background: "rgba(0,0,0,0.6)", borderRadius: 6, padding: "2px 5px" }}>
-                          <span style={{ width: 5, height: 5, borderRadius: 3, background: isOpen ? "#16A34A" : "#888", display: "inline-block" }} />
-                          <span style={{ fontSize: 9, color: "#fff", fontWeight: 600 }}>{isOpen ? (lang === "uz" ? "Ochiq" : "Открыто") : (lang === "uz" ? "Yopiq" : "Закрыто")}</span>
+                      </div>
+                      {/* Info */}
+                      <div style={{ padding: "10px 12px" }}>
+                        <div style={{ fontWeight: 700, fontSize: 14, color: th.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: 4 }}>{store.name}</div>
+                        {/* Reyting */}
+                        {rating > 0 && (
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFB400" stroke="#FFB400" strokeWidth="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: th.text }}>{rating.toFixed(1)}</span>
+                            <span style={{ fontSize: 11, color: th.sub }}>({store.reviews.length})</span>
+                          </div>
+                        )}
+                        {/* Kategoriya + masofa */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                          {catInfo && <span style={{ fontSize: 10, color: th.sub }}>{catInfo.emoji}</span>}
+                          <span style={{ fontSize: 11, color: th.sub, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {catInfo ? categoryLabel(catInfo.id, lang) : ""}
+                          </span>
+                          <span style={{ fontSize: 11, color: th.sub }}>📍 ~1.2 km</span>
                         </div>
                       </div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: th.text, textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{store.name}</div>
                     </div>
                   );
                 })}
@@ -3269,8 +3374,8 @@ export default function App() {
       {activeTab === "chat" && (
         <div style={{ background: th.bg, minHeight: "100vh", paddingBottom: 80 }}>
           {/* Header */}
-          <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "50px 16px 14px", position: "sticky", top: 0, zIndex: 50 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "50px 16px 0", position: "sticky", top: 0, zIndex: 50 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
               <span style={{ fontWeight: 800, fontSize: 20, color: th.text }}>Chats</span>
               <div style={{ display: "flex", gap: 14 }}>
                 <button onClick={() => { setActiveTab("profile"); setProfileView("notifications"); }}
@@ -3284,6 +3389,31 @@ export default function App() {
                 </button>
               </div>
             </div>
+            {/* Qidiruv */}
+            <div style={{ position: "relative", marginBottom: 12 }}>
+              <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </span>
+              <input placeholder={lang === "uz" ? "Qidiruv..." : "Поиск..."} style={{ width: "100%", padding: "10px 14px 10px 34px", borderRadius: 10, border: "none", background: th.card2, fontSize: 14, outline: "none", boxSizing: "border-box", color: th.text }} />
+            </div>
+            {/* 3 tab */}
+            {(() => {
+              const tabs = lang === "uz"
+                ? ["Barchasi", "Bizneslar", "Shaxsiy"]
+                : ["Все", "Бизнесы", "Личные"];
+              return (
+                <div style={{ display: "flex", borderBottom: `1px solid ${th.border}` }}>
+                  {tabs.map((tab, i) => (
+                    <button key={i} style={{
+                      flex: 1, padding: "10px 0", background: "none", border: "none", cursor: "pointer",
+                      fontSize: 14, fontWeight: i === 0 ? 700 : 500,
+                      color: i === 0 ? "#16A34A" : th.sub,
+                      borderBottom: i === 0 ? "2px solid #16A34A" : "2px solid transparent",
+                    }}>{tab}</button>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Chat ro'yxati */}
@@ -3761,92 +3891,82 @@ export default function App() {
         </div>
       )}
 
-      {/* ── FOOTER NAV ── */}
       {/* ── FOOTER NAV — Karrot uslubi ── */}
       <div style={{
         position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
         width: "100%", maxWidth: 430,
         background: th.card,
         borderTop: `1px solid ${th.border}`,
-        display: "flex", alignItems: "center",
+        display: "flex", alignItems: "flex-end",
         padding: "8px 0 22px",
         zIndex: 100,
-        boxShadow: "0 -1px 0 rgba(255,255,255,0.04)",
       }}>
+        {/* Home */}
         {[
-          {
-            id: "home", label: lang === "uz" ? "Bosh" : "Главная",
-            icon: (active) => (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "#16A34A" : "none"} stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-            ),
+          { id: "home", label: lang==="uz"?"Bosh sahifa":"Главная",
+            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill={a?"#16A34A":"none"} stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
           },
-          {
-            id: "search", label: lang === "uz" ? "Qidiruv" : "Поиск",
-            icon: (active) => (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-            ),
+          { id: "search", label: lang==="uz"?"Qidiruv":"Поиск",
+            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
           },
-          {
-            id: "map", label: lang === "uz" ? "Xarita" : "Карта", special: false,
-            icon: (active) => (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
-              </svg>
-            ),
+        ].map(tab => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button key={tab.id} onClick={() => { if(tab.id==="search"){setActiveTab("home");setTimeout(()=>document.querySelector("input[placeholder]")?.focus(),100);}else{setActiveTab(tab.id);setProfileView("main");} }}
+              style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0" }}>
+              {tab.icon(isActive)}
+              <span style={{ fontSize:10, fontWeight:isActive?700:500, color:isActive?"#16A34A":th.sub }}>{tab.label}</span>
+            </button>
+          );
+        })}
+
+        {/* Markaziy + tugma */}
+        <div style={{ flex:1, display:"flex", justifyContent:"center", alignItems:"flex-end" }}>
+          <button
+            onClick={() => {
+              if (myStore) { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); }
+              else { setActiveTab("profile"); setProfileView("createStore"); }
+            }}
+            style={{
+              width: 54, height: 54, borderRadius: 27,
+              background: "linear-gradient(135deg,#16A34A,#15803D)",
+              border: "none", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 4px 20px rgba(22,163,74,0.5)",
+              marginBottom: 6,
+            }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+
+        {/* Saved + Profil */}
+        {[
+          { id: "saved", label: lang==="uz"?"Saqlangan":"Избранное", badge: savedKeys.length,
+            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill={a?"#16A34A":"none"} stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
           },
-          {
-            id: "chat", label: lang === "uz" ? "Chat" : "Чат",
-            badge: Object.values(chatMessages).flat().filter(m => m.from === "store" && !m.read).length,
-            icon: (active) => (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "#16A34A" : "none"} stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-            ),
+          { id: "profile", label: lang==="uz"?"Profil":"Профиль", badge: unreadCount,
+            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
           },
-          {
-            id: "profile", label: lang === "uz" ? "Profil" : "Профиль",
-            icon: (active) => (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            ),
-          },
-        ].map((tab) => {
+        ].map(tab => {
           const isActive = activeTab === tab.id;
           const badge = tab.badge || 0;
           return (
-            <button key={tab.id}
-              onClick={() => {
-                if (tab.id === "search") {
-                  setActiveTab("home");
-                  setTimeout(() => document.querySelector("input[placeholder]")?.focus(), 100);
-                } else {
-                  setActiveTab(tab.id);
-                  if (tab.id !== "profile") setProfileView("main");
-                }
-              }}
-              style={{ position: "relative", flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0" }}>
-              {/* Icon + badge */}
-              <div style={{ position: "relative" }}>
+            <button key={tab.id} onClick={() => { setActiveTab(tab.id); if(tab.id!=="profile") setProfileView("main"); }}
+              style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0", position:"relative" }}>
+              <div style={{ position:"relative" }}>
                 {tab.icon(isActive)}
                 {badge > 0 && (
-                  <div style={{ position: "absolute", top: -4, right: -6, minWidth: 16, height: 16, borderRadius: 8, background: "#16A34A", display: "flex", alignItems: "center", justifyContent: "center", border: `2px solid ${th.card}` }}>
-                    <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", padding: "0 3px" }}>{badge > 9 ? "9+" : badge}</span>
+                  <div style={{ position:"absolute", top:-4, right:-6, minWidth:16, height:16, borderRadius:8, background:"#16A34A", display:"flex", alignItems:"center", justifyContent:"center", border:`2px solid ${th.card}` }}>
+                    <span style={{ fontSize:9, fontWeight:800, color:"#fff", padding:"0 3px" }}>{badge>9?"9+":badge}</span>
                   </div>
                 )}
               </div>
-              {/* Label */}
-              <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, color: isActive ? "#16A34A" : th.sub }}>
-                {tab.label}
-              </span>
+              <span style={{ fontSize:10, fontWeight:isActive?700:500, color:isActive?"#16A34A":th.sub }}>{tab.label}</span>
             </button>
           );
         })}
       </div>
+
     </div>
   );
 }
