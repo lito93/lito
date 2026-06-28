@@ -3474,14 +3474,7 @@ export default function App() {
             {!isGuest && <button onClick={() => setShowEditProfile(true)} style={{ marginTop: 8, background: "none", border: `1px solid ${th.border}`, borderRadius: 10, padding: "5px 14px", fontSize: 12, color: th.sub, cursor: "pointer" }}>{tx.editProfile}</button>}
           </div>
 
-          {/* Dark mode toggle */}
-          <div onClick={toggleDark} style={{ background: th.card, borderRadius: 14, padding: "16px 18px", marginBottom: 10, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer", border: `1px solid ${th.border}` }}>
-            <span style={{ fontSize: 22 }}>{dark ? "☀️" : "🌙"}</span>
-            <span style={{ flex: 1, fontWeight: 600, fontSize: 14, color: th.text }}>{tx.darkMode}</span>
-            <div style={{ width: 44, height: 24, borderRadius: 12, background: dark ? "#E63946" : "#E0E0E0", position: "relative", transition: "background 0.3s" }}>
-              <div style={{ position: "absolute", top: 3, left: dark ? 20 : 3, width: 18, height: 18, borderRadius: 9, background: "#fff", transition: "left 0.3s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
-            </div>
-          </div>
+          {/* Dark mode toggle OLIB TASHLANDI — Sozlamalar da bor */}
 
           {!isGuest && (
             <button onClick={() => myStore ? setViewingStoreId(myStore.id) : setProfileView("createStore")}
@@ -3499,9 +3492,6 @@ export default function App() {
             { icon: "👤", label: lang === "uz" ? "Mening profilim" : "Мой профиль", count: 0, action: () => setProfileView("myprofile") },
             { icon: "🎟️", label: tx.myCoupons, count: coupons.filter((c) => !c.used).length, action: () => setProfileView("coupons") },
             { icon: "📅", label: tx.myBookings, count: bookings.filter(b => b.status === "pending").length, action: () => setProfileView("bookings") },
-            { icon: "❤️", label: tx.savedTitle, count: savedKeys.length, action: () => setActiveTab("saved") },
-            { icon: "🛒", label: tx.cart, count: cartCount, action: () => setActiveTab("cart") },
-            { icon: "🔔", label: tx.notifications, count: unreadCount, action: () => setProfileView("notifications") },
             { icon: "🏪", label: tx.subscribedStores, count: subscriptions.length, action: () => setProfileView("subscribed") },
             { icon: "⚙️", label: tx.settings, count: 0, action: () => setProfileView("settings") },
           ].map((item, i) => (
@@ -3542,6 +3532,47 @@ export default function App() {
             </button>
           </div>
 
+          {/* + Mahsulot qo'shish tugmasi */}
+          {myStore && (
+            <button
+              onClick={() => { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); }}
+              style={{ width: "100%", padding: "14px 18px", background: "linear-gradient(135deg,#00B894,#00956F)", border: "none", borderRadius: 16, marginBottom: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 12, boxShadow: "0 4px 16px rgba(0,184,148,0.3)" }}>
+              <span style={{ fontSize: 24 }}>➕</span>
+              <span style={{ flex: 1, textAlign: "left" }}>
+                <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "#fff" }}>
+                  {lang === "uz" ? "Mahsulot qo'shish" : "Добавить товар"}
+                </span>
+                <span style={{ display: "block", fontSize: 11, color: "rgba(255,255,255,0.85)", marginTop: 2 }}>
+                  {myStore.name} • {myStore.products.length} {tx.productsInStore.toLowerCase()}
+                </span>
+              </span>
+              <span style={{ color: "#fff", fontSize: 18 }}>›</span>
+            </button>
+          )}
+
+          {/* Chat tugmasi */}
+          <button
+            onClick={() => setProfileView("chats")}
+            style={{ width: "100%", padding: "14px 18px", background: th.card, border: `1px solid ${th.border}`, borderRadius: 16, marginBottom: 16, cursor: "pointer", display: "flex", alignItems: "center", gap: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <span style={{ fontSize: 24 }}>💬</span>
+            <span style={{ flex: 1, textAlign: "left" }}>
+              <span style={{ display: "block", fontWeight: 700, fontSize: 14, color: th.text }}>
+                {lang === "uz" ? "Chatlarim" : "Мои чаты"}
+              </span>
+              <span style={{ display: "block", fontSize: 12, color: th.sub, marginTop: 2 }}>
+                {Object.keys(chatMessages).length > 0
+                  ? (lang === "uz" ? `${Object.keys(chatMessages).length} ta faol chat` : `${Object.keys(chatMessages).length} активных чатов`)
+                  : (lang === "uz" ? "Hozircha chatlar yo'q" : "Пока нет чатов")}
+              </span>
+            </span>
+            {Object.keys(chatMessages).length > 0 && (
+              <span style={{ background: "#E63946", color: "#fff", borderRadius: 8, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>
+                {Object.keys(chatMessages).length}
+              </span>
+            )}
+            <span style={{ color: "#CCC" }}>›</span>
+          </button>
+
           {/* Statistika */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
             {[
@@ -3581,53 +3612,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Chatlarim */}
-          <div style={{ background: th.card, borderRadius: 16, padding: "16px 18px", marginBottom: 10, border: `1px solid ${th.border}`, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: th.sub }}>💬 {lang === "uz" ? "CHATLARIM" : "МОИ ЧАТЫ"}</div>
-              {Object.keys(chatMessages).length > 0 && (
-                <span style={{ fontSize: 11, color: "#E63946", fontWeight: 700 }}>
-                  {Object.keys(chatMessages).length} {lang === "uz" ? "ta chat" : "чатов"}
-                </span>
-              )}
-            </div>
-            {Object.keys(chatMessages).length === 0 ? (
-              <div style={{ color: th.sub, fontSize: 13 }}>
-                {lang === "uz" ? "Hozircha chatlar yo'q" : "Пока нет чатов"}
-              </div>
-            ) : Object.entries(chatMessages).slice(0, 3).map(([storeId, msgs]) => {
-              const st = stores.find(s => s.id === storeId);
-              if (!st || !msgs.length) return null;
-              const lastMsg = msgs[msgs.length - 1];
-              const unread = msgs.filter(m => m.from === "store" && !m.read).length;
-              return (
-                <div key={storeId} onClick={() => setChatStore(st)}
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: `1px solid ${th.border}`, cursor: "pointer" }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: st.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0, position: "relative" }}>
-                    {st.logo}
-                    {unread > 0 && (
-                      <span style={{ position: "absolute", top: -4, right: -4, background: "#E63946", color: "#fff", borderRadius: 8, fontSize: 9, fontWeight: 800, padding: "1px 5px", minWidth: 16, textAlign: "center" }}>{unread}</span>
-                    )}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{st.name}</div>
-                    <div style={{ fontSize: 11, color: th.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {lastMsg.from === "user" ? (lang === "uz" ? "Siz: " : "Вы: ") : ""}{lastMsg.text}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 10, color: th.sub, flexShrink: 0 }}>
-                    {new Date(lastMsg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" })}
-                  </div>
-                </div>
-              );
-            })}
-            {Object.keys(chatMessages).length > 3 && (
-              <div style={{ fontSize: 12, color: "#E63946", fontWeight: 700, marginTop: 8, textAlign: "center", cursor: "pointer" }}>
-                {lang === "uz" ? `+ yana ${Object.keys(chatMessages).length - 3} ta ko'rish` : `+ ещё ${Object.keys(chatMessages).length - 3}`}
-              </div>
-            )}
-          </div>
-
           {/* Obunalar */}
           <div style={{ background: th.card, borderRadius: 16, padding: "16px 18px", marginBottom: 10, border: `1px solid ${th.border}`, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: th.sub, marginBottom: 12 }}>{lang === "uz" ? "🔔 OBUNALARIM" : "🔔 МОИ ПОДПИСКИ"}</div>
@@ -3656,6 +3640,59 @@ export default function App() {
             style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 6 }}>
             {lang === "uz" ? "🚪 Chiqish" : "🚪 Выйти"}
           </button>
+        </div>
+      )}
+
+      {/* PROFILE — chats */}
+      {activeTab === "profile" && profileView === "chats" && (
+        <div style={{ padding: "48px 20px 20px", background: th.bg, minHeight: "100vh" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+            <button onClick={() => setProfileView("myprofile")} style={{ background: th.card, border: `1.5px solid ${th.border}`, borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: "pointer", color: th.text }}>←</button>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: th.text, margin: 0 }}>
+              💬 {lang === "uz" ? "Chatlarim" : "Мои чаты"}
+            </h2>
+          </div>
+          {Object.keys(chatMessages).length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px 0", color: th.sub }}>
+              <div style={{ fontSize: 56, marginBottom: 12 }}>💬</div>
+              <div style={{ fontWeight: 600, fontSize: 16 }}>
+                {lang === "uz" ? "Hozircha chatlar yo'q" : "Пока нет чатов"}
+              </div>
+              <div style={{ fontSize: 13, marginTop: 6 }}>
+                {lang === "uz" ? "Do'konlarga kiring va xabar yozing" : "Заходите в магазины и пишите сообщения"}
+              </div>
+            </div>
+          ) : Object.entries(chatMessages).map(([storeId, msgs]) => {
+            const st = stores.find(s => s.id === storeId);
+            if (!st || !msgs.length) return null;
+            const lastMsg = msgs[msgs.length - 1];
+            const unread = msgs.filter(m => m.from === "store" && !m.read).length;
+            return (
+              <div key={storeId} onClick={() => setChatStore(st)}
+                style={{ background: th.card, borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", cursor: "pointer", border: `1px solid ${unread > 0 ? "#E63946" : th.border}` }}>
+                <div style={{ width: 50, height: 50, borderRadius: 14, background: st.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0, position: "relative" }}>
+                  {st.logo}
+                  {unread > 0 && (
+                    <span style={{ position: "absolute", top: -4, right: -4, background: "#E63946", color: "#fff", borderRadius: 8, fontSize: 9, fontWeight: 800, padding: "1px 5px", minWidth: 16, textAlign: "center" }}>{unread}</span>
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{st.name}</div>
+                  <div style={{ fontSize: 12, color: th.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 2 }}>
+                    {lastMsg.from === "user" ? (lang === "uz" ? "Siz: " : "Вы: ") : (st.logo + " ")}{lastMsg.text}
+                  </div>
+                </div>
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  <div style={{ fontSize: 10, color: th.sub }}>
+                    {new Date(lastMsg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" })}
+                  </div>
+                  {unread > 0 && (
+                    <div style={{ marginTop: 4, background: "#E63946", color: "#fff", borderRadius: 8, fontSize: 10, fontWeight: 800, padding: "1px 6px", display: "inline-block" }}>{unread}</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
