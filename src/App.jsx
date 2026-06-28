@@ -1756,7 +1756,6 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
         {!isOwner && (
           <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
             {store.phone && <button onClick={handleCall} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{tx.callStore}</button>}
-            {(store.whatsapp || store.phone) && <button onClick={handleWhatsApp} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(37,211,102,0.4)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>💬 WhatsApp</button>}
             {(store.telegram || store.phone) && <button onClick={handleTelegram} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(0,136,204,0.4)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>✈️ Telegram</button>}
             {onChat && <button onClick={onChat} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>💬 {tx.chatWith}</button>}
             {onBook && <button onClick={onBook} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,180,0,0.4)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{tx.bookService}</button>}
@@ -2529,7 +2528,14 @@ export default function App() {
             <button onClick={() => addToCart(selectedDeal.storeId, selectedDeal.productId)} style={{ ...s.btn, flex: 2, marginBottom: 0 }}>{tx.addToCart}</button>
             <button onClick={() => setCouponModalDeal(selectedDeal)} style={{ flex: 1, padding: "14px", background: "#FFF0F0", color: "#E63946", border: "none", borderRadius: 14, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>🎟️</button>
           </div>
-          <button onClick={() => { setViewingStoreId(selectedDeal.storeId); setSelectedKey(null); }} style={{ ...s.ghostBtn, marginTop: 10 }}>{tx.goToStore}</button>
+          {/* Habar yozish tugmasi — chatga ulaydi */}
+          <button onClick={() => {
+            const store = stores.find(s => s.id === selectedDeal.storeId);
+            if (store) { setChatStore(store); setSelectedKey(null); }
+          }} style={{ ...s.ghostBtn, marginTop: 10, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            💬 {lang === "uz" ? "Habar yozish" : "Написать сообщение"}
+          </button>
+          <button onClick={() => { setViewingStoreId(selectedDeal.storeId); setSelectedKey(null); }} style={{ ...s.ghostBtn, marginTop: 8, fontSize: 13 }}>{tx.goToStore}</button>
         </ModalSheet>
       )}
 
@@ -2589,7 +2595,6 @@ export default function App() {
               <div style={{ fontSize: 15, fontWeight: 700 }}>{lang === "uz" ? `Bugun ${activeDeals.length} ta taklif` : `Сегодня ${activeDeals.length} акций`}</div>
               <div style={{ fontSize: 12, opacity: 0.8 }}>{lang === "uz" ? "Eng yaxshi chegirmalar siz uchun" : "Лучшие скидки для вас"}</div>
             </div>
-            <button onClick={toggleDark} style={{ marginLeft: "auto", background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, padding: "6px 10px", color: "#fff", cursor: "pointer", fontSize: 16 }}>{dark ? "☀️" : "🌙"}</button>
           </div>
         </div>
 
@@ -2819,7 +2824,7 @@ export default function App() {
             { icon: "🛒", label: tx.cart, count: cartCount, action: () => setActiveTab("cart") },
             { icon: "🔔", label: tx.notifications, count: unreadCount, action: () => setProfileView("notifications") },
             { icon: "🏪", label: tx.subscribedStores, count: subscriptions.length, action: () => setProfileView("subscribed") },
-            { icon: "⚙️", label: tx.settings, count: 0 },
+            { icon: "⚙️", label: tx.settings, count: 0, action: () => setProfileView("settings") },
           ].map((item, i) => (
             <div key={i} onClick={item.action} style={{ background: th.card, borderRadius: 14, padding: "16px 18px", marginBottom: 10, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer", border: `1px solid ${th.border}` }}>
               <span style={{ fontSize: 22 }}>{item.icon}</span>
@@ -2893,6 +2898,53 @@ export default function App() {
                   <div style={{ fontSize: 12, color: th.sub }}>{tx.createStoreSub}</div>
                 </div>
                 <span style={{ color: "#E63946", fontSize: 18 }}>›</span>
+              </div>
+            )}
+          </div>
+
+          {/* Chatlarim */}
+          <div style={{ background: th.card, borderRadius: 16, padding: "16px 18px", marginBottom: 10, border: `1px solid ${th.border}`, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: th.sub }}>💬 {lang === "uz" ? "CHATLARIM" : "МОИ ЧАТЫ"}</div>
+              {Object.keys(chatMessages).length > 0 && (
+                <span style={{ fontSize: 11, color: "#E63946", fontWeight: 700 }}>
+                  {Object.keys(chatMessages).length} {lang === "uz" ? "ta chat" : "чатов"}
+                </span>
+              )}
+            </div>
+            {Object.keys(chatMessages).length === 0 ? (
+              <div style={{ color: th.sub, fontSize: 13 }}>
+                {lang === "uz" ? "Hozircha chatlar yo'q" : "Пока нет чатов"}
+              </div>
+            ) : Object.entries(chatMessages).slice(0, 3).map(([storeId, msgs]) => {
+              const st = stores.find(s => s.id === storeId);
+              if (!st || !msgs.length) return null;
+              const lastMsg = msgs[msgs.length - 1];
+              const unread = msgs.filter(m => m.from === "store" && !m.read).length;
+              return (
+                <div key={storeId} onClick={() => setChatStore(st)}
+                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: `1px solid ${th.border}`, cursor: "pointer" }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: st.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0, position: "relative" }}>
+                    {st.logo}
+                    {unread > 0 && (
+                      <span style={{ position: "absolute", top: -4, right: -4, background: "#E63946", color: "#fff", borderRadius: 8, fontSize: 9, fontWeight: 800, padding: "1px 5px", minWidth: 16, textAlign: "center" }}>{unread}</span>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{st.name}</div>
+                    <div style={{ fontSize: 11, color: th.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {lastMsg.from === "user" ? (lang === "uz" ? "Siz: " : "Вы: ") : ""}{lastMsg.text}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 10, color: th.sub, flexShrink: 0 }}>
+                    {new Date(lastMsg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" })}
+                  </div>
+                </div>
+              );
+            })}
+            {Object.keys(chatMessages).length > 3 && (
+              <div style={{ fontSize: 12, color: "#E63946", fontWeight: 700, marginTop: 8, textAlign: "center", cursor: "pointer" }}>
+                {lang === "uz" ? `+ yana ${Object.keys(chatMessages).length - 3} ta ko'rish` : `+ ещё ${Object.keys(chatMessages).length - 3}`}
               </div>
             )}
           </div>
@@ -2971,6 +3023,71 @@ export default function App() {
               {b.note ? <div style={{ marginTop: 10, fontSize: 12, color: th.sub, fontStyle: "italic" }}>"{b.note}"</div> : null}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* PROFILE — settings */}
+      {activeTab === "profile" && profileView === "settings" && (
+        <div style={{ padding: "48px 20px 20px", background: th.bg, minHeight: "100vh" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+            <button onClick={() => setProfileView("main")} style={{ background: th.card, border: `1.5px solid ${th.border}`, borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: "pointer", color: th.text }}>←</button>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: th.text, margin: 0 }}>⚙️ {tx.settings}</h2>
+          </div>
+
+          {/* Tungi rejim */}
+          <div style={{ background: th.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 16, border: `1px solid ${th.border}` }}>
+            <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 700, color: th.sub, borderBottom: `1px solid ${th.border}` }}>
+              {lang === "uz" ? "KO'RINISH" : "ВНЕШНИЙ ВИД"}
+            </div>
+            <div onClick={toggleDark} style={{ padding: "16px 18px", display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}>
+              <span style={{ fontSize: 22 }}>{dark ? "☀️" : "🌙"}</span>
+              <span style={{ flex: 1, fontWeight: 600, fontSize: 14, color: th.text }}>{tx.darkMode}</span>
+              <div style={{ width: 48, height: 26, borderRadius: 13, background: dark ? "#E63946" : th.border, position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
+                <div style={{ position: "absolute", top: 3, left: dark ? 24 : 3, width: 20, height: 20, borderRadius: 10, background: "#fff", transition: "left 0.3s", boxShadow: "0 1px 4px rgba(0,0,0,0.25)" }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Til */}
+          <div style={{ background: th.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 16, border: `1px solid ${th.border}` }}>
+            <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 700, color: th.sub, borderBottom: `1px solid ${th.border}` }}>
+              {lang === "uz" ? "TIL" : "ЯЗЫК"}
+            </div>
+            <div style={{ padding: "12px 18px", display: "flex", gap: 10 }}>
+              {[["uz", "🇺🇿 O'zbekcha"], ["ru", "🇷🇺 Русский"]].map(([l, label]) => (
+                <button key={l} onClick={() => setLang(l)} style={{
+                  flex: 1, padding: "12px 8px", borderRadius: 12, cursor: "pointer",
+                  border: lang === l ? "2px solid #E63946" : `2px solid ${th.border}`,
+                  background: lang === l ? "#FFF0F0" : th.card,
+                  color: lang === l ? "#E63946" : th.text,
+                  fontWeight: 700, fontSize: 13,
+                }}>{label}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Ilova haqida */}
+          <div style={{ background: th.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 16, border: `1px solid ${th.border}` }}>
+            <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 700, color: th.sub, borderBottom: `1px solid ${th.border}` }}>
+              {lang === "uz" ? "ILOVA HAQIDA" : "О ПРИЛОЖЕНИИ"}
+            </div>
+            {[
+              { label: lang === "uz" ? "Ilova versiyasi" : "Версия приложения", value: "1.0.0" },
+              { label: lang === "uz" ? "Ishlab chiquvchi" : "Разработчик", value: "OsonTop Team" },
+              { label: lang === "uz" ? "Aloqa" : "Контакты", value: "@osontop_uz" },
+            ].map((item, i) => (
+              <div key={i} style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < 2 ? `1px solid ${th.border}` : "none" }}>
+                <span style={{ fontSize: 14, color: th.text }}>{item.label}</span>
+                <span style={{ fontSize: 13, color: th.sub, fontWeight: 600 }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Hisobni o'chirish */}
+          <button onClick={() => { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); }}
+            style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+            {lang === "uz" ? "🚪 Chiqish" : "🚪 Выйти"}
+          </button>
         </div>
       )}
 
