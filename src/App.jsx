@@ -2486,7 +2486,6 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
           </div>
         )}
         {formStep === 3 && (
-          {/* ══ STEP 3: Narx ══ */}
           <div>
             <h3 style={s.secTitle}>💰 {tx.priceInfo}</h3>
             <p style={s.secDesc}>{catInfo?.emoji} {catInfo?.label}</p>
