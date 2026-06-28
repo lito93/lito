@@ -1090,10 +1090,6 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
         {loading ? (lang === "uz" ? "⏳ Kutilmoqda..." : "⏳ Ожидание...") : `${tx.placeOrder} — ${formatPrice(cartTotal)} ${tx.sumShort}`}
       </button>
     </ModalSheet>
-      <button onClick={handleOrder} style={{ ...s.btn, opacity: canOrder && !loading ? 1 : 0.6 }}>
-        {loading ? "⏳..." : tx.placeOrder}
-      </button>
-    </ModalSheet>
   );
 }
 
