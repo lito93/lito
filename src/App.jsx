@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 // =====================================================
 // TRANSLATIONS
@@ -33,7 +33,7 @@ const t = {
     services: "Xizmatlar",
     offers: "Takliflar",
     left: "qoldi",
-    getСoupon: "🎟️ Kupon olish",
+    getCoupon: "🎟️ Kupon olish",
     home: "Bosh sahifa",
     saved: "Saqlanganlar",
     cart: "Savat",
@@ -53,7 +53,6 @@ const t = {
     namePlaceholder: "Isming",
     surnamePlaceholder: "Familiyangiz",
     phonePlaceholder: "+998 90 123 45 67",
-    // listing / product
     addListing: "Mahsulot qo'shish",
     addListingSub: "Do'koningizga yangi mahsulot qo'shing",
     backToProfile: "Profilga qaytish",
@@ -87,7 +86,6 @@ const t = {
     fillRequired: "Iltimos barcha majburiy maydonlarni to'ldiring",
     required: "*",
     sumShort: "so'm",
-    // store
     myStore: "Mening do'konim",
     createStore: "Do'kon yaratish",
     createStoreSub: "Chegirma joylash uchun avval do'koningizni yarating",
@@ -124,7 +122,6 @@ const t = {
     confirmDelete: "Ushbu mahsulotni o'chirishni xohlaysizmi?",
     yes: "Ha",
     no: "Yo'q",
-    // cart
     addToCart: "🛒 Savatga qo'shish",
     inCart: "Savatda",
     emptyCart: "Savat bo'sh",
@@ -133,12 +130,49 @@ const t = {
     qty: "Soni",
     total: "Jami",
     removeFromCart: "O'chirish",
-    // notifications
     notificationsTitle: "🔔 Bildirishnomalar",
     noNotifications: "Hozircha bildirishnoma yo'q",
     noNotificationsDesc: "Do'konlarga obuna bo'ling va yangiliklardan xabardor bo'ling",
     newDiscountNotif: (store) => `${store} yangi chegirma qo'shdi`,
     newProductNotif: (store) => `${store} yangi mahsulot qo'shdi`,
+    // Checkout
+    checkout: "Buyurtma berish",
+    checkoutTitle: "Buyurtmani tasdiqlash",
+    deliveryMethod: "Yetkazib berish usuli",
+    pickup: "O'zi olib ketish",
+    delivery: "Yetkazib berish",
+    deliveryAddress: "Yetkazib berish manzili",
+    deliveryAddressPh: "Ko'cha, uy raqami",
+    paymentMethod: "To'lov usuli",
+    cash: "Naqd pul",
+    card: "Karta",
+    placeOrder: "Buyurtma berish",
+    orderSuccess: "Buyurtma muvaffaqiyatli qabul qilindi! 🎉",
+    orderSuccessDesc: "Tez orada siz bilan bog'lanamiz",
+    orderSuccessBtn: "Bosh sahifaga qaytish",
+    orderNumber: "Buyurtma raqami",
+    // Coupon
+    couponTitle: "Kupon muvaffaqiyatli olindi! 🎟️",
+    couponCode: "Kupon kodi",
+    couponExpiry: "Amal qilish muddati",
+    couponSaved: "Kupon saqlandilar bo'limida",
+    myCouponsTitle: "🎟️ Mening kuponlarim",
+    noCoupons: "Hozircha kuponlar yo'q",
+    noCouponsDesc: "Chegirmali mahsulotlardan kupon oling",
+    couponUsed: "Ishlatilgan",
+    couponActive: "Faol",
+    useCoupon: "Ishlatish",
+    // Profile edit
+    editProfile: "Profilni tahrirlash",
+    saveProfile: "Saqlash",
+    // Call
+    callStore: "📞 Qo'ng'iroq",
+    telegramStore: "✈️ Telegram",
+    shareDiscount: "🔗 Ulashish",
+    // Search stores
+    storesTitle: "Do'konlar",
+    allStores: "Barcha do'konlar",
+    searchStores: "Do'kon qidirish",
   },
   ru: {
     appName: "Chegirma.uz",
@@ -169,7 +203,7 @@ const t = {
     services: "Услуги",
     offers: "Предложения",
     left: "осталось",
-    getСoupon: "🎟️ Получить купон",
+    getCoupon: "🎟️ Получить купон",
     home: "Главная",
     saved: "Сохранённые",
     cart: "Корзина",
@@ -271,8 +305,42 @@ const t = {
     noNotificationsDesc: "Подпишитесь на магазины, чтобы узнавать новости первыми",
     newDiscountNotif: (store) => `${store} опубликовал новую скидку`,
     newProductNotif: (store) => `${store} добавил новый товар`,
+    checkout: "Оформить заказ",
+    checkoutTitle: "Подтверждение заказа",
+    deliveryMethod: "Способ получения",
+    pickup: "Самовывоз",
+    delivery: "Доставка",
+    deliveryAddress: "Адрес доставки",
+    deliveryAddressPh: "Улица, номер дома",
+    paymentMethod: "Способ оплаты",
+    cash: "Наличные",
+    card: "Карта",
+    placeOrder: "Оформить заказ",
+    orderSuccess: "Заказ успешно принят! 🎉",
+    orderSuccessDesc: "Мы свяжемся с вами в ближайшее время",
+    orderSuccessBtn: "Вернуться на главную",
+    orderNumber: "Номер заказа",
+    couponTitle: "Купон успешно получен! 🎟️",
+    couponCode: "Код купона",
+    couponExpiry: "Срок действия",
+    couponSaved: "Купон сохранён в разделе купонов",
+    myCouponsTitle: "🎟️ Мои купоны",
+    noCoupons: "Пока нет купонов",
+    noCouponsDesc: "Получайте купоны на товары со скидкой",
+    couponUsed: "Использован",
+    couponActive: "Активный",
+    useCoupon: "Использовать",
+    editProfile: "Редактировать профиль",
+    saveProfile: "Сохранить",
+    callStore: "📞 Позвонить",
+    telegramStore: "✈️ Telegram",
+    shareDiscount: "🔗 Поделиться",
+    storesTitle: "Магазины",
+    allStores: "Все магазины",
+    searchStores: "Поиск магазина",
   },
 };
+
 
 // =====================================================
 // SHARED CATEGORY LIST
@@ -316,26 +384,51 @@ const isExpired = (dateStr) => {
 const formatPrice = (n) => Math.round(Number(n) || 0).toLocaleString("ru-RU").replace(/,/g, " ");
 const avgRating = (reviews) => (reviews && reviews.length ? reviews.reduce((s, r) => s + r.stars, 0) / reviews.length : 0);
 
+// Generate coupon code
+const genCouponCode = () => {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "CH-";
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+};
+
 // =====================================================
-// INITIAL DEMO STORES (har birida product(lar) bor)
+// LOCALSTORAGE HELPERS
+// =====================================================
+const LS_KEY = "chegirma_uz_state";
+const saveToLS = (data) => {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch {}
+};
+const loadFromLS = () => {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+};
+
+// =====================================================
+// INITIAL DEMO STORES
 // =====================================================
 const initialStores = [
-  { id: "st1", name: "Korzinka", logo: "🛒", color: "#FF6B35", address: "Toshkent, Chilonzor tumani", phone: "+998 71 200 00 01", lat: 41.299, lng: 69.240, reviews: [{ stars: 5, comment: "Juda yaxshi narxlar", author: "Anvar" }],
+  { id: "st1", name: "Korzinka", logo: "🛒", color: "#FF6B35", address: "Toshkent, Chilonzor tumani", phone: "+998712000001", lat: 41.299, lng: 69.240, reviews: [{ stars: 5, comment: "Juda yaxshi narxlar", author: "Anvar" }],
     products: [{ id: "p1", category: "food", name: { uz: "Mahsulotlarga chegirma", ru: "Скидка на продукты" }, description: { uz: "Barcha oziq-ovqat mahsulotlariga chegirma", ru: "Скидка на все продукты питания" }, params: [], originalPrice: 45000, photos: [], discount: { percent: 30, expiryDate: isoDaysFromNow(2) }, reviews: [{ stars: 4, comment: "Yaxshi sifat", author: "Dilnoza" }] }] },
-  { id: "st2", name: "Zara Tashkent", logo: "👔", color: "#2D3436", address: "Toshkent, Amir Temur ko'chasi", phone: "+998 71 200 00 02", lat: 41.302, lng: 69.245, reviews: [],
+  { id: "st2", name: "Zara Tashkent", logo: "👔", color: "#2D3436", address: "Toshkent, Amir Temur ko'chasi", phone: "+998712000002", lat: 41.302, lng: 69.245, reviews: [],
     products: [{ id: "p2", category: "clothing", name: { uz: "Yozgi kolleksiya", ru: "Летняя коллекция" }, description: { uz: "Yangi yozgi kiyimlar kolleksiyasi", ru: "Новая летняя коллекция одежды" }, params: [{ name: "Razmer", value: "S-XL" }], originalPrice: 320000, photos: [], discount: { percent: 50, expiryDate: isoDaysFromNow(5) }, reviews: [] }] },
-  { id: "st3", name: "Texnomart", logo: "📱", color: "#0984E3", address: "Toshkent, Yunusobod tumani", phone: "+998 71 200 00 03", lat: 41.295, lng: 69.235, reviews: [{ stars: 5, comment: "Tez yetkazib berishadi", author: "Jasur" }],
-    products: [{ id: "p3", category: "electronics", name: { uz: "Smartfonlarga", ru: "На смартфоны" }, description: { uz: "Eng so'nggi smartfon modellariga chegirma", ru: "Скидка на новейшие модели смартфонов" }, params: [], originalPrice: 4500000, photos: [], discount: { percent: 15, expiryDate: isoDaysFromNow(0) }, reviews: [] },
-      { id: "p3b", category: "electronics", name: { uz: "Elektronika bo'limi", ru: "Отдел электроники" }, description: { uz: "", ru: "" }, params: [], originalPrice: 1200000, photos: [], discount: { percent: 40, expiryDate: isoDaysFromNow(3) }, reviews: [] }] },
-  { id: "st4", name: "L'Oreal", logo: "💄", color: "#E84393", address: "Toshkent, Mirzo Ulug'bek tumani", phone: "+998 71 200 00 04", lat: 41.305, lng: 69.250, reviews: [],
+  { id: "st3", name: "Texnomart", logo: "📱", color: "#0984E3", address: "Toshkent, Yunusobod tumani", phone: "+998712000003", lat: 41.295, lng: 69.235, reviews: [{ stars: 5, comment: "Tez yetkazib berishadi", author: "Jasur" }],
+    products: [
+      { id: "p3", category: "electronics", name: { uz: "Smartfonlarga", ru: "На смартфоны" }, description: { uz: "Eng so'nggi smartfon modellariga chegirma", ru: "Скидка на новейшие модели смартфонов" }, params: [], originalPrice: 4500000, photos: [], discount: { percent: 15, expiryDate: isoDaysFromNow(3) }, reviews: [] },
+      { id: "p3b", category: "electronics", name: { uz: "Elektronika bo'limi", ru: "Отдел электроники" }, description: { uz: "", ru: "" }, params: [], originalPrice: 1200000, photos: [], discount: { percent: 40, expiryDate: isoDaysFromNow(4) }, reviews: [] }
+    ] },
+  { id: "st4", name: "L'Oreal", logo: "💄", color: "#E84393", address: "Toshkent, Mirzo Ulug'bek tumani", phone: "+998712000004", lat: 41.305, lng: 69.250, reviews: [],
     products: [{ id: "p4", category: "beauty", name: { uz: "Barcha mahsulotlar", ru: "Все товары" }, description: { uz: "Go'zallik mahsulotlariga maxsus chegirma", ru: "Специальная скидка на товары для красоты" }, params: [], originalPrice: 180000, photos: [], discount: { percent: 25, expiryDate: isoDaysFromNow(7) }, reviews: [] }] },
-  { id: "st5", name: "Dono Pizza", logo: "🍕", color: "#E17055", address: "Toshkent, Shayxontohur tumani", phone: "+998 71 200 00 05", lat: 41.298, lng: 69.242, reviews: [{ stars: 4, comment: "Mazali pizza!", author: "Olim" }],
-    products: [{ id: "p5", category: "restaurant", name: { uz: "Katta pizza", ru: "Большая пицца" }, description: { uz: "Katta o'lchamdagi har qanday pizza", ru: "Большая пицца любого вида" }, params: [], originalPrice: 95000, photos: [], discount: { percent: 20, expiryDate: isoDaysFromNow(0) }, reviews: [] }] },
-  { id: "st6", name: "Silk Road", logo: "🧥", color: "#00B894", address: "Toshkent, Yakkasaroy tumani", phone: "+998 71 200 00 06", lat: 41.308, lng: 69.248, reviews: [],
+  { id: "st5", name: "Dono Pizza", logo: "🍕", color: "#E17055", address: "Toshkent, Shayxontohur tumani", phone: "+998712000005", lat: 41.298, lng: 69.242, reviews: [{ stars: 4, comment: "Mazali pizza!", author: "Olim" }],
+    products: [{ id: "p5", category: "restaurant", name: { uz: "Katta pizza", ru: "Большая пицца" }, description: { uz: "Katta o'lchamdagi har qanday pizza", ru: "Большая пицца любого вида" }, params: [], originalPrice: 95000, photos: [], discount: { percent: 20, expiryDate: isoDaysFromNow(2) }, reviews: [] }] },
+  { id: "st6", name: "Silk Road", logo: "🧥", color: "#00B894", address: "Toshkent, Yakkasaroy tumani", phone: "+998712000006", lat: 41.308, lng: 69.248, reviews: [],
     products: [{ id: "p6", category: "clothing", name: { uz: "Atlas ko'ylaklar", ru: "Атласные платья" }, description: { uz: "", ru: "" }, params: [], originalPrice: 410000, photos: [], discount: { percent: 35, expiryDate: isoDaysFromNow(4) }, reviews: [] }] },
-  { id: "st7", name: "Coffee House", logo: "☕", color: "#FDCB6E", address: "Toshkent, Mirobod tumani", phone: "+998 71 200 00 07", lat: 41.301, lng: 69.243, reviews: [],
-    products: [{ id: "p7", category: "restaurant", name: { uz: "Barcha ichimliklar", ru: "Все напитки" }, description: { uz: "", ru: "" }, params: [], originalPrice: 28000, photos: [], discount: { percent: 10, expiryDate: isoDaysFromNow(0) }, reviews: [] }] },
+  { id: "st7", name: "Coffee House", logo: "☕", color: "#FDCB6E", address: "Toshkent, Mirobod tumani", phone: "+998712000007", lat: 41.301, lng: 69.243, reviews: [],
+    products: [{ id: "p7", category: "restaurant", name: { uz: "Barcha ichimliklar", ru: "Все напитки" }, description: { uz: "", ru: "" }, params: [], originalPrice: 28000, photos: [], discount: { percent: 10, expiryDate: isoDaysFromNow(3) }, reviews: [] }] },
 ];
+
 
 // =====================================================
 // MAP HELPERS
@@ -370,7 +463,6 @@ function MapView({ lang, deals, onDealClick }) {
   const [selected, setSelected] = useState(null);
   const tx = t[lang];
   const handlePin = (deal) => setSelected(selected?.key === deal.key ? null : deal);
-
   return (
     <div style={{ padding: "48px 0 0" }}>
       <div style={{ padding: "0 20px 14px" }}>
@@ -380,8 +472,7 @@ function MapView({ lang, deals, onDealClick }) {
         <svg width="100%" viewBox="0 0 380 320" style={{ display: "block", background: "#E8F4E8" }}>
           <MapBackground />
           {deals.map((deal) => {
-            const x = toX(deal.lng);
-            const y = toY(deal.lat);
+            const x = toX(deal.lng); const y = toY(deal.lat);
             const isSelected = selected?.key === deal.key;
             return (
               <g key={deal.key} onClick={() => handlePin(deal)} style={{ cursor: "pointer" }}>
@@ -396,7 +487,6 @@ function MapView({ lang, deals, onDealClick }) {
           <circle cx="190" cy="175" r="6" fill="#E63946" stroke="#fff" strokeWidth="2" />
         </svg>
       </div>
-
       {selected && (
         <div onClick={() => onDealClick(selected)} style={{ margin: "14px 16px 0", background: "#fff", borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 4px 16px rgba(0,0,0,0.10)", cursor: "pointer" }}>
           <div style={{ background: selected.color + "20", borderRadius: 12, width: 52, height: 52, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0, overflow: "hidden" }}>
@@ -410,7 +500,6 @@ function MapView({ lang, deals, onDealClick }) {
           <div style={{ background: selected.color, color: "#fff", borderRadius: 10, padding: "6px 12px", fontWeight: 800, fontSize: 16 }}>-{selected.discount}%</div>
         </div>
       )}
-
       <div style={{ padding: "16px 16px 0" }}>
         {deals.slice(0, 4).map((deal) => (
           <div key={deal.key} onClick={() => onDealClick(deal)} style={{ background: "#fff", borderRadius: 14, padding: "12px 14px", marginBottom: 10, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer" }}>
@@ -471,31 +560,50 @@ function StarRating({ value, onChange, size = 22, readOnly = false }) {
   return (
     <div style={{ display: "flex", gap: 4 }}>
       {[1, 2, 3, 4, 5].map((n) => (
-        <span
-          key={n}
-          onClick={() => !readOnly && onChange && onChange(n)}
-          onMouseEnter={() => !readOnly && setHover(n)}
-          onMouseLeave={() => !readOnly && setHover(0)}
-          style={{ fontSize: size, cursor: readOnly ? "default" : "pointer", color: n <= display ? "#FFB400" : "#E0E0E0", lineHeight: 1 }}
-        >★</span>
+        <span key={n} onClick={() => !readOnly && onChange && onChange(n)}
+          onMouseEnter={() => !readOnly && setHover(n)} onMouseLeave={() => !readOnly && setHover(0)}
+          style={{ fontSize: size, cursor: readOnly ? "default" : "pointer", color: n <= display ? "#FFB400" : "#E0E0E0", lineHeight: 1 }}>★</span>
       ))}
     </div>
   );
 }
 
+
 // =====================================================
-// ONBOARDING STEPS (o'zgarishsiz)
+// SHARED STYLES
+// =====================================================
+const labelStyle = { fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 6, display: "block" };
+const inputStyle = { width: "100%", padding: "14px 16px", borderRadius: 14, border: "1.5px solid #E8E8E8", background: "#fff", fontSize: 15, outline: "none", marginBottom: 18, boxSizing: "border-box", color: "#1A1A2E" };
+const textareaStyle = { ...inputStyle, minHeight: 80, resize: "vertical", fontFamily: "inherit" };
+const btnStyle = { width: "100%", padding: "16px", background: "#E63946", color: "#fff", border: "none", borderRadius: 16, fontSize: 16, fontWeight: 800, cursor: "pointer", boxShadow: "0 4px 16px rgba(230,57,70,0.3)" };
+const ghostBtnStyle = { width: "100%", padding: "14px", background: "#fff", color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer" };
+const sectionTitleStyle = { fontSize: 15, fontWeight: 800, color: "#1A1A2E", margin: "0 0 4px" };
+const sectionDescStyle = { fontSize: 12, color: "#999", margin: "0 0 16px" };
+
+// =====================================================
+// MODAL SHEET
+// =====================================================
+function ModalSheet({ onClose, children, maxHeight = "85vh" }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 300, display: "flex", alignItems: "flex-end", justifyContent: "center", maxWidth: 430, margin: "0 auto" }} onClick={onClose}>
+      <div style={{ background: "#fff", borderRadius: "24px 24px 0 0", padding: 24, width: "100%", maxWidth: 430, maxHeight, overflowY: "auto", boxSizing: "border-box" }} onClick={e => e.stopPropagation()}>
+        <div style={{ width: 40, height: 4, background: "#E0E0E0", borderRadius: 2, margin: "0 auto 18px" }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// ONBOARDING
 // =====================================================
 function OnboardingStep({ step, setStep, lang, userData, setUserData }) {
   const tx = t[lang];
   const [code, setCode] = useState(["", "", "", ""]);
   const codeRefs = [useRef(), useRef(), useRef(), useRef()];
-
   const handleCodeChange = (val, idx) => {
     if (!/^\d?$/.test(val)) return;
-    const newCode = [...code];
-    newCode[idx] = val;
-    setCode(newCode);
+    const newCode = [...code]; newCode[idx] = val; setCode(newCode);
     if (val && idx < 3) codeRefs[idx + 1].current?.focus();
   };
 
@@ -552,7 +660,7 @@ function OnboardingStep({ step, setStep, lang, userData, setUserData }) {
       <div style={{ fontSize: 40, marginBottom: 8 }}>📸</div>
       <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1A1A2E", margin: "0 0 6px", textAlign: "center" }}>{tx.addPhoto}</h2>
       <p style={{ color: "#888", marginBottom: 32, fontSize: 14, textAlign: "center" }}>{lang === "uz" ? "Profilingizni yanada shaxsiylashtiring" : "Персонализируйте свой профиль"}</p>
-      <div style={{ width: 120, height: 120, borderRadius: 60, background: userData.photo ? "#E63946" : "#E8E8E8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: userData.photo ? 56 : 40, marginBottom: 20, cursor: "pointer", border: "3px dashed #E63946", position: "relative" }}
+      <div style={{ width: 120, height: 120, borderRadius: 60, background: userData.photo ? "#E63946" : "#E8E8E8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: userData.photo ? 56 : 40, marginBottom: 20, cursor: "pointer", border: "3px dashed #E63946" }}
         onClick={() => setUserData({ ...userData, photo: "📸" })}>
         {userData.photo ? "😊" : "📷"}
       </div>
@@ -589,28 +697,9 @@ function OnboardingStep({ step, setStep, lang, userData, setUserData }) {
   return null;
 }
 
-const labelStyle = { fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 6, display: "block" };
-const inputStyle = { width: "100%", padding: "14px 16px", borderRadius: 14, border: "1.5px solid #E8E8E8", background: "#fff", fontSize: 15, outline: "none", marginBottom: 18, boxSizing: "border-box", color: "#1A1A2E" };
-const textareaStyle = { ...inputStyle, minHeight: 80, resize: "vertical", fontFamily: "inherit" };
-const btnStyle = { width: "100%", padding: "16px", background: "#E63946", color: "#fff", border: "none", borderRadius: 16, fontSize: 16, fontWeight: 800, cursor: "pointer", boxShadow: "0 4px 16px rgba(230,57,70,0.3)" };
-const ghostBtnStyle = { width: "100%", padding: "14px", background: "#fff", color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer" };
-const sectionTitleStyle = { fontSize: 15, fontWeight: 800, color: "#1A1A2E", margin: "0 0 4px" };
-const sectionDescStyle = { fontSize: 12, color: "#999", margin: "0 0 16px" };
-
-// Modal helper wrapper
-function ModalSheet({ onClose, children, maxHeight = "85vh" }) {
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 300, display: "flex", alignItems: "flex-end", justifyContent: "center", maxWidth: 430, margin: "0 auto" }} onClick={onClose}>
-      <div style={{ background: "#fff", borderRadius: "24px 24px 0 0", padding: 24, width: "100%", maxWidth: 430, maxHeight, overflowY: "auto", boxSizing: "border-box" }} onClick={e => e.stopPropagation()}>
-        <div style={{ width: 40, height: 4, background: "#E0E0E0", borderRadius: 2, margin: "0 auto 18px" }} />
-        {children}
-      </div>
-    </div>
-  );
-}
 
 // =====================================================
-// ADD PRODUCT FORM — Mening do'konim > Mahsulot qo'shish
+// ADD PRODUCT FORM
 // =====================================================
 const emptyProduct = { category: "", name: "", description: "", params: [], originalPrice: "", address: "", location: null, phone: "", photos: [] };
 
@@ -626,7 +715,6 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
   const addParam = () => update({ params: [...p.params, { name: "", value: "" }] });
   const updateParam = (idx, key, val) => { const next = [...p.params]; next[idx] = { ...next[idx], [key]: val }; update({ params: next }); };
   const removeParam = (idx) => update({ params: p.params.filter((_, i) => i !== idx) });
-
   const handleFiles = (e) => {
     const files = Array.from(e.target.files || []);
     files.forEach((file) => {
@@ -663,7 +751,7 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
           </div>
         </div>
         <div style={{ display: "flex", gap: 6 }}>
-          {[1, 2, 3, 4].map((s) => <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: s <= formStep ? "#fff" : "rgba(255,255,255,0.3)" }} />)}
+          {[1,2,3,4].map((s) => <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: s <= formStep ? "#fff" : "rgba(255,255,255,0.3)" }} />)}
         </div>
       </div>
 
@@ -682,7 +770,6 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
             </div>
           </div>
         )}
-
         {formStep === 2 && (
           <div>
             <h3 style={sectionTitleStyle}>{tx.productInfo}</h3>
@@ -705,7 +792,6 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
             </div>
           </div>
         )}
-
         {formStep === 3 && (
           <div>
             <h3 style={sectionTitleStyle}>{tx.priceInfo}</h3>
@@ -714,7 +800,6 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
             <input type="number" min="0" placeholder="500 000" value={p.originalPrice} onChange={(e) => update({ originalPrice: e.target.value })} style={inputStyle} />
           </div>
         )}
-
         {formStep === 4 && (
           <div>
             <h3 style={sectionTitleStyle}>{tx.locationInfo}</h3>
@@ -739,7 +824,6 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
             <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleFiles} style={{ display: "none" }} />
           </div>
         )}
-
         {error && <div style={{ color: "#E63946", fontSize: 13, fontWeight: 600, marginTop: 10, textAlign: "center" }}>{error}</div>}
       </div>
 
@@ -750,15 +834,15 @@ function AddProductForm({ lang, store, onCancel, onSubmit }) {
   );
 }
 
+
 // =====================================================
-// DISCOUNT MODAL — mavjud mahsulotga chegirma qo'yish
+// DISCOUNT MODAL
 // =====================================================
 function DiscountModal({ lang, product, onClose, onApply }) {
   const tx = t[lang];
   const [percent, setPercent] = useState(product.discount?.percent?.toString() || "");
   const [expiry, setExpiry] = useState(product.discount?.expiryDate || isoDaysFromNow(3));
   const canApply = percent && Number(percent) > 0 && Number(percent) < 100 && expiry;
-
   return (
     <ModalSheet onClose={onClose} maxHeight="70vh">
       <h3 style={{ ...sectionTitleStyle, textAlign: "center" }}>{tx.discountModalTitle}</h3>
@@ -801,15 +885,187 @@ function ReviewModal({ lang, title, onClose, onSubmit }) {
 }
 
 // =====================================================
-// STORE VIEW
+// COUPON MODAL — kupon olish
+// =====================================================
+function CouponModal({ lang, deal, onClose, onGetCoupon }) {
+  const tx = t[lang];
+  const [received, setReceived] = useState(false);
+  const [code] = useState(genCouponCode);
+
+  const handleGet = () => {
+    onGetCoupon({ code, deal, obtainedAt: new Date().toISOString(), used: false });
+    setReceived(true);
+  };
+
+  if (received) return (
+    <ModalSheet onClose={onClose} maxHeight="65vh">
+      <div style={{ textAlign: "center", padding: "8px 0" }}>
+        <div style={{ fontSize: 56, marginBottom: 8 }}>🎟️</div>
+        <h3 style={{ fontSize: 18, fontWeight: 800, color: "#1A1A2E", margin: "0 0 6px" }}>{tx.couponTitle}</h3>
+        <p style={{ color: "#888", fontSize: 13, margin: "0 0 20px" }}>{tx.couponSaved}</p>
+        <div style={{ background: "#FFF0F0", borderRadius: 16, padding: "18px 20px", marginBottom: 16 }}>
+          <div style={{ fontSize: 12, color: "#AAA", fontWeight: 600, marginBottom: 6 }}>{tx.couponCode}</div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#E63946", letterSpacing: 3, fontFamily: "monospace" }}>{code}</div>
+        </div>
+        <div style={{ background: "#F7F8FA", borderRadius: 12, padding: "12px 16px", display: "flex", justifyContent: "space-between" }}>
+          <span style={{ color: "#888", fontSize: 13 }}>{tx.couponExpiry}</span>
+          <span style={{ fontWeight: 700, color: "#1A1A2E", fontSize: 13 }}>{daysLeftLabel(deal.expiryDate, lang)} {tx.left}</span>
+        </div>
+      </div>
+      <button onClick={onClose} style={{ ...btnStyle, marginTop: 20 }}>OK</button>
+    </ModalSheet>
+  );
+
+  return (
+    <ModalSheet onClose={onClose} maxHeight="60vh">
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>{deal.logo}</div>
+        <h3 style={{ fontSize: 17, fontWeight: 800, color: "#1A1A2E", margin: "0 0 4px" }}>{deal.storeName}</h3>
+        <p style={{ color: "#888", fontSize: 13, margin: "0 0 16px" }}>{deal.title[lang]}</p>
+        <div style={{ background: deal.color + "18", borderRadius: 14, padding: "16px", marginBottom: 20 }}>
+          <div style={{ fontSize: 44, fontWeight: 900, color: deal.color }}>-{deal.discount}%</div>
+          {deal.originalPrice > 0 && (
+            <div style={{ fontSize: 13, color: "#888", marginTop: 6 }}>
+              <span style={{ textDecoration: "line-through" }}>{formatPrice(deal.originalPrice)}</span>
+              {" → "}
+              <b style={{ color: "#1A1A2E" }}>{formatPrice(deal.originalPrice * (1 - deal.discount / 100))} {tx.sumShort}</b>
+            </div>
+          )}
+        </div>
+      </div>
+      <button onClick={handleGet} style={{ ...btnStyle, marginBottom: 10 }}>{tx.getCoupon}</button>
+      <button onClick={onClose} style={ghostBtnStyle}>{tx.cancel}</button>
+    </ModalSheet>
+  );
+}
+
+// =====================================================
+// CHECKOUT MODAL
+// =====================================================
+function CheckoutModal({ lang, cartDetailed, cartTotal, onClose, onSuccess }) {
+  const tx = t[lang];
+  const [deliveryMethod, setDeliveryMethod] = useState("pickup");
+  const [address, setAddress] = useState("");
+  const [payment, setPayment] = useState("cash");
+  const [loading, setLoading] = useState(false);
+
+  const canOrder = deliveryMethod === "pickup" || address.trim().length > 2;
+
+  const handleOrder = () => {
+    if (!canOrder) return;
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onSuccess("ORD-" + Date.now().toString().slice(-6)); }, 1200);
+  };
+
+  return (
+    <ModalSheet onClose={onClose} maxHeight="90vh">
+      <h3 style={{ ...sectionTitleStyle, textAlign: "center", marginBottom: 16 }}>{tx.checkoutTitle}</h3>
+
+      {/* Items summary */}
+      <div style={{ background: "#F7F8FA", borderRadius: 14, padding: 14, marginBottom: 16 }}>
+        {cartDetailed.map((item) => (
+          <div key={item.key} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #EFEFEF" }}>
+            <span style={{ fontSize: 13, color: "#555" }}>{item.name} × {item.qty}</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#1A1A2E" }}>{formatPrice(item.price * item.qty)} {tx.sumShort}</span>
+          </div>
+        ))}
+        <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10 }}>
+          <span style={{ fontWeight: 700, color: "#1A1A2E" }}>{tx.total}</span>
+          <span style={{ fontWeight: 900, fontSize: 16, color: "#E63946" }}>{formatPrice(cartTotal)} {tx.sumShort}</span>
+        </div>
+      </div>
+
+      <label style={labelStyle}>{tx.deliveryMethod}</label>
+      <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
+        {[["pickup", tx.pickup, "🏪"], ["delivery", tx.delivery, "🚚"]].map(([val, label, icon]) => (
+          <button key={val} onClick={() => setDeliveryMethod(val)} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: deliveryMethod === val ? "2px solid #E63946" : "2px solid #EFEFEF", background: deliveryMethod === val ? "#FFF0F0" : "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer", color: deliveryMethod === val ? "#E63946" : "#555" }}>
+            {icon} {label}
+          </button>
+        ))}
+      </div>
+
+      {deliveryMethod === "delivery" && (
+        <>
+          <label style={labelStyle}>{tx.deliveryAddress} <span style={{ color: "#E63946" }}>*</span></label>
+          <input placeholder={tx.deliveryAddressPh} value={address} onChange={(e) => setAddress(e.target.value)} style={inputStyle} />
+        </>
+      )}
+
+      <label style={labelStyle}>{tx.paymentMethod}</label>
+      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+        {[["cash", tx.cash, "💵"], ["card", tx.card, "💳"]].map(([val, label, icon]) => (
+          <button key={val} onClick={() => setPayment(val)} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: payment === val ? "2px solid #E63946" : "2px solid #EFEFEF", background: payment === val ? "#FFF0F0" : "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer", color: payment === val ? "#E63946" : "#555" }}>
+            {icon} {label}
+          </button>
+        ))}
+      </div>
+
+      <button onClick={handleOrder} style={{ ...btnStyle, opacity: canOrder && !loading ? 1 : 0.6 }}>
+        {loading ? "⏳..." : tx.placeOrder}
+      </button>
+    </ModalSheet>
+  );
+}
+
+// =====================================================
+// ORDER SUCCESS SCREEN
+// =====================================================
+function OrderSuccess({ lang, orderNumber, onDone }) {
+  const tx = t[lang];
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 400, display: "flex", alignItems: "center", justifyContent: "center", maxWidth: 430, margin: "0 auto" }}>
+      <div style={{ background: "#fff", borderRadius: 24, padding: 32, width: "88%", textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
+        <div style={{ fontSize: 64, marginBottom: 12 }}>🎉</div>
+        <h2 style={{ fontSize: 20, fontWeight: 900, color: "#1A1A2E", margin: "0 0 8px" }}>{tx.orderSuccess}</h2>
+        <p style={{ color: "#888", fontSize: 13, margin: "0 0 20px" }}>{tx.orderSuccessDesc}</p>
+        <div style={{ background: "#F7F8FA", borderRadius: 12, padding: "12px 16px", marginBottom: 24 }}>
+          <div style={{ fontSize: 12, color: "#AAA" }}>{tx.orderNumber}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: "#E63946", fontFamily: "monospace" }}>#{orderNumber}</div>
+        </div>
+        <button onClick={onDone} style={btnStyle}>{tx.orderSuccessBtn}</button>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// PROFILE EDIT MODAL
+// =====================================================
+function EditProfileModal({ lang, userData, onClose, onSave }) {
+  const tx = t[lang];
+  const [form, setForm] = useState({ ...userData });
+  return (
+    <ModalSheet onClose={onClose} maxHeight="75vh">
+      <h3 style={{ ...sectionTitleStyle, textAlign: "center", marginBottom: 16 }}>{tx.editProfile}</h3>
+      <label style={labelStyle}>{tx.enterName}</label>
+      <input placeholder={tx.namePlaceholder} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputStyle} />
+      <label style={labelStyle}>{tx.enterSurname}</label>
+      <input placeholder={tx.surnamePlaceholder} value={form.surname} onChange={e => setForm({ ...form, surname: e.target.value })} style={inputStyle} />
+      <label style={labelStyle}>{tx.enterPhone}</label>
+      <input type="tel" placeholder={tx.phonePlaceholder} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={inputStyle} />
+      <button onClick={() => onSave(form)} style={{ ...btnStyle, marginBottom: 10 }}>{tx.saveProfile}</button>
+      <button onClick={onClose} style={ghostBtnStyle}>{tx.cancel}</button>
+    </ModalSheet>
+  );
+}
+
+
+// =====================================================
+// STORE VIEW  — with call/telegram/share buttons
 // =====================================================
 function StoreView({ lang, store, isOwner, isSubscribed, onBack, onSubscribeToggle, onAddProduct, onApplyDiscount, onRemoveDiscount, onDeleteProduct, onRateProduct, onRateStore, onOpenDeal }) {
   const tx = t[lang];
   const [discountTarget, setDiscountTarget] = useState(null);
-  const [reviewTarget, setReviewTarget] = useState(null); // "store" | productId
+  const [reviewTarget, setReviewTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
-
   const storeRating = avgRating(store.reviews);
+
+  const handleCall = () => { if (store.phone) window.location.href = `tel:${store.phone}`; };
+  const handleTelegram = () => { const phone = (store.phone || "").replace(/\D/g, ""); window.open(`https://t.me/+${phone}`, "_blank"); };
+  const handleShare = () => {
+    const text = `${store.name} - ${lang === "uz" ? "chegirmali mahsulotlar" : "товары со скидками"} | Chegirma.uz`;
+    if (navigator.share) { navigator.share({ title: store.name, text }); }
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: "#F7F8FA", maxWidth: 430, margin: "0 auto", paddingBottom: 30 }}>
@@ -824,14 +1080,28 @@ function StoreView({ lang, store, isOwner, isSubscribed, onBack, onSubscribeTogg
               <span style={{ color: "#FFB400" }}>★</span>
               <span style={{ fontWeight: 700 }}>{storeRating ? storeRating.toFixed(1) : "—"}</span>
               <span style={{ opacity: 0.7 }}>({store.reviews.length})</span>
-              <span style={{ opacity: 0.6 }}>· {(store.subscriberBase || 0) + (isSubscribed ? 1 : 0)} {tx.subscribers}</span>
+              <span style={{ opacity: 0.6 }}>· {store.subscriberBase || 0} {tx.subscribers}</span>
             </div>
           </div>
         </div>
+
+        {/* Action buttons: call / telegram / share */}
+        {!isOwner && (
+          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+            {store.phone && (
+              <button onClick={handleCall} style={{ flex: 1, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>{tx.callStore}</button>
+            )}
+            {store.phone && (
+              <button onClick={handleTelegram} style={{ flex: 1, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>{tx.telegramStore}</button>
+            )}
+            <button onClick={handleShare} style={{ flex: 1, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>{tx.shareDiscount}</button>
+          </div>
+        )}
+
         {isOwner ? (
-          <div style={{ marginTop: 16, background: "rgba(255,255,255,0.2)", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, textAlign: "center" }}>{tx.ownStoreBadge}</div>
+          <div style={{ marginTop: 12, background: "rgba(255,255,255,0.2)", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, textAlign: "center" }}>{tx.ownStoreBadge}</div>
         ) : (
-          <button onClick={onSubscribeToggle} style={{ marginTop: 16, width: "100%", padding: "12px", borderRadius: 14, border: "none", cursor: "pointer", fontWeight: 800, fontSize: 14, background: isSubscribed ? "rgba(255,255,255,0.25)" : "#fff", color: isSubscribed ? "#fff" : "#E63946" }}>
+          <button onClick={onSubscribeToggle} style={{ marginTop: 12, width: "100%", padding: "12px", borderRadius: 14, border: "none", cursor: "pointer", fontWeight: 800, fontSize: 14, background: isSubscribed ? "rgba(255,255,255,0.25)" : "#fff", color: isSubscribed ? "#fff" : "#E63946" }}>
             {isSubscribed ? tx.subscribed : tx.subscribe}
           </button>
         )}
@@ -878,7 +1148,6 @@ function StoreView({ lang, store, isOwner, isSubscribed, onBack, onSubscribeTogg
                 </div>
                 {isOwner && <button onClick={() => setDeleteTarget(prod.id)} style={{ background: "none", border: "none", color: "#E63946", fontSize: 13, cursor: "pointer", alignSelf: "flex-start" }}>✕</button>}
               </div>
-
               <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                 {isOwner ? (
                   <button onClick={() => setDiscountTarget(prod)} style={{ flex: 1, padding: "9px", borderRadius: 10, border: "none", background: hasDiscount ? "#F0F0F0" : "#FFF0F0", color: hasDiscount ? "#555" : "#E63946", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
@@ -895,7 +1164,6 @@ function StoreView({ lang, store, isOwner, isSubscribed, onBack, onSubscribeTogg
           );
         })}
 
-        {/* Store reviews */}
         <div style={{ marginTop: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "#1A1A2E" }}>{tx.storeReviews}</h3>
@@ -918,19 +1186,10 @@ function StoreView({ lang, store, isOwner, isSubscribed, onBack, onSubscribeTogg
       {discountTarget && (
         <DiscountModal lang={lang} product={discountTarget} onClose={() => setDiscountTarget(null)} onApply={(d) => { onApplyDiscount(discountTarget.id, d); setDiscountTarget(null); }} />
       )}
-
       {reviewTarget && (
-        <ReviewModal
-          lang={lang}
-          title={reviewTarget === "store" ? tx.leaveReview + " — " + store.name : tx.rateProduct}
-          onClose={() => setReviewTarget(null)}
-          onSubmit={(review) => {
-            if (reviewTarget === "store") onRateStore(review); else onRateProduct(reviewTarget, review);
-            setReviewTarget(null);
-          }}
-        />
+        <ReviewModal lang={lang} title={reviewTarget === "store" ? tx.leaveReview + " — " + store.name : tx.rateProduct} onClose={() => setReviewTarget(null)}
+          onSubmit={(review) => { if (reviewTarget === "store") onRateStore(review); else onRateProduct(reviewTarget, review); setReviewTarget(null); }} />
       )}
-
       {deleteTarget && (
         <ModalSheet onClose={() => setDeleteTarget(null)} maxHeight="40vh">
           <p style={{ fontSize: 15, color: "#1A1A2E", fontWeight: 600, marginBottom: 20, textAlign: "center" }}>{tx.confirmDelete}</p>
@@ -944,6 +1203,7 @@ function StoreView({ lang, store, isOwner, isSubscribed, onBack, onSubscribeTogg
   );
 }
 
+
 // =====================================================
 // CREATE STORE FORM
 // =====================================================
@@ -954,9 +1214,7 @@ function CreateStoreForm({ lang, userData, onCreate, onCancel }) {
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState(null);
   const logos = ["🏪", "🛍️", "🍕", "👕", "📱", "💄", "☕", "⚽", "🛠️", "🏠"];
-
   const canCreate = name.trim().length > 0 && address.trim().length > 0;
-
   return (
     <div style={{ minHeight: "100vh", background: "#F7F8FA" }}>
       <div style={{ background: "linear-gradient(135deg, #E63946 0%, #C1121F 100%)", padding: "48px 20px 22px", color: "#fff" }}>
@@ -984,28 +1242,108 @@ function CreateStoreForm({ lang, userData, onCreate, onCancel }) {
 }
 
 // =====================================================
+// MY COUPONS PAGE
+// =====================================================
+function MyCouponsPage({ lang, coupons, onBack, onUseCoupon }) {
+  const tx = t[lang];
+  return (
+    <div style={{ padding: "48px 20px 20px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+        <button onClick={onBack} style={{ background: "#fff", border: "1.5px solid #EFEFEF", borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: "pointer" }}>←</button>
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1A1A2E", margin: 0 }}>{tx.myCouponsTitle}</h2>
+      </div>
+      {coupons.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "60px 0", color: "#AAA" }}>
+          <div style={{ fontSize: 56, marginBottom: 12 }}>🎟️</div>
+          <div style={{ fontWeight: 600, fontSize: 16 }}>{tx.noCoupons}</div>
+          <div style={{ fontSize: 13, marginTop: 6 }}>{tx.noCouponsDesc}</div>
+        </div>
+      ) : coupons.map((coupon) => (
+        <div key={coupon.code} style={{ background: coupon.used ? "#F7F8FA" : "#fff", borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", opacity: coupon.used ? 0.6 : 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 14, color: "#1A1A2E" }}>{coupon.deal?.storeName}</div>
+              <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>{coupon.deal?.title?.[lang]}</div>
+            </div>
+            <span style={{ background: coupon.used ? "#E0E0E0" : "#FFF0F0", color: coupon.used ? "#AAA" : "#E63946", borderRadius: 8, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>
+              {coupon.used ? tx.couponUsed : tx.couponActive}
+            </span>
+          </div>
+          <div style={{ background: coupon.used ? "#EFEFEF" : "#FFF0F0", borderRadius: 12, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 10, color: "#AAA", fontWeight: 600, marginBottom: 2 }}>{tx.couponCode}</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: coupon.used ? "#AAA" : "#E63946", fontFamily: "monospace", letterSpacing: 2 }}>{coupon.code}</div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 28, fontWeight: 900, color: coupon.used ? "#AAA" : (coupon.deal?.color || "#E63946") }}>-{coupon.deal?.discount}%</div>
+            </div>
+          </div>
+          {!coupon.used && (
+            <button onClick={() => onUseCoupon(coupon.code)} style={{ ...ghostBtnStyle, marginTop: 10, padding: "10px" }}>{tx.useCoupon}</button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+// =====================================================
 // MAIN APP
 // =====================================================
 export default function App() {
-  const [step, setStep] = useState(0);
-  const [lang, setLang] = useState("uz");
-  const [userData, setUserData] = useState({ name: "", surname: "", phone: "", photo: "" });
+  // Load saved state from localStorage
+  const saved = loadFromLS();
+
+  const [step, setStep] = useState(saved?.step ?? 0);
+  const [lang, setLang] = useState(saved?.lang ?? "uz");
+  const [userData, setUserData] = useState(saved?.userData ?? { name: "", surname: "", phone: "", photo: "" });
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
-  const [savedKeys, setSavedKeys] = useState([]);
+  const [savedKeys, setSavedKeys] = useState(saved?.savedKeys ?? []);
   const [activeTab, setActiveTab] = useState("home");
-  const [selectedKey, setSelectedKey] = useState(null); // {storeId, productId}
+  const [selectedKey, setSelectedKey] = useState(null);
 
-  const [stores, setStores] = useState(initialStores);
-  const [myStoreId, setMyStoreId] = useState(null);
-  const [cart, setCart] = useState([]); // {storeId, productId, qty}
-  const [subscriptions, setSubscriptions] = useState([]); // storeIds
-  const [notifications, setNotifications] = useState([]);
+  const [stores, setStores] = useState(() => {
+    if (saved?.stores) return saved.stores;
+    return initialStores;
+  });
+  const [myStoreId, setMyStoreId] = useState(saved?.myStoreId ?? null);
+  const [cart, setCart] = useState(saved?.cart ?? []);
+  const [subscriptions, setSubscriptions] = useState(saved?.subscriptions ?? []);
+  const [notifications, setNotifications] = useState(saved?.notifications ?? []);
+  const [coupons, setCoupons] = useState(saved?.coupons ?? []);
 
-  const [profileView, setProfileView] = useState("main"); // main | createStore | storeAddProduct
-  const [viewingStoreId, setViewingStoreId] = useState(null); // when navigating to any StoreView from anywhere
+  const [profileView, setProfileView] = useState("main");
+  const [viewingStoreId, setViewingStoreId] = useState(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(null);
+  const [couponModalDeal, setCouponModalDeal] = useState(null);
+  const [showEditProfile, setShowEditProfile] = useState(false);
 
   const tx = t[lang];
+
+  // ---- Persist to localStorage on every state change ----
+  useEffect(() => {
+    saveToLS({ step, lang, userData, savedKeys, stores, myStoreId, cart, subscriptions, notifications, coupons });
+  }, [step, lang, userData, savedKeys, stores, myStoreId, cart, subscriptions, notifications, coupons]);
+
+  // ---- Auto-cleanup expired discounts (Task #6) ----
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStores((prev) =>
+        prev.map((store) => ({
+          ...store,
+          products: store.products.map((prod) =>
+            prod.discount && isExpired(prod.discount.expiryDate)
+              ? { ...prod, discount: null }
+              : prod
+          ),
+        }))
+      );
+    }, 60000); // check every minute
+    return () => clearInterval(interval);
+  }, []);
 
   // ---------- derived data ----------
   const activeDeals = (() => {
@@ -1027,11 +1365,22 @@ export default function App() {
     return list;
   })();
 
+  // Task #7: improved search — also searches stores without discounts
   const filtered = activeDeals.filter((d) => {
     const matchCat = activeCategory === "all" || d.category === activeCategory;
-    const matchSearch = d.storeName.toLowerCase().includes(search.toLowerCase()) || (d.title[lang] || "").toLowerCase().includes(search.toLowerCase());
+    const q = search.toLowerCase();
+    const matchSearch = !q || d.storeName.toLowerCase().includes(q) ||
+      (d.title[lang] || "").toLowerCase().includes(q) ||
+      (d.title.uz || "").toLowerCase().includes(q) ||
+      (d.title.ru || "").toLowerCase().includes(q) ||
+      d.storeAddress.toLowerCase().includes(q);
     return matchCat && matchSearch;
   });
+
+  // Store search (for searching all stores, not just discounted)
+  const filteredStores = search
+    ? stores.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()) || s.address.toLowerCase().includes(search.toLowerCase()))
+    : [];
 
   const savedList = activeDeals.filter((d) => savedKeys.includes(d.key));
   const selectedDeal = selectedKey ? activeDeals.find((d) => d.key === `${selectedKey.storeId}:${selectedKey.productId}`) : null;
@@ -1051,35 +1400,33 @@ export default function App() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   // ---------- actions ----------
-  const toggleSave = (key) => setSavedKeys((prev) => (prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]));
+  const toggleSave = (key) => setSavedKeys((prev) => prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]);
 
   const addToCart = (storeId, productId) => {
     setCart((prev) => {
       const existing = prev.find((c) => c.storeId === storeId && c.productId === productId);
-      if (existing) return prev.map((c) => (c.storeId === storeId && c.productId === productId ? { ...c, qty: c.qty + 1 } : c));
+      if (existing) return prev.map((c) => c.storeId === storeId && c.productId === productId ? { ...c, qty: c.qty + 1 } : c);
       return [...prev, { storeId, productId, qty: 1 }];
     });
   };
   const changeQty = (storeId, productId, delta) => {
-    setCart((prev) => prev.map((c) => (c.storeId === storeId && c.productId === productId ? { ...c, qty: Math.max(1, c.qty + delta) } : c)));
+    setCart((prev) => prev.map((c) => c.storeId === storeId && c.productId === productId ? { ...c, qty: Math.max(1, c.qty + delta) } : c));
   };
   const removeFromCart = (storeId, productId) => setCart((prev) => prev.filter((c) => !(c.storeId === storeId && c.productId === productId)));
 
   const notifySubscribers = (storeId, kind) => {
-    if (!subscriptions.includes(storeId)) return;
     const store = stores.find((s) => s.id === storeId);
     if (!store) return;
+    if (!subscriptions.includes(storeId)) return;
     const message = kind === "discount" ? tx.newDiscountNotif(store.name) : tx.newProductNotif(store.name);
     setNotifications((prev) => [{ id: Date.now() + Math.random(), storeId, storeName: store.name, message, read: false, time: new Date().toISOString() }, ...prev]);
   };
 
-  const toggleSubscribe = (storeId) => {
-    setSubscriptions((prev) => (prev.includes(storeId) ? prev.filter((id) => id !== storeId) : [...prev, storeId]));
-  };
+  const toggleSubscribe = (storeId) => setSubscriptions((prev) => prev.includes(storeId) ? prev.filter((id) => id !== storeId) : [...prev, storeId]);
 
   const createStore = ({ name, logo, address, location, phone }) => {
     const id = "mystore-" + Date.now();
-    const newStore = { id, name, logo, color: "#E63946", address, phone, lat: location?.lat || 41.299, lng: location?.lng || 69.240, reviews: [], products: [] };
+    const newStore = { id, name, logo, color: "#E63946", address, phone, lat: location?.lat || 41.299, lng: location?.lng || 69.240, reviews: [], products: [], subscriberBase: 0 };
     setStores((prev) => [...prev, newStore]);
     setMyStoreId(id);
     setProfileView("main");
@@ -1115,15 +1462,22 @@ export default function App() {
   };
   const rateProduct = (storeId, productId, review) => {
     const author = userData.name || (lang === "uz" ? "Mehmon" : "Гость");
-    setStores((prev) => prev.map((s) => s.id !== storeId ? s : { ...s, products: s.products.map((p) => p.id === productId ? { ...p, reviews: [...(p.reviews || []), { ...review, author }] } : p) }));
+    setStores((prev) => prev.map((s) => s.id !== storeId ? s : { ...s, products: s.products.map((p) => p.id !== productId ? p : { ...p, reviews: [...(p.reviews || []), { ...review, author }] }) }));
   };
   const rateStore = (storeId, review) => {
     const author = userData.name || (lang === "uz" ? "Mehmon" : "Гость");
     setStores((prev) => prev.map((s) => s.id !== storeId ? s : { ...s, reviews: [...s.reviews, { ...review, author }] }));
   };
 
-  const openStoreFromDeal = () => {
-    if (selectedDeal) { setViewingStoreId(selectedDeal.storeId); setSelectedKey(null); }
+  const getCoupon = (coupon) => setCoupons((prev) => [coupon, ...prev]);
+  const useCoupon = (code) => setCoupons((prev) => prev.map((c) => c.code === code ? { ...c, used: true } : c));
+
+  const openStoreFromDeal = () => { if (selectedDeal) { setViewingStoreId(selectedDeal.storeId); setSelectedKey(null); } };
+
+  const handleOrderSuccess = (orderNumber) => {
+    setShowCheckout(false);
+    setCart([]);
+    setOrderSuccess(orderNumber);
   };
 
   // ---------- onboarding ----------
@@ -1140,16 +1494,15 @@ export default function App() {
     </div>
   );
 
-  // ---------- store view (overlay, available from any tab) ----------
+  // ---------- store view overlay ----------
   if (viewingStore) {
     const isOwner = viewingStore.id === myStoreId;
     return (
       <div style={{ fontFamily: "'Segoe UI', sans-serif" }}>
-        <StoreView
-          lang={lang} store={viewingStore} isOwner={isOwner} isSubscribed={subscriptions.includes(viewingStore.id)}
+        <StoreView lang={lang} store={viewingStore} isOwner={isOwner} isSubscribed={subscriptions.includes(viewingStore.id)}
           onBack={() => setViewingStoreId(null)}
           onSubscribeToggle={() => toggleSubscribe(viewingStore.id)}
-          onAddProduct={() => { setProfileView("storeAddProduct"); }}
+          onAddProduct={() => setProfileView("storeAddProduct")}
           onApplyDiscount={(productId, discount) => applyDiscount(viewingStore.id, productId, discount)}
           onRemoveDiscount={(productId) => removeDiscount(viewingStore.id, productId)}
           onDeleteProduct={(productId) => deleteProduct(viewingStore.id, productId)}
@@ -1175,15 +1528,22 @@ export default function App() {
     );
   }
 
+
   // =====================================================
   // MAIN APP SHELL
   // =====================================================
   return (
     <div style={{ fontFamily: "'Segoe UI', sans-serif", background: "#F7F8FA", minHeight: "100vh", maxWidth: 430, margin: "0 auto", position: "relative", paddingBottom: 85 }}>
 
-      {/* Deal Modal */}
-      {selectedDeal && (
-        <ModalSheet onClose={() => setSelectedKey(null)} maxHeight="88vh">
+      {/* Order success overlay */}
+      {orderSuccess && <OrderSuccess lang={lang} orderNumber={orderSuccess} onDone={() => { setOrderSuccess(null); setActiveTab("home"); }} />}
+
+      {/* Edit profile modal */}
+      {showEditProfile && <EditProfileModal lang={lang} userData={userData} onClose={() => setShowEditProfile(false)} onSave={(d) => { setUserData(d); setShowEditProfile(false); }} />}
+
+      {/* Deal modal */}
+      {selectedDeal && !showCheckout && (
+        <ModalSheet onClose={() => setSelectedKey(null)} maxHeight="90vh">
           {selectedDeal.photos?.length ? (
             <div style={{ display: "flex", gap: 8, overflowX: "auto", marginBottom: 16 }}>
               {selectedDeal.photos.map((src, i) => <img key={i} src={src} alt="" style={{ width: 110, height: 110, borderRadius: 14, objectFit: "cover", flexShrink: 0 }} />)}
@@ -1235,14 +1595,30 @@ export default function App() {
           {selectedDeal.storePhone && (
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20, padding: "12px 16px", background: "#F7F8FA", borderRadius: 12 }}>
               <span style={{ color: "#888" }}>📞</span>
-              <span style={{ fontWeight: 600, color: "#1A1A2E" }}>{selectedDeal.storePhone}</span>
+              <a href={`tel:${selectedDeal.storePhone}`} style={{ fontWeight: 600, color: "#E63946", textDecoration: "none" }}>{selectedDeal.storePhone}</a>
             </div>
           )}
 
-          <button onClick={() => addToCart(selectedDeal.storeId, selectedDeal.productId)} style={{ ...btnStyle, marginBottom: 10 }}>{tx.addToCart}</button>
+          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+            <button onClick={() => addToCart(selectedDeal.storeId, selectedDeal.productId)} style={{ ...btnStyle, flex: 2 }}>{tx.addToCart}</button>
+            <button onClick={() => setCouponModalDeal(selectedDeal)} style={{ flex: 1, padding: "14px", background: "#FFF0F0", color: "#E63946", border: "none", borderRadius: 14, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>🎟️</button>
+          </div>
           <button onClick={openStoreFromDeal} style={ghostBtnStyle}>{tx.goToStore}</button>
         </ModalSheet>
       )}
+
+      {/* Coupon modal */}
+      {couponModalDeal && (
+        <CouponModal lang={lang} deal={couponModalDeal} onClose={() => setCouponModalDeal(null)}
+          onGetCoupon={(coupon) => { getCoupon(coupon); setCouponModalDeal(null); }} />
+      )}
+
+      {/* Checkout modal */}
+      {showCheckout && (
+        <CheckoutModal lang={lang} cartDetailed={cartDetailed} cartTotal={cartTotal}
+          onClose={() => setShowCheckout(false)} onSuccess={handleOrderSuccess} />
+      )}
+
 
       {/* HOME TAB */}
       {activeTab === "home" && <>
@@ -1258,10 +1634,11 @@ export default function App() {
                   <button key={l} onClick={() => setLang(l)} style={{ padding: "4px 10px", borderRadius: 16, border: "none", background: lang === l ? "#fff" : "transparent", color: lang === l ? "#E63946" : "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{l.toUpperCase()}</button>
                 ))}
               </div>
-              <div onClick={() => setProfileView("notifications") || setActiveTab("profile")} style={{ background: "rgba(255,255,255,0.2)", borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>🔔 {unreadCount}</div>
+              <div onClick={() => { setProfileView("notifications"); setActiveTab("profile"); }} style={{ background: "rgba(255,255,255,0.2)", borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", position: "relative" }}>
+                🔔{unreadCount > 0 && <span style={{ position: "absolute", top: -4, right: -4, background: "#fff", color: "#E63946", borderRadius: 6, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{unreadCount}</span>}
+              </div>
               <div onClick={() => setActiveTab("cart")} style={{ position: "relative", background: "rgba(255,255,255,0.2)", borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                🛒
-                {cartCount > 0 && <span style={{ position: "absolute", top: -6, right: -6, background: "#fff", color: "#E63946", borderRadius: 8, fontSize: 10, fontWeight: 800, padding: "1px 5px" }}>{cartCount}</span>}
+                🛒{cartCount > 0 && <span style={{ position: "absolute", top: -6, right: -6, background: "#fff", color: "#E63946", borderRadius: 8, fontSize: 10, fontWeight: 800, padding: "1px 5px" }}>{cartCount}</span>}
               </div>
             </div>
           </div>
@@ -1278,8 +1655,26 @@ export default function App() {
           <div style={{ position: "relative" }}>
             <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🔍</span>
             <input placeholder={tx.search} value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%", padding: "13px 14px 13px 42px", borderRadius: 14, border: "1.5px solid #EBEBEB", background: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }} />
+            {search && <button onClick={() => setSearch("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 16, cursor: "pointer", color: "#AAA" }}>✕</button>}
           </div>
         </div>
+
+        {/* Task #7: Show matching stores when searching */}
+        {search && filteredStores.length > 0 && filtered.length === 0 && (
+          <div style={{ padding: "12px 20px 0" }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#888", margin: "0 0 10px" }}>{tx.storesTitle}</h3>
+            {filteredStores.map((store) => (
+              <div key={store.id} onClick={() => setViewingStoreId(store.id)} style={{ background: "#fff", borderRadius: 14, padding: "12px 14px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer" }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: store.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{store.logo}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "#1A1A2E" }}>{store.name}</div>
+                  <div style={{ fontSize: 11, color: "#888" }}>📍 {store.address}</div>
+                </div>
+                <span style={{ color: "#CCC", fontSize: 16 }}>›</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div style={{ padding: "14px 0 0 20px", display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none" }}>
           {browseCategories(lang).map((cat) => (
@@ -1291,7 +1686,7 @@ export default function App() {
         <div style={{ padding: "16px 20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#1A1A2E" }}>{tx.offers}</h2>
-            <span style={{ fontSize: 13, color: "#888" }}>{filtered.length} ta</span>
+            <span style={{ fontSize: 13, color: "#888" }}>{filtered.length} {lang === "uz" ? "ta" : "шт"}</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {filtered.map((deal) => (
@@ -1312,7 +1707,14 @@ export default function App() {
               </div>
             ))}
           </div>
-          {filtered.length === 0 && (
+          {filtered.length === 0 && !search && (
+            <div style={{ textAlign: "center", padding: "40px 0", color: "#AAA" }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+              <div style={{ fontWeight: 600 }}>{tx.noDeals}</div>
+              <div style={{ fontSize: 13, marginTop: 4 }}>{tx.noDealsDesc}</div>
+            </div>
+          )}
+          {filtered.length === 0 && search && filteredStores.length === 0 && (
             <div style={{ textAlign: "center", padding: "40px 0", color: "#AAA" }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
               <div style={{ fontWeight: 600 }}>{tx.noDeals}</div>
@@ -1346,6 +1748,7 @@ export default function App() {
           ))}
         </div>
       )}
+
 
       {/* CART TAB */}
       {activeTab === "cart" && (
@@ -1383,6 +1786,8 @@ export default function App() {
                 <span style={{ fontWeight: 700, color: "#555" }}>{tx.total}</span>
                 <span style={{ fontWeight: 900, fontSize: 19, color: "#E63946" }}>{formatPrice(cartTotal)} {tx.sumShort}</span>
               </div>
+              {/* Checkout button */}
+              <button onClick={() => setShowCheckout(true)} style={{ ...btnStyle, marginTop: 16 }}>{tx.checkout} →</button>
             </>
           )}
         </div>
@@ -1391,19 +1796,20 @@ export default function App() {
       {/* MAP TAB */}
       {activeTab === "map" && <MapView lang={lang} deals={activeDeals} onDealClick={(d) => setSelectedKey({ storeId: d.storeId, productId: d.productId })} />}
 
-      {/* PROFILE TAB */}
+      {/* PROFILE TAB — main */}
       {activeTab === "profile" && profileView === "main" && (
         <div style={{ padding: "48px 20px 20px" }}>
           <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ width: 80, height: 80, background: "linear-gradient(135deg, #E63946, #C1121F)", borderRadius: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, margin: "0 auto 12px" }}>{userData.photo ? "😊" : "👤"}</div>
+            <div style={{ width: 80, height: 80, background: "linear-gradient(135deg, #E63946, #C1121F)", borderRadius: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, margin: "0 auto 12px", cursor: "pointer" }} onClick={() => setShowEditProfile(true)}>
+              {userData.photo ? "😊" : "👤"}
+            </div>
             <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#1A1A2E" }}>{userData.name} {userData.surname}</h2>
             <p style={{ color: "#888", fontSize: 13, margin: "4px 0 0" }}>{userData.phone}</p>
+            <button onClick={() => setShowEditProfile(true)} style={{ marginTop: 8, background: "none", border: "1px solid #E0E0E0", borderRadius: 10, padding: "5px 14px", fontSize: 12, color: "#888", cursor: "pointer" }}>{tx.editProfile}</button>
           </div>
 
-          <button
-            onClick={() => myStore ? setViewingStoreId(myStore.id) : setProfileView("createStore")}
-            style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "linear-gradient(135deg, #E63946 0%, #C1121F 100%)", border: "none", borderRadius: 16, padding: "16px 18px", marginBottom: 10, cursor: "pointer", boxShadow: "0 4px 16px rgba(230,57,70,0.25)" }}
-          >
+          <button onClick={() => myStore ? setViewingStoreId(myStore.id) : setProfileView("createStore")}
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "linear-gradient(135deg, #E63946 0%, #C1121F 100%)", border: "none", borderRadius: 16, padding: "16px 18px", marginBottom: 10, cursor: "pointer", boxShadow: "0 4px 16px rgba(230,57,70,0.25)" }}>
             <span style={{ fontSize: 26 }}>{myStore ? myStore.logo : "🏪"}</span>
             <span style={{ flex: 1 }}>
               <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "#fff" }}>{myStore ? myStore.name : tx.myStore}</span>
@@ -1413,7 +1819,7 @@ export default function App() {
           </button>
 
           {[
-            { icon: "🎟️", label: tx.myCoupons, count: "" },
+            { icon: "🎟️", label: tx.myCoupons, count: coupons.filter(c => !c.used).length.toString(), action: () => setProfileView("coupons") },
             { icon: "❤️", label: tx.savedTitle, count: savedKeys.length.toString(), action: () => setActiveTab("saved") },
             { icon: "🛒", label: tx.cart, count: cartCount.toString(), action: () => setActiveTab("cart") },
             { icon: "🔔", label: tx.notifications, count: unreadCount.toString(), action: () => setProfileView("notifications") },
@@ -1427,11 +1833,18 @@ export default function App() {
             </div>
           ))}
 
-          <button onClick={() => { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); }} style={{ width: "100%", padding: "14px", background: "#fff", color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 10 }}>{lang === "uz" ? "Chiqish" : "Выйти"}</button>
+          <button onClick={() => { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); }} style={{ width: "100%", padding: "14px", background: "#fff", color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 10 }}>
+            {lang === "uz" ? "Chiqish" : "Выйти"}
+          </button>
         </div>
       )}
 
-      {/* NOTIFICATIONS VIEW */}
+      {/* PROFILE — coupons */}
+      {activeTab === "profile" && profileView === "coupons" && (
+        <MyCouponsPage lang={lang} coupons={coupons} onBack={() => setProfileView("main")} onUseCoupon={useCoupon} />
+      )}
+
+      {/* PROFILE — notifications */}
       {activeTab === "profile" && profileView === "notifications" && (
         <div style={{ padding: "48px 20px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
@@ -1445,10 +1858,11 @@ export default function App() {
               <div style={{ fontSize: 13, marginTop: 6 }}>{tx.noNotificationsDesc}</div>
             </div>
           ) : notifications.map((n) => (
-            <div key={n.id} onClick={() => { setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x)); setViewingStoreId(n.storeId); }} style={{ background: n.read ? "#fff" : "#FFF6F6", borderRadius: 14, padding: 14, marginBottom: 10, display: "flex", gap: 12, alignItems: "center", boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer" }}>
+            <div key={n.id} onClick={() => { setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x)); setViewingStoreId(n.storeId); }}
+              style={{ background: n.read ? "#fff" : "#FFF6F6", borderRadius: 14, padding: 14, marginBottom: 10, display: "flex", gap: 12, alignItems: "center", boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer" }}>
               <span style={{ fontSize: 20 }}>🔔</span>
               <span style={{ flex: 1, fontSize: 13, color: "#1A1A2E", fontWeight: n.read ? 500 : 700 }}>{n.message}</span>
-              {!n.read && <span style={{ width: 8, height: 8, borderRadius: 4, background: "#E63946" }} />}
+              {!n.read && <span style={{ width: 8, height: 8, borderRadius: 4, background: "#E63946", flexShrink: 0 }} />}
             </div>
           ))}
         </div>
@@ -1463,7 +1877,8 @@ export default function App() {
           { id: "map", icon: "🗺️", label: tx.map },
           { id: "profile", icon: "👤", label: tx.profile },
         ].map((tab) => (
-          <button key={tab.id} onClick={() => { setActiveTab(tab.id); if (tab.id !== "profile") setProfileView("main"); }} style={{ position: "relative", flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "4px 0" }}>
+          <button key={tab.id} onClick={() => { setActiveTab(tab.id); if (tab.id !== "profile") setProfileView("main"); }}
+            style={{ position: "relative", flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "4px 0" }}>
             <span style={{ fontSize: 21, position: "relative" }}>
               {tab.icon}
               {tab.badge > 0 && <span style={{ position: "absolute", top: -6, right: -10, background: "#E63946", color: "#fff", borderRadius: 7, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{tab.badge}</span>}
