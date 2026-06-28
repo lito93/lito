@@ -41,7 +41,25 @@ const t = {
     enable: "Yoqish", greeting: "Xush kelibsiz 👋", search: "Do'kon yoki chegirma qidirish...",
     all: "Hammasi", food: "Oziq-ovqat", clothing: "Kiyim-kechak", electronics: "Elektronika",
     beauty: "Go'zallik", restaurant: "Restoran/Kafe", home_cat: "Uy-ro'zg'or", sport: "Sport",
-    services: "Xizmatlar", offers: "Takliflar", left: "qoldi", getCoupon: "🎟️ Kupon olish",
+    services: "Xizmatlar", auto: "Avto servis", pharmacy: "Dorixona", education: "Ta'lim",
+    hotel: "Mehmonxona", repair: "Ta'mirlash", kids: "Bolalar", pet: "Uy hayvonlari",
+    cleaning: "Tozalash", medical: "Tibbiyot", entertainment: "O'yin-kulgi",
+    openNow: "Hozir ochiq", closedNow: "Yopiq", workHours: "Ish vaqti",
+    whatsapp: "WhatsApp", telegram: "Telegram", filterTitle: "Filter",
+    minPrice: "Min narx", maxPrice: "Max narx", minDiscount: "Min chegirma",
+    applyFilter: "Qo'llash", resetFilter: "Tozalash", distance: "Masofa",
+    bookService: "📅 Bron qilish", booking: "Bron", myBookings: "Bronlarim",
+    chooseDate: "Sana tanlang", chooseTime: "Vaqt tanlang", bookNow: "Bron qilish",
+    bookingSuccess: "Bron muvaffaqiyatli!", bookingSuccessDesc: "Do'kon siz bilan bog'lanadi",
+    noBookings: "Bronlar yo'q", bookingDate: "Sana", bookingTime: "Vaqt",
+    bookingStatus: "Holat", bookingPending: "Kutilmoqda", bookingConfirmed: "Tasdiqlangan",
+    chatWith: "Chat", sendMessage: "Yuborish", typeMessage: "Xabar yozing...",
+    noMessages: "Xabarlar yo'q", chatStart: "Suhbatni boshlang",
+    analyticsTitle: "Statistika", analyticsViews: "Ko'rishlar", analyticsCoupons: "Kuponlar",
+    analyticsBookings: "Bronlar", analyticsRevenue: "Daromad", analyticsToday: "Bugun",
+    analyticsWeek: "Hafta", analyticsMonth: "Oy",
+    storeType: "Do'kon turi", storeTypeSell: "Savdo", storeTypeService: "Xizmat",
+    storeTypeAll: "Hammasi", bannerPhoto: "Banner rasm", offers: "Takliflar", left: "qoldi", getCoupon: "🎟️ Kupon olish",
     home: "Bosh sahifa", saved: "Saqlanganlar", cart: "Savat", map: "Xarita", profile: "Profil",
     savedTitle: "❤️ Saqlanganlar", nothingSaved: "Hech narsa saqlanmagan",
     nothingSavedDesc: "Yoqgan chegirmalarni saqlang", noDeals: "Chegirma topilmadi",
@@ -119,7 +137,25 @@ const t = {
     enable: "Включить", greeting: "Добро пожаловать 👋", search: "Поиск магазина или скидки...",
     all: "Все", food: "Продукты", clothing: "Одежда", electronics: "Электроника",
     beauty: "Красота", restaurant: "Рестораны/Кафе", home_cat: "Дом и быт", sport: "Спорт",
-    services: "Услуги", offers: "Предложения", left: "осталось", getCoupon: "🎟️ Получить купон",
+    services: "Услуги", auto: "Авто сервис", pharmacy: "Аптека", education: "Образование",
+    hotel: "Гостиница", repair: "Ремонт", kids: "Детское", pet: "Животные",
+    cleaning: "Уборка", medical: "Медицина", entertainment: "Развлечения",
+    openNow: "Открыто", closedNow: "Закрыто", workHours: "Часы работы",
+    whatsapp: "WhatsApp", telegram: "Telegram", filterTitle: "Фильтр",
+    minPrice: "Мин цена", maxPrice: "Макс цена", minDiscount: "Мин скидка",
+    applyFilter: "Применить", resetFilter: "Сбросить", distance: "Расстояние",
+    bookService: "📅 Забронировать", booking: "Бронь", myBookings: "Мои брони",
+    chooseDate: "Выберите дату", chooseTime: "Выберите время", bookNow: "Забронировать",
+    bookingSuccess: "Бронь успешна!", bookingSuccessDesc: "Магазин свяжется с вами",
+    noBookings: "Нет броней", bookingDate: "Дата", bookingTime: "Время",
+    bookingStatus: "Статус", bookingPending: "Ожидание", bookingConfirmed: "Подтверждено",
+    chatWith: "Чат", sendMessage: "Отправить", typeMessage: "Написать сообщение...",
+    noMessages: "Нет сообщений", chatStart: "Начните переписку",
+    analyticsTitle: "Статистика", analyticsViews: "Просмотры", analyticsCoupons: "Купоны",
+    analyticsBookings: "Брони", analyticsRevenue: "Доход", analyticsToday: "Сегодня",
+    analyticsWeek: "Неделя", analyticsMonth: "Месяц",
+    storeType: "Тип магазина", storeTypeSell: "Торговля", storeTypeService: "Услуги",
+    storeTypeAll: "Все", bannerPhoto: "Баннер фото", offers: "Предложения", left: "осталось", getCoupon: "🎟️ Получить купон",
     home: "Главная", saved: "Сохранённые", cart: "Корзина", map: "Карта", profile: "Профиль",
     savedTitle: "❤️ Сохранённые", nothingSaved: "Ничего не сохранено",
     nothingSavedDesc: "Сохраняйте понравившиеся скидки", noDeals: "Скидок не найдено",
@@ -196,14 +232,24 @@ const t = {
 // CATEGORIES & HELPERS
 // =====================================================
 const CATEGORY_LIST = [
-  { id: "food", emoji: "🍕", color: "#E17055" },
-  { id: "clothing", emoji: "👕", color: "#2D3436" },
-  { id: "electronics", emoji: "📱", color: "#0984E3" },
-  { id: "beauty", emoji: "💄", color: "#E84393" },
-  { id: "restaurant", emoji: "☕", color: "#FDCB6E" },
-  { id: "home_cat", emoji: "🏠", color: "#00B894" },
-  { id: "sport", emoji: "⚽", color: "#6C5CE7" },
-  { id: "services", emoji: "🛠️", color: "#636E72" },
+  { id: "food",          emoji: "🍕", color: "#E17055" },
+  { id: "clothing",      emoji: "👕", color: "#2D3436" },
+  { id: "electronics",   emoji: "📱", color: "#0984E3" },
+  { id: "beauty",        emoji: "💄", color: "#E84393" },
+  { id: "restaurant",    emoji: "☕", color: "#FDCB6E" },
+  { id: "home_cat",      emoji: "🏠", color: "#00B894" },
+  { id: "sport",         emoji: "⚽", color: "#6C5CE7" },
+  { id: "services",      emoji: "🛠️", color: "#636E72" },
+  { id: "auto",          emoji: "🚗", color: "#0652DD" },
+  { id: "pharmacy",      emoji: "💊", color: "#009432" },
+  { id: "education",     emoji: "📚", color: "#F79F1F" },
+  { id: "hotel",         emoji: "🏨", color: "#1289A7" },
+  { id: "repair",        emoji: "🔧", color: "#5758BB" },
+  { id: "kids",          emoji: "🧸", color: "#FDA7DF" },
+  { id: "medical",       emoji: "🏥", color: "#ED4C67" },
+  { id: "entertainment", emoji: "🎮", color: "#9980FA" },
+  { id: "pet",           emoji: "🐾", color: "#D980FA" },
+  { id: "cleaning",      emoji: "🧹", color: "#C4E538" },
 ];
 const categoryLabel = (id, lang) => t[lang][id] || id;
 const browseCategories = (lang) => [
@@ -244,6 +290,24 @@ const genCouponCode = () => {
   return code;
 };
 
+// Do'kon hozir ochiqmi?
+const isStoreOpen = (store) => {
+  if (!store?.workHours) return true;
+  const days = ["sun","mon","tue","wed","thu","fri","sat"];
+  const now = new Date();
+  const dayKey = days[now.getDay()];
+  const hours = store.workHours[dayKey];
+  if (!hours || hours === "Yopiq" || hours === "Закрыто") return false;
+  if (hours === "00:00-24:00") return true;
+  const [start, end] = hours.split("-");
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const startMin = sh * 60 + sm;
+  const endMin = eh * 60 + em;
+  return nowMin >= startMin && nowMin < endMin;
+};
+
 
 // =====================================================
 // LOCALSTORAGE HELPERS
@@ -264,102 +328,100 @@ const loadFromLS = () => {
 // =====================================================
 const initialStores = [
   {
-    id: "st1", name: "Korzinka", logo: "🛒", color: "#FF6B35",
+    id: "st1", name: "Korzinka", logo: "🛒", color: "#FF6B35", type: "sell",
     address: "Toshkent, Chilonzor tumani", phone: "+998712000001",
+    whatsapp: "+998712000001", telegram: "@korzinka_uz",
+    banner: "", description: { uz: "O'zbekistonning yetakchi supermarketi", ru: "Ведущий супермаркет Узбекистана" },
+    workHours: { mon: "08:00-22:00", tue: "08:00-22:00", wed: "08:00-22:00", thu: "08:00-22:00", fri: "08:00-22:00", sat: "08:00-22:00", sun: "09:00-21:00" },
     lat: 41.299, lng: 69.240, views: 1240, subscriberBase: 320,
     reviews: [{ stars: 5, comment: "Juda yaxshi narxlar", author: "Anvar" }],
-    products: [{
-      id: "p1", category: "food",
-      name: { uz: "Mahsulotlarga chegirma", ru: "Скидка на продукты" },
-      description: { uz: "Barcha oziq-ovqat mahsulotlariga chegirma", ru: "Скидка на все продукты питания" },
-      params: [], originalPrice: 45000, photos: [], delivery: true, deliveryPrice: 5000,
-      discount: { percent: 30, expiryDate: isoDaysFromNow(2) },
-      reviews: [{ stars: 4, comment: "Yaxshi sifat", author: "Dilnoza" }],
-    }],
+    products: [{ id: "p1", category: "food", name: { uz: "Mahsulotlarga chegirma", ru: "Скидка на продукты" }, description: { uz: "Barcha oziq-ovqat mahsulotlariga chegirma", ru: "Скидка на все продукты питания" }, params: [], originalPrice: 45000, photos: [], delivery: true, deliveryPrice: 5000, discount: { percent: 30, expiryDate: isoDaysFromNow(2) }, reviews: [{ stars: 4, comment: "Yaxshi sifat", author: "Dilnoza" }] }],
   },
   {
-    id: "st2", name: "Zara Tashkent", logo: "👔", color: "#2D3436",
+    id: "st2", name: "Zara Tashkent", logo: "👔", color: "#2D3436", type: "sell",
     address: "Toshkent, Amir Temur ko'chasi", phone: "+998712000002",
+    whatsapp: "+998712000002", telegram: "@zara_tashkent",
+    banner: "", description: { uz: "Jahon brendlari kiyimlari", ru: "Одежда мировых брендов" },
+    workHours: { mon: "10:00-21:00", tue: "10:00-21:00", wed: "10:00-21:00", thu: "10:00-21:00", fri: "10:00-21:00", sat: "10:00-22:00", sun: "11:00-20:00" },
     lat: 41.302, lng: 69.245, views: 890, subscriberBase: 210, reviews: [],
-    products: [{
-      id: "p2", category: "clothing",
-      name: { uz: "Yozgi kolleksiya", ru: "Летняя коллекция" },
-      description: { uz: "Yangi yozgi kiyimlar kolleksiyasi", ru: "Новая летняя коллекция одежды" },
-      params: [{ name: "Razmer", value: "S-XL" }], originalPrice: 320000, photos: [],
-      delivery: false, deliveryPrice: 0,
-      discount: { percent: 50, expiryDate: isoDaysFromNow(5) }, reviews: [],
-    }],
+    products: [{ id: "p2", category: "clothing", name: { uz: "Yozgi kolleksiya", ru: "Летняя коллекция" }, description: { uz: "Yangi yozgi kiyimlar kolleksiyasi", ru: "Новая летняя коллекция одежды" }, params: [{ name: "Razmer", value: "S-XL" }], originalPrice: 320000, photos: [], delivery: false, deliveryPrice: 0, discount: { percent: 50, expiryDate: isoDaysFromNow(5) }, reviews: [] }],
   },
   {
-    id: "st3", name: "Texnomart", logo: "📱", color: "#0984E3",
+    id: "st3", name: "Texnomart", logo: "📱", color: "#0984E3", type: "sell",
     address: "Toshkent, Yunusobod tumani", phone: "+998712000003",
+    whatsapp: "+998712000003", telegram: "@texnomart_uz",
+    banner: "", description: { uz: "Elektronika va texnologiya do'koni", ru: "Магазин электроники и технологий" },
+    workHours: { mon: "09:00-21:00", tue: "09:00-21:00", wed: "09:00-21:00", thu: "09:00-21:00", fri: "09:00-21:00", sat: "09:00-21:00", sun: "10:00-20:00" },
     lat: 41.295, lng: 69.235, views: 2100, subscriberBase: 540,
     reviews: [{ stars: 5, comment: "Tez yetkazib berishadi", author: "Jasur" }],
     products: [
-      {
-        id: "p3", category: "electronics",
-        name: { uz: "Smartfonlarga", ru: "На смартфоны" },
-        description: { uz: "Eng so'nggi smartfon modellariga chegirma", ru: "Скидка на новейшие модели смартфонов" },
-        params: [], originalPrice: 4500000, photos: [], delivery: true, deliveryPrice: 15000,
-        discount: { percent: 15, expiryDate: isoDaysFromNow(3) }, reviews: [],
-      },
-      {
-        id: "p3b", category: "electronics",
-        name: { uz: "Elektronika bo'limi", ru: "Отдел электроники" },
-        description: { uz: "", ru: "" }, params: [], originalPrice: 1200000, photos: [],
-        delivery: true, deliveryPrice: 10000,
-        discount: { percent: 40, expiryDate: isoDaysFromNow(4) }, reviews: [],
-      },
+      { id: "p3", category: "electronics", name: { uz: "Smartfonlarga", ru: "На смартфоны" }, description: { uz: "Eng so'nggi smartfon modellariga chegirma", ru: "Скидка на новейшие модели смартфонов" }, params: [], originalPrice: 4500000, photos: [], delivery: true, deliveryPrice: 15000, discount: { percent: 15, expiryDate: isoDaysFromNow(3) }, reviews: [] },
+      { id: "p3b", category: "electronics", name: { uz: "Elektronika bo'limi", ru: "Отдел электроники" }, description: { uz: "", ru: "" }, params: [], originalPrice: 1200000, photos: [], delivery: true, deliveryPrice: 10000, discount: { percent: 40, expiryDate: isoDaysFromNow(4) }, reviews: [] },
     ],
   },
   {
-    id: "st4", name: "L'Oreal", logo: "💄", color: "#E84393",
+    id: "st4", name: "L'Oreal", logo: "💄", color: "#E84393", type: "sell",
     address: "Toshkent, Mirzo Ulug'bek tumani", phone: "+998712000004",
+    whatsapp: "+998712000004", telegram: "@loreal_uz",
+    banner: "", description: { uz: "Go'zallik mahsulotlari", ru: "Товары красоты" },
+    workHours: { mon: "10:00-20:00", tue: "10:00-20:00", wed: "10:00-20:00", thu: "10:00-20:00", fri: "10:00-20:00", sat: "10:00-21:00", sun: "11:00-19:00" },
     lat: 41.305, lng: 69.250, views: 670, subscriberBase: 180, reviews: [],
-    products: [{
-      id: "p4", category: "beauty",
-      name: { uz: "Barcha mahsulotlar", ru: "Все товары" },
-      description: { uz: "Go'zallik mahsulotlariga maxsus chegirma", ru: "Специальная скидка на товары для красоты" },
-      params: [], originalPrice: 180000, photos: [], delivery: true, deliveryPrice: 8000,
-      discount: { percent: 25, expiryDate: isoDaysFromNow(7) }, reviews: [],
-    }],
+    products: [{ id: "p4", category: "beauty", name: { uz: "Barcha mahsulotlar", ru: "Все товары" }, description: { uz: "Go'zallik mahsulotlariga maxsus chegirma", ru: "Специальная скидка на товары для красоты" }, params: [], originalPrice: 180000, photos: [], delivery: true, deliveryPrice: 8000, discount: { percent: 25, expiryDate: isoDaysFromNow(7) }, reviews: [] }],
   },
   {
-    id: "st5", name: "Dono Pizza", logo: "🍕", color: "#E17055",
+    id: "st5", name: "Dono Pizza", logo: "🍕", color: "#E17055", type: "sell",
     address: "Toshkent, Shayxontohur tumani", phone: "+998712000005",
+    whatsapp: "+998712000005", telegram: "@dono_pizza",
+    banner: "", description: { uz: "Toshkentning eng mazali pizzasi", ru: "Самая вкусная пицца Ташкента" },
+    workHours: { mon: "11:00-23:00", tue: "11:00-23:00", wed: "11:00-23:00", thu: "11:00-23:00", fri: "11:00-00:00", sat: "11:00-00:00", sun: "12:00-23:00" },
     lat: 41.298, lng: 69.242, views: 1560, subscriberBase: 430,
     reviews: [{ stars: 4, comment: "Mazali pizza!", author: "Olim" }],
-    products: [{
-      id: "p5", category: "restaurant",
-      name: { uz: "Katta pizza", ru: "Большая пицца" },
-      description: { uz: "Katta o'lchamdagi har qanday pizza", ru: "Большая пицца любого вида" },
-      params: [], originalPrice: 95000, photos: [], delivery: true, deliveryPrice: 5000,
-      discount: { percent: 20, expiryDate: isoDaysFromNow(2) }, reviews: [],
-    }],
+    products: [{ id: "p5", category: "restaurant", name: { uz: "Katta pizza", ru: "Большая пицца" }, description: { uz: "Katta o'lchamdagi har qanday pizza", ru: "Большая пицца любого вида" }, params: [], originalPrice: 95000, photos: [], delivery: true, deliveryPrice: 5000, discount: { percent: 20, expiryDate: isoDaysFromNow(2) }, reviews: [] }],
   },
   {
-    id: "st6", name: "Silk Road", logo: "🧥", color: "#00B894",
+    id: "st6", name: "Silk Road", logo: "🧥", color: "#00B894", type: "sell",
     address: "Toshkent, Yakkasaroy tumani", phone: "+998712000006",
+    whatsapp: "+998712000006", telegram: "@silkroad_uz",
+    banner: "", description: { uz: "Milliy va zamonaviy kiyimlar", ru: "Национальная и современная одежда" },
+    workHours: { mon: "09:00-19:00", tue: "09:00-19:00", wed: "09:00-19:00", thu: "09:00-19:00", fri: "09:00-19:00", sat: "09:00-18:00", sun: "Yopiq" },
     lat: 41.308, lng: 69.248, views: 340, subscriberBase: 90, reviews: [],
-    products: [{
-      id: "p6", category: "clothing",
-      name: { uz: "Atlas ko'ylaklar", ru: "Атласные платья" },
-      description: { uz: "", ru: "" }, params: [], originalPrice: 410000, photos: [],
-      delivery: false, deliveryPrice: 0,
-      discount: { percent: 35, expiryDate: isoDaysFromNow(4) }, reviews: [],
-    }],
+    products: [{ id: "p6", category: "clothing", name: { uz: "Atlas ko'ylaklar", ru: "Атласные платья" }, description: { uz: "", ru: "" }, params: [], originalPrice: 410000, photos: [], delivery: false, deliveryPrice: 0, discount: { percent: 35, expiryDate: isoDaysFromNow(4) }, reviews: [] }],
   },
   {
-    id: "st7", name: "Coffee House", logo: "☕", color: "#FDCB6E",
+    id: "st7", name: "Coffee House", logo: "☕", color: "#FDCB6E", type: "sell",
     address: "Toshkent, Mirobod tumani", phone: "+998712000007",
+    whatsapp: "+998712000007", telegram: "@coffeehouse_uz",
+    banner: "", description: { uz: "Eng yaxshi qahva va shirinliklar", ru: "Лучший кофе и сладости" },
+    workHours: { mon: "08:00-22:00", tue: "08:00-22:00", wed: "08:00-22:00", thu: "08:00-22:00", fri: "08:00-23:00", sat: "09:00-23:00", sun: "09:00-22:00" },
     lat: 41.301, lng: 69.243, views: 780, subscriberBase: 200, reviews: [],
-    products: [{
-      id: "p7", category: "restaurant",
-      name: { uz: "Barcha ichimliklar", ru: "Все напитки" },
-      description: { uz: "", ru: "" }, params: [], originalPrice: 28000, photos: [],
-      delivery: false, deliveryPrice: 0,
-      discount: { percent: 10, expiryDate: isoDaysFromNow(3) }, reviews: [],
-    }],
+    products: [{ id: "p7", category: "restaurant", name: { uz: "Barcha ichimliklar", ru: "Все напитки" }, description: { uz: "", ru: "" }, params: [], originalPrice: 28000, photos: [], delivery: false, deliveryPrice: 0, discount: { percent: 10, expiryDate: isoDaysFromNow(3) }, reviews: [] }],
+  },
+  {
+    id: "st8", name: "AutoServis Pro", logo: "🚗", color: "#0652DD", type: "service",
+    address: "Toshkent, Sergeli tumani", phone: "+998712000008",
+    whatsapp: "+998712000008", telegram: "@autoservis_pro",
+    banner: "", description: { uz: "Professional avto ta'mirlash xizmati", ru: "Профессиональный авто сервис" },
+    workHours: { mon: "08:00-18:00", tue: "08:00-18:00", wed: "08:00-18:00", thu: "08:00-18:00", fri: "08:00-18:00", sat: "09:00-16:00", sun: "Yopiq" },
+    lat: 41.293, lng: 69.238, views: 560, subscriberBase: 145, reviews: [{ stars: 5, comment: "Tez va sifatli ta'mirlashdi", author: "Bobur" }],
+    products: [{ id: "p8", category: "auto", name: { uz: "Motor ta'mirlash", ru: "Ремонт двигателя" }, description: { uz: "Barcha turdagi avtomobil motorlarini ta'mirlash", ru: "Ремонт двигателей всех марок" }, params: [{ name: "Xizmat", value: "Motor, KPP, Podveska" }], originalPrice: 500000, photos: [], delivery: false, deliveryPrice: 0, discount: { percent: 20, expiryDate: isoDaysFromNow(5) }, reviews: [] }],
+  },
+  {
+    id: "st9", name: "Najot Dorixonasi", logo: "💊", color: "#009432", type: "sell",
+    address: "Toshkent, Yunusobod tumani", phone: "+998712000009",
+    whatsapp: "+998712000009", telegram: "@najot_pharmacy",
+    banner: "", description: { uz: "24 soat ishlaydigan dorixona", ru: "Аптека 24 часа" },
+    workHours: { mon: "00:00-24:00", tue: "00:00-24:00", wed: "00:00-24:00", thu: "00:00-24:00", fri: "00:00-24:00", sat: "00:00-24:00", sun: "00:00-24:00" },
+    lat: 41.307, lng: 69.252, views: 920, subscriberBase: 280, reviews: [],
+    products: [{ id: "p9", category: "pharmacy", name: { uz: "Vitaminlarga chegirma", ru: "Скидка на витамины" }, description: { uz: "Barcha vitaminlar va qo'shimchalarga chegirma", ru: "Скидка на все витамины и добавки" }, params: [], originalPrice: 85000, photos: [], delivery: true, deliveryPrice: 8000, discount: { percent: 15, expiryDate: isoDaysFromNow(6) }, reviews: [] }],
+  },
+  {
+    id: "st10", name: "CleanPro", logo: "🧹", color: "#C4E538", type: "service",
+    address: "Toshkent, Uchtepa tumani", phone: "+998712000010",
+    whatsapp: "+998712000010", telegram: "@cleanpro_uz",
+    banner: "", description: { uz: "Professional tozalash xizmati", ru: "Профессиональная уборка" },
+    workHours: { mon: "08:00-20:00", tue: "08:00-20:00", wed: "08:00-20:00", thu: "08:00-20:00", fri: "08:00-20:00", sat: "09:00-18:00", sun: "10:00-16:00" },
+    lat: 41.296, lng: 69.233, views: 310, subscriberBase: 88, reviews: [],
+    products: [{ id: "p10", category: "cleaning", name: { uz: "Xonadon tozalash", ru: "Уборка квартиры" }, description: { uz: "Professional xonadon tozalash xizmati", ru: "Профессиональная уборка квартиры" }, params: [{ name: "Xona", value: "1-5 xona" }], originalPrice: 200000, photos: [], delivery: false, deliveryPrice: 0, discount: { percent: 25, expiryDate: isoDaysFromNow(4) }, reviews: [] }],
   },
 ];
 
@@ -545,8 +607,314 @@ function SortFilterBar({ lang, sort, setSort, dark }) {
 // =====================================================
 // MAP VIEW
 // =====================================================
-// MAP VIEW — Leaflet real xarita
+// FILTER MODAL — narx, chegirma, kategoriya, "hozir ochiq"
 // =====================================================
+function FilterModal({ lang, dark, filter, onClose, onApply }) {
+  const tx = t[lang];
+  const th = theme(dark);
+  const s = mkStyles(dark);
+  const [f, setF] = useState({ ...filter });
+
+  const update = (patch) => setF(prev => ({ ...prev, ...patch }));
+
+  return (
+    <ModalSheet onClose={onClose} dark={dark} maxHeight="90vh">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h3 style={{ ...s.secTitle, margin: 0 }}>🎛️ {tx.filterTitle}</h3>
+        <button onClick={() => { update({ minPrice: "", maxPrice: "", minDiscount: 0, openNow: false, type: "all" }); }}
+          style={{ background: "none", border: "none", color: "#E63946", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>{tx.resetFilter}</button>
+      </div>
+
+      {/* Hozir ochiq */}
+      <div onClick={() => update({ openNow: !f.openNow })} style={{
+        display: "flex", alignItems: "center", gap: 14, padding: "14px 16px",
+        background: f.openNow ? "#00B89415" : th.card2, borderRadius: 14,
+        border: f.openNow ? "2px solid #00B894" : `2px solid ${th.border}`,
+        marginBottom: 16, cursor: "pointer",
+      }}>
+        <span style={{ fontSize: 22 }}>🟢</span>
+        <span style={{ flex: 1, fontWeight: 700, fontSize: 14, color: th.text }}>{tx.openNow}</span>
+        <div style={{ width: 44, height: 24, borderRadius: 12, background: f.openNow ? "#00B894" : th.border, position: "relative", transition: "background 0.2s" }}>
+          <div style={{ position: "absolute", top: 3, left: f.openNow ? 22 : 3, width: 18, height: 18, borderRadius: 9, background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
+        </div>
+      </div>
+
+      {/* Do'kon turi */}
+      <label style={s.label}>{tx.storeType}</label>
+      <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+        {[["all", tx.storeTypeAll, "🏷️"], ["sell", tx.storeTypeSell, "🛍️"], ["service", tx.storeTypeService, "🛠️"]].map(([val, label, icon]) => (
+          <button key={val} onClick={() => update({ type: val })} style={{
+            flex: 1, padding: "10px 6px", borderRadius: 12, cursor: "pointer",
+            border: f.type === val ? "2px solid #E63946" : `2px solid ${th.border}`,
+            background: f.type === val ? "#FFF0F0" : th.card,
+            color: f.type === val ? "#E63946" : th.sub,
+            fontWeight: 700, fontSize: 12,
+          }}>{icon} {label}</button>
+        ))}
+      </div>
+
+      {/* Narx oraligi */}
+      <label style={s.label}>💰 {lang === "uz" ? "Narx oralig'i (so'm)" : "Ценовой диапазон (сум)"}</label>
+      <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
+        <input type="number" placeholder={tx.minPrice} value={f.minPrice}
+          onChange={e => update({ minPrice: e.target.value })}
+          style={{ ...s.input, marginBottom: 0, flex: 1 }} />
+        <input type="number" placeholder={tx.maxPrice} value={f.maxPrice}
+          onChange={e => update({ maxPrice: e.target.value })}
+          style={{ ...s.input, marginBottom: 0, flex: 1 }} />
+      </div>
+
+      {/* Min chegirma */}
+      <label style={s.label}>🏷️ {lang === "uz" ? `Minimum chegirma: ${f.minDiscount}%` : `Минимальная скидка: ${f.minDiscount}%`}</label>
+      <input type="range" min="0" max="90" step="5" value={f.minDiscount}
+        onChange={e => update({ minDiscount: Number(e.target.value) })}
+        style={{ width: "100%", marginBottom: 8, accentColor: "#E63946" }} />
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: th.sub, marginBottom: 20 }}>
+        <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>90%</span>
+      </div>
+
+      <button onClick={() => onApply(f)} style={s.btn}>{tx.applyFilter}</button>
+    </ModalSheet>
+  );
+}
+
+// =====================================================
+// BOOKING MODAL — xizmat bron qilish
+// =====================================================
+function BookingModal({ lang, dark, store, onClose, onSuccess }) {
+  const tx = t[lang];
+  const th = theme(dark);
+  const s = mkStyles(dark);
+  const [step, setStep] = useState(1);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [note, setNote] = useState("");
+  const [done, setDone] = useState(false);
+
+  const times = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
+  const today = new Date().toISOString().slice(0, 10);
+
+  const handleBook = () => {
+    const booking = { id: "BK-" + Date.now().toString().slice(-6), storeId: store.id, storeName: store.name, storeLogo: store.logo, storeColor: store.color, date, time, note, status: "pending", createdAt: new Date().toISOString() };
+    onSuccess(booking);
+    setDone(true);
+  };
+
+  if (done) return (
+    <ModalSheet onClose={onClose} dark={dark} maxHeight="55vh">
+      <div style={{ textAlign: "center", padding: "20px 0" }}>
+        <div style={{ fontSize: 64, marginBottom: 12 }}>📅</div>
+        <h3 style={{ fontSize: 18, fontWeight: 800, color: th.text, margin: "0 0 8px" }}>{tx.bookingSuccess}</h3>
+        <p style={{ color: th.sub, fontSize: 13, margin: "0 0 16px" }}>{tx.bookingSuccessDesc}</p>
+        <div style={{ background: th.card2, borderRadius: 14, padding: 16, border: `1px solid ${th.border}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+            <span style={{ color: th.sub, fontSize: 13 }}>{tx.bookingDate}</span>
+            <span style={{ fontWeight: 700, color: th.text }}>{date}</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ color: th.sub, fontSize: 13 }}>{tx.bookingTime}</span>
+            <span style={{ fontWeight: 700, color: th.text }}>{time}</span>
+          </div>
+        </div>
+      </div>
+      <button onClick={onClose} style={{ ...s.btn, marginTop: 20 }}>OK</button>
+    </ModalSheet>
+  );
+
+  return (
+    <ModalSheet onClose={onClose} dark={dark} maxHeight="85vh">
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 14, background: store.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{store.logo}</div>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 15, color: th.text }}>{store.name}</div>
+          <div style={{ fontSize: 12, color: th.sub }}>📅 {tx.bookService}</div>
+        </div>
+      </div>
+
+      <label style={s.label}>{tx.chooseDate}</label>
+      <input type="date" min={today} value={date} onChange={e => setDate(e.target.value)} style={s.input} />
+
+      {date && (
+        <>
+          <label style={s.label}>{tx.chooseTime}</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+            {times.map(t2 => (
+              <button key={t2} onClick={() => setTime(t2)} style={{
+                padding: "8px 14px", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13,
+                border: time === t2 ? "2px solid #E63946" : `2px solid ${th.border}`,
+                background: time === t2 ? "#FFF0F0" : th.card,
+                color: time === t2 ? "#E63946" : th.sub,
+              }}>{t2}</button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {time && (
+        <>
+          <label style={s.label}>{lang === "uz" ? "Izoh (ixtiyoriy)" : "Примечание (необязательно)"}</label>
+          <textarea placeholder={lang === "uz" ? "Masalan: 2 kishilik stol..." : "Например: Столик на 2 персоны..."} value={note} onChange={e => setNote(e.target.value)} style={s.textarea} />
+        </>
+      )}
+
+      <button onClick={handleBook} disabled={!date || !time} style={{ ...s.btn, opacity: date && time ? 1 : 0.5 }}>{tx.bookNow}</button>
+    </ModalSheet>
+  );
+}
+
+// =====================================================
+// CHAT MODAL — do'kon bilan muloqot
+// =====================================================
+function ChatModal({ lang, dark, store, messages, onClose, onSend }) {
+  const tx = t[lang];
+  const th = theme(dark);
+  const s = mkStyles(dark);
+  const [text, setText] = useState("");
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSend = () => {
+    if (!text.trim()) return;
+    onSend({ text: text.trim(), from: "user", time: new Date().toISOString() });
+    setText("");
+    // Demo auto javob
+    setTimeout(() => {
+      onSend({ text: lang === "uz" ? "Xabaringiz qabul qilindi! Tez orada javob beramiz 😊" : "Ваше сообщение получено! Ответим скоро 😊", from: "store", time: new Date().toISOString() });
+    }, 1000);
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: th.bg, zIndex: 300, maxWidth: 430, margin: "0 auto", display: "flex", flexDirection: "column" }}>
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg,#E63946,#C1121F)", padding: "48px 20px 16px", color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={onClose} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer" }}>←</button>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>{store.logo}</div>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 15 }}>{store.name}</div>
+          <div style={{ fontSize: 11, opacity: 0.8 }}>{lang === "uz" ? "Odatda 1 soat ichida javob beradi" : "Обычно отвечает в течение часа"}</div>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px" }}>
+        {messages.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "40px 0", color: th.sub }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>💬</div>
+            <div style={{ fontWeight: 600 }}>{tx.chatStart}</div>
+          </div>
+        ) : messages.map((msg, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: msg.from === "user" ? "flex-end" : "flex-start", marginBottom: 10 }}>
+            <div style={{
+              maxWidth: "75%", padding: "10px 14px", borderRadius: msg.from === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+              background: msg.from === "user" ? "#E63946" : th.card,
+              color: msg.from === "user" ? "#fff" : th.text,
+              fontSize: 14, lineHeight: 1.5,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            }}>
+              {msg.text}
+              <div style={{ fontSize: 10, opacity: 0.6, marginTop: 4, textAlign: "right" }}>
+                {new Date(msg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" })}
+              </div>
+            </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div style={{ padding: "12px 16px 28px", background: th.card, borderTop: `1px solid ${th.border}`, display: "flex", gap: 10, alignItems: "flex-end" }}>
+        <textarea
+          placeholder={tx.typeMessage}
+          value={text}
+          onChange={e => setText(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+          style={{ flex: 1, padding: "12px 16px", borderRadius: 20, border: `1.5px solid ${th.border}`, background: th.bg, fontSize: 14, outline: "none", resize: "none", color: th.text, minHeight: 44, maxHeight: 100, fontFamily: "inherit", lineHeight: 1.5 }}
+          rows={1}
+        />
+        <button onClick={handleSend} disabled={!text.trim()} style={{
+          width: 44, height: 44, borderRadius: 22, background: text.trim() ? "#E63946" : th.border,
+          border: "none", color: "#fff", fontSize: 18, cursor: "pointer", flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s",
+        }}>➤</button>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// STORE ANALYTICS — biznes statistika grafik
+// =====================================================
+function StoreAnalytics({ lang, dark, store, coupons, bookings }) {
+  const tx = t[lang];
+  const th = theme(dark);
+  const [period, setPeriod] = useState("week");
+
+  const storeCoupons = coupons.filter(c => c.deal?.storeId === store.id || c.storeId === store.id);
+  const storeBookings = (bookings || []).filter(b => b.storeId === store.id);
+
+  // Demo weekly data
+  const weekDays = lang === "uz" ? ["Du","Se","Ch","Pa","Ju","Sh","Ya"] : ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+  const viewData = [120, 85, 200, 145, 310, 280, 190];
+  const maxView = Math.max(...viewData);
+
+  const stats = [
+    { icon: "👁️", label: tx.analyticsViews, value: (store.views || 0).toLocaleString(), color: "#0984E3", bg: "#0984E315" },
+    { icon: "🎟️", label: tx.analyticsCoupons, value: storeCoupons.length, color: "#E63946", bg: "#E6394615" },
+    { icon: "📅", label: tx.analyticsBookings, value: storeBookings.length, color: "#00B894", bg: "#00B89415" },
+    { icon: "🔔", label: tx.statsSubscribers, value: store.subscriberBase || 0, color: "#FFB400", bg: "#FFB40015" },
+  ];
+
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 800, color: th.text, margin: 0 }}>📊 {tx.analyticsTitle}</h3>
+        <div style={{ display: "flex", gap: 4, background: th.card2, borderRadius: 10, padding: 3 }}>
+          {[["week", tx.analyticsWeek], ["month", tx.analyticsMonth]].map(([val, label]) => (
+            <button key={val} onClick={() => setPeriod(val)} style={{
+              padding: "4px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 700,
+              background: period === val ? "#E63946" : "transparent",
+              color: period === val ? "#fff" : th.sub,
+            }}>{label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Stats grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{ background: s.bg, borderRadius: 14, padding: "14px 16px", border: `1px solid ${s.color}30` }}>
+            <div style={{ fontSize: 20, marginBottom: 6 }}>{s.icon}</div>
+            <div style={{ fontSize: 20, fontWeight: 900, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: th.sub, marginTop: 2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bar chart — ko'rishlar */}
+      <div style={{ background: th.card, borderRadius: 16, padding: "16px 14px", border: `1px solid ${th.border}` }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: th.sub, marginBottom: 14 }}>📈 {tx.analyticsViews} ({tx.analyticsWeek})</div>
+        <div style={{ display: "flex", gap: 6, alignItems: "flex-end", height: 80 }}>
+          {viewData.map((val, i) => (
+            <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <div style={{ fontSize: 9, color: th.sub, fontWeight: 600 }}>{val}</div>
+              <div style={{
+                width: "100%", borderRadius: "4px 4px 0 0",
+                background: `linear-gradient(180deg, #E63946, #C1121F)`,
+                height: `${Math.round((val / maxView) * 60)}px`,
+                minHeight: 4, transition: "height 0.3s",
+                opacity: i === 4 ? 1 : 0.6,
+              }} />
+              <div style={{ fontSize: 9, color: th.sub }}>{weekDays[i]}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 function MapView({ lang, deals, onDealClick, dark }) {
   const th = theme(dark);
   const tx = t[lang];
@@ -1330,9 +1698,10 @@ function MyCouponsPage({ lang, dark, coupons, onBack, onUseCoupon }) {
 // =====================================================
 // STORE VIEW
 // =====================================================
-function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons,
+function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings,
   onBack, onSubscribeToggle, onAddProduct, onApplyDiscount,
-  onRemoveDiscount, onDeleteProduct, onRateProduct, onRateStore, onOpenDeal }) {
+  onRemoveDiscount, onDeleteProduct, onRateProduct, onRateStore, onOpenDeal,
+  onBook, onChat }) {
   const tx = t[lang];
   const th = theme(dark);
   const s = mkStyles(dark);
@@ -1342,7 +1711,11 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons,
   const storeRating = avgRating(store.reviews);
 
   const handleCall = () => { if (store.phone) window.location.href = `tel:${store.phone}`; };
-  const handleTelegram = () => { const p = (store.phone || "").replace(/\D/g, ""); window.open(`https://t.me/+${p}`, "_blank"); };
+  const handleWhatsApp = () => { const p = (store.whatsapp || store.phone || "").replace(/\D/g, ""); window.open(`https://wa.me/${p}`, "_blank"); };
+  const handleTelegram = () => {
+    if (store.telegram) window.open(`https://t.me/${store.telegram.replace("@","")}`, "_blank");
+    else { const p = (store.phone || "").replace(/\D/g, ""); window.open(`https://t.me/+${p}`, "_blank"); }
+  };
   const handleShare = () => {
     const text = `${store.name} — Chegirma.uz`;
     if (navigator.share) navigator.share({ title: store.name, text });
@@ -1363,13 +1736,31 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons,
               <span style={{ opacity: 0.7 }}>({store.reviews.length})</span>
               <span style={{ opacity: 0.6 }}>· {(store.subscriberBase || 0)} {tx.subscribers}</span>
             </div>
+            {store.workHours && (() => {
+              const open = isStoreOpen(store);
+              const days = ["sun","mon","tue","wed","thu","fri","sat"];
+              const dayKey = days[new Date().getDay()];
+              const hours = store.workHours[dayKey];
+              return (
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: 4, background: open ? "#00FF88" : "#FF4444", display: "inline-block" }} />
+                  <span style={{ fontSize: 11, color: open ? "#00FF88" : "#FF8888", fontWeight: 700 }}>
+                    {open ? tx.openNow : tx.closedNow}
+                  </span>
+                  {hours && hours !== "Yopiq" && <span style={{ fontSize: 11, opacity: 0.7 }}>· {hours}</span>}
+                </div>
+              );
+            })()}
           </div>
         </div>
         {!isOwner && (
-          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-            {store.phone && <button onClick={handleCall} style={{ flex: 1, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>{tx.callStore}</button>}
-            {store.phone && <button onClick={handleTelegram} style={{ flex: 1, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>{tx.telegramStore}</button>}
-            <button onClick={handleShare} style={{ flex: 1, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>{tx.shareDiscount}</button>
+          <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+            {store.phone && <button onClick={handleCall} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{tx.callStore}</button>}
+            {(store.whatsapp || store.phone) && <button onClick={handleWhatsApp} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(37,211,102,0.4)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>💬 WhatsApp</button>}
+            {(store.telegram || store.phone) && <button onClick={handleTelegram} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(0,136,204,0.4)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>✈️ Telegram</button>}
+            {onChat && <button onClick={onChat} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>💬 {tx.chatWith}</button>}
+            {onBook && <button onClick={onBook} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,180,0,0.4)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{tx.bookService}</button>}
+            <button onClick={handleShare} style={{ flex: 1, minWidth: 70, padding: "10px 6px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.25)", color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{tx.shareDiscount}</button>
           </div>
         )}
         {isOwner
@@ -1381,7 +1772,7 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons,
       </div>
 
       <div style={{ padding: 20 }}>
-        {isOwner && <StoreStats lang={lang} dark={dark} store={store} coupons={coupons || []} />}
+        {isOwner && <StoreAnalytics lang={lang} dark={dark} store={store} coupons={coupons || []} bookings={bookings || []} />}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>{tx.productsInStore}</h3>
           {isOwner && <button onClick={onAddProduct} style={{ background: "#E63946", color: "#fff", border: "none", borderRadius: 10, padding: "7px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{tx.addProductBtn}</button>}
@@ -1826,6 +2217,13 @@ export default function App() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [heartAnim, setHeartAnim] = useState(null);
   const [cartAnim, setCartAnim] = useState(false);
+  // Yangi state'lar
+  const [showFilter, setShowFilter] = useState(false);
+  const [filter, setFilter] = useState({ minPrice: "", maxPrice: "", minDiscount: 0, openNow: false, type: "all" });
+  const [bookingStore, setBookingStore] = useState(null);
+  const [bookings, setBookings] = useState(saved?.bookings ?? []);
+  const [chatStore, setChatStore] = useState(null);
+  const [chatMessages, setChatMessages] = useState(saved?.chatMessages ?? {});
 
   const th = theme(dark);
   const s = mkStyles(dark);
@@ -1833,7 +2231,7 @@ export default function App() {
 
   // Persist to localStorage
   useEffect(() => {
-    saveToLS({ step, lang, userData, savedKeys, stores, myStoreId, cart, subscriptions, notifications, coupons });
+    saveToLS({ step, lang, userData, savedKeys, stores, myStoreId, cart, subscriptions, notifications, coupons, bookings, chatMessages });
   }, [step, lang, userData, savedKeys, stores, myStoreId, cart, subscriptions, notifications, coupons]);
 
   // Auto-cleanup expired discounts
@@ -1880,7 +2278,15 @@ export default function App() {
     const matchCat = activeCategory === "all" || d.category === activeCategory;
     const q = search.toLowerCase();
     const matchSearch = !q || d.storeName.toLowerCase().includes(q) || (d.title[lang] || "").toLowerCase().includes(q) || d.storeAddress.toLowerCase().includes(q);
-    return matchCat && matchSearch;
+    // Kengaytirilgan filter
+    const store = stores.find(s => s.id === d.storeId);
+    const discountedPrice = d.originalPrice * (1 - d.discount / 100);
+    const matchMinPrice = !filter.minPrice || discountedPrice >= Number(filter.minPrice);
+    const matchMaxPrice = !filter.maxPrice || discountedPrice <= Number(filter.maxPrice);
+    const matchDiscount = d.discount >= filter.minDiscount;
+    const matchType = filter.type === "all" || (store?.type || "sell") === filter.type;
+    const matchOpenNow = !filter.openNow || isStoreOpen(store);
+    return matchCat && matchSearch && matchMinPrice && matchMaxPrice && matchDiscount && matchType && matchOpenNow;
   }));
 
   const filteredStores = search ? stores.filter((st) => st.name.toLowerCase().includes(search.toLowerCase()) || st.address.toLowerCase().includes(search.toLowerCase())) : [];
@@ -2015,7 +2421,10 @@ export default function App() {
           onDeleteProduct={(pid) => deleteProduct(viewingStore.id, pid)}
           onRateProduct={(pid, r) => rateProduct(viewingStore.id, pid, r)}
           onRateStore={(r) => rateStore(viewingStore.id, r)}
-          onOpenDeal={(sid, pid) => { setSelectedKey({ storeId: sid, productId: pid }); setViewingStoreId(null); }} />
+          onOpenDeal={(sid, pid) => { setSelectedKey({ storeId: sid, productId: pid }); setViewingStoreId(null); }}
+          bookings={bookings}
+          onBook={() => setBookingStore(viewingStore)}
+          onChat={() => setChatStore(viewingStore)} />
         {profileView === "storeAddProduct" && (
           <div style={{ position: "fixed", inset: 0, zIndex: 250, maxWidth: 430, margin: "0 auto", background: th.bg }}>
             <AddProductForm lang={lang} dark={dark} store={viewingStore}
@@ -2049,6 +2458,18 @@ export default function App() {
 
       {/* Edit profile modal */}
       {showEditProfile && <EditProfileModal lang={lang} dark={dark} userData={userData} onClose={() => setShowEditProfile(false)} onSave={(d) => { setUserData(d); setShowEditProfile(false); }} />}
+
+      {/* Filter modal */}
+      {showFilter && <FilterModal lang={lang} dark={dark} filter={filter} onClose={() => setShowFilter(false)} onApply={(f) => { setFilter(f); setShowFilter(false); }} />}
+
+      {/* Booking modal */}
+      {bookingStore && <BookingModal lang={lang} dark={dark} store={bookingStore} onClose={() => setBookingStore(null)} onSuccess={(booking) => { setBookings(prev => [booking, ...prev]); setBookingStore(null); }} />}
+
+      {/* Chat modal */}
+      {chatStore && <ChatModal lang={lang} dark={dark} store={chatStore}
+        messages={chatMessages[chatStore.id] || []}
+        onClose={() => setChatStore(null)}
+        onSend={(msg) => setChatMessages(prev => ({ ...prev, [chatStore.id]: [...(prev[chatStore.id] || []), msg] }))} />}
 
       {/* Deal modal */}
       {selectedDeal && !showCheckout && !showPayment && (
@@ -2207,6 +2628,23 @@ export default function App() {
         </div>
 
         <SortFilterBar lang={lang} sort={sort} setSort={setSort} dark={dark} />
+        {/* Filter tugmasi */}
+        <div style={{ padding: "8px 20px 0", display: "flex", justifyContent: "flex-end" }}>
+          <button onClick={() => setShowFilter(true)} style={{
+            display: "flex", alignItems: "center", gap: 6, padding: "7px 14px",
+            borderRadius: 20, border: `1.5px solid ${(filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") ? "#E63946" : th.border}`,
+            background: (filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") ? "#FFF0F0" : th.card,
+            color: (filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") ? "#E63946" : th.sub,
+            fontWeight: 700, fontSize: 12, cursor: "pointer",
+          }}>
+            🎛️ {tx.filterTitle}
+            {(filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") && (
+              <span style={{ background: "#E63946", color: "#fff", borderRadius: 6, padding: "1px 5px", fontSize: 10, fontWeight: 800 }}>
+                {[filter.openNow, filter.minDiscount > 0, !!filter.minPrice, !!filter.maxPrice, filter.type !== "all"].filter(Boolean).length}
+              </span>
+            )}
+          </button>
+        </div>
 
         <div style={{ padding: "14px 20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
@@ -2376,6 +2814,7 @@ export default function App() {
           {[
             { icon: "👤", label: lang === "uz" ? "Mening profilim" : "Мой профиль", count: 0, action: () => setProfileView("myprofile") },
             { icon: "🎟️", label: tx.myCoupons, count: coupons.filter((c) => !c.used).length, action: () => setProfileView("coupons") },
+            { icon: "📅", label: tx.myBookings, count: bookings.filter(b => b.status === "pending").length, action: () => setProfileView("bookings") },
             { icon: "❤️", label: tx.savedTitle, count: savedKeys.length, action: () => setActiveTab("saved") },
             { icon: "🛒", label: tx.cart, count: cartCount, action: () => setActiveTab("cart") },
             { icon: "🔔", label: tx.notifications, count: unreadCount, action: () => setProfileView("notifications") },
@@ -2492,6 +2931,47 @@ export default function App() {
       {/* PROFILE — coupons */}
       {activeTab === "profile" && profileView === "coupons" && (
         <MyCouponsPage lang={lang} dark={dark} coupons={coupons} onBack={() => setProfileView("main")} onUseCoupon={useCoupon} />
+      )}
+
+      {/* PROFILE — bookings */}
+      {activeTab === "profile" && profileView === "bookings" && (
+        <div style={{ padding: "48px 20px 20px", background: th.bg, minHeight: "100vh" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+            <button onClick={() => setProfileView("main")} style={{ background: th.card, border: `1.5px solid ${th.border}`, borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: "pointer", color: th.text }}>←</button>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: th.text, margin: 0 }}>📅 {tx.myBookings}</h2>
+          </div>
+          {bookings.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px 0", color: th.sub }}>
+              <div style={{ fontSize: 56, marginBottom: 12 }}>📅</div>
+              <div style={{ fontWeight: 600, fontSize: 16 }}>{tx.noBookings}</div>
+              <div style={{ fontSize: 13, marginTop: 6 }}>{lang === "uz" ? "Do'konlarga kiring va bron qiling" : "Заходите в магазины и бронируйте"}</div>
+            </div>
+          ) : bookings.map((b, i) => (
+            <div key={i} style={{ background: th.card, borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", border: `1px solid ${th.border}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: (b.storeColor || "#E63946") + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{b.storeLogo || "🏪"}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{b.storeName}</div>
+                  <div style={{ fontSize: 11, color: th.sub }}>#{b.id}</div>
+                </div>
+                <span style={{ background: b.status === "confirmed" ? "#00B89420" : "#FFB40020", color: b.status === "confirmed" ? "#00B894" : "#FFB400", borderRadius: 8, padding: "4px 10px", fontSize: 11, fontWeight: 700 }}>
+                  {b.status === "confirmed" ? tx.bookingConfirmed : tx.bookingPending}
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 1, background: th.card2, borderRadius: 10, padding: "10px 12px" }}>
+                  <div style={{ fontSize: 11, color: th.sub }}>{tx.bookingDate}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{b.date}</div>
+                </div>
+                <div style={{ flex: 1, background: th.card2, borderRadius: 10, padding: "10px 12px" }}>
+                  <div style={{ fontSize: 11, color: th.sub }}>{tx.bookingTime}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{b.time}</div>
+                </div>
+              </div>
+              {b.note ? <div style={{ marginTop: 10, fontSize: 12, color: th.sub, fontStyle: "italic" }}>"{b.note}"</div> : null}
+            </div>
+          ))}
+        </div>
       )}
 
       {/* PROFILE — notifications */}
