@@ -5,7 +5,10 @@ import DynamicCategoryForm from "./CategoryForms.jsx";
 // DARK MODE HOOK
 // =====================================================
 const useDark = () => {
-  const [dark, setDark] = useState(() => localStorage.getItem("dark") === "1");
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("dark");
+    return saved !== null ? saved === "1" : true; // default: dark
+  });
   const toggle = () =>
     setDark((d) => {
       localStorage.setItem("dark", d ? "0" : "1");
@@ -18,12 +21,14 @@ const useDark = () => {
 // THEME TOKENS
 // =====================================================
 const theme = (dark) => ({
-  bg: dark ? "#0F0F1A" : "#F7F8FA",
-  card: dark ? "#1A1A2E" : "#FFFFFF",
-  card2: dark ? "#22223A" : "#F7F8FA",
-  text: dark ? "#F0F0FF" : "#1A1A2E",
-  sub: dark ? "#8888AA" : "#888888",
-  border: dark ? "#2A2A4A" : "#EBEBEB",
+  bg:     dark ? "#101010" : "#F5F5F5",
+  card:   dark ? "#1C1C1C" : "#FFFFFF",
+  card2:  dark ? "#242424" : "#F0F0F0",
+  card3:  dark ? "#2C2C2C" : "#E8E8E8",
+  text:   dark ? "#F1F1F1" : "#1A1A1A",
+  sub:    dark ? "#888888" : "#777777",
+  sub2:   dark ? "#555555" : "#AAAAAA",
+  border: dark ? "#2E2E2E" : "#E5E5E5",
   accent: "#16A34A",
   accentDark: "#15803D",
 });
@@ -606,6 +611,78 @@ function SortFilterBar({ lang, sort, setSort, dark }) {
 
 
 // =====================================================
+// KARROT CARD — list view (Karrot uslubi)
+// =====================================================
+function KarrotCard({ deal, th, lang, tx, savedKeys, heartAnim, toggleSave, setSelectedKey, setViewingStoreId }) {
+  const discPrice = deal.originalPrice > 0
+    ? Math.round(deal.originalPrice * (1 - deal.discount / 100))
+    : 0;
+  const timeAgo = (() => {
+    const diff = Date.now() - new Date(deal.expiryDate).getTime() + 7 * 24 * 3600 * 1000;
+    const days = Math.max(0, Math.floor(diff / 86400000));
+    if (days === 0) return lang === "uz" ? "Bugun" : "Сегодня";
+    return lang === "uz" ? `${days} kun` : `${days} д.`;
+  })();
+
+  return (
+    <div style={{ borderBottom: `1px solid ${th.border}`, cursor: "pointer" }}>
+      <div style={{ display: "flex", gap: 12, padding: "14px 16px" }}
+        onClick={() => setSelectedKey({ storeId: deal.storeId, productId: deal.productId })}>
+        {/* Rasm */}
+        <div style={{ width: 110, height: 110, borderRadius: 12, overflow: "hidden", flexShrink: 0, background: th.card2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, position: "relative" }}>
+          {deal.photos?.length
+            ? <img src={deal.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            : <span>{deal.logo}</span>}
+          {deal.discount > 0 && (
+            <div style={{ position: "absolute", top: 6, left: 6, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "2px 6px", fontSize: 10, fontWeight: 800 }}>
+              -{deal.discount}%
+            </div>
+          )}
+        </div>
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 15, color: th.text, lineHeight: 1.4, marginBottom: 4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+              {deal.title?.[lang] || deal.title?.uz}
+            </div>
+            <div style={{ fontSize: 12, color: th.sub, marginBottom: 6 }}>
+              {deal.storeName} · {timeAgo}
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              {discPrice > 0 && (
+                <span style={{ fontWeight: 800, fontSize: 16, color: th.text }}>
+                  {discPrice.toLocaleString("ru-RU")} {lang === "uz" ? "so'm" : "сум"}
+                </span>
+              )}
+              {deal.originalPrice > 0 && deal.discount > 0 && (
+                <span style={{ fontSize: 12, color: th.sub, textDecoration: "line-through", marginLeft: 6 }}>
+                  {deal.originalPrice.toLocaleString("ru-RU")}
+                </span>
+              )}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {deal.delivery && (
+                <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><polygon points="12 19 19 22 22 19 15 16 12 19"/><line x1="19" y1="22" x2="19" y2="16"/><line x1="15" y1="16" x2="22" y2="16"/></svg>
+                </div>
+              )}
+              <button onClick={e => { e.stopPropagation(); toggleSave(deal.key); }}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 2, display: "flex", alignItems: "center", gap: 3, animation: heartAnim === deal.key ? "heartPop 0.6s ease" : undefined }}>
+                {savedKeys.includes(deal.key)
+                  ? <svg width="17" height="17" viewBox="0 0 24 24" fill="#16A34A" stroke="#16A34A" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
 // DEAL CARD — yangi katta kartochka
 // =====================================================
 function DealCard({ deal, th, lang, tx, savedKeys, heartAnim, toggleSave, setSelectedKey, setViewingStoreId }) {
@@ -814,9 +891,7 @@ function BookingModal({ lang, dark, store, onClose, onSuccess }) {
 // CHAT MODAL — do'kon bilan muloqot
 // =====================================================
 function ChatModal({ lang, dark, store, messages, onClose, onSend }) {
-  const tx = t[lang];
   const th = theme(dark);
-  const s = mkStyles(dark);
   const [text, setText] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -828,65 +903,106 @@ function ChatModal({ lang, dark, store, messages, onClose, onSend }) {
     if (!text.trim()) return;
     onSend({ text: text.trim(), from: "user", time: new Date().toISOString() });
     setText("");
-    // Demo auto javob
     setTimeout(() => {
-      onSend({ text: lang === "uz" ? "Xabaringiz qabul qilindi! Tez orada javob beramiz 😊" : "Ваше сообщение получено! Ответим скоро 😊", from: "store", time: new Date().toISOString() });
-    }, 1000);
+      onSend({
+        text: lang === "uz" ? "Xabaringiz qabul qilindi! Tez orada javob beramiz 😊" : "Ваше сообщение получено! Ответим скоро 😊",
+        from: "store", time: new Date().toISOString()
+      });
+    }, 900);
   };
 
   return (
     <div style={{ position: "fixed", inset: 0, background: th.bg, zIndex: 300, maxWidth: 430, margin: "0 auto", display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <div style={{ background: "linear-gradient(135deg,#16A34A,#15803D)", padding: "48px 20px 16px", color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={onClose} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer" }}>←</button>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>{store.logo}</div>
-        <div>
-          <div style={{ fontWeight: 800, fontSize: 15 }}>{store.name}</div>
-          <div style={{ fontSize: 11, opacity: 0.8 }}>{lang === "uz" ? "Odatda 1 soat ichida javob beradi" : "Обычно отвечает в течение часа"}</div>
+      {/* Header — Karrot uslubi */}
+      <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "50px 16px 12px", display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, marginRight: 2 }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={th.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        {/* Avatar */}
+        <div style={{ position: "relative", flexShrink: 0 }}>
+          <div style={{ width: 42, height: 42, borderRadius: 14, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, overflow: "hidden" }}>
+            {store.photos?.length ? <img src={store.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : store.logo}
+          </div>
+          <div style={{ position: "absolute", bottom: -2, right: -2, width: 16, height: 16, borderRadius: 8, background: "#16A34A", border: `2px solid ${th.card}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
         </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{store.name}</div>
+          <div style={{ fontSize: 12, color: "#16A34A", fontWeight: 500 }}>
+            {lang === "uz" ? "● Faol" : "● Онлайн"}
+          </div>
+        </div>
+        <button onClick={() => window.location.href = `tel:${store.phone}`}
+          style={{ background: "none", border: "none", cursor: "pointer", padding: 6 }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.4 2 2 0 0 1 3.55 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
       </div>
 
       {/* Messages */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px" }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 8px" }}>
         {messages.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: th.sub }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>💬</div>
-            <div style={{ fontWeight: 600 }}>{tx.chatStart}</div>
-          </div>
-        ) : messages.map((msg, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: msg.from === "user" ? "flex-end" : "flex-start", marginBottom: 10 }}>
-            <div style={{
-              maxWidth: "75%", padding: "10px 14px", borderRadius: msg.from === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-              background: msg.from === "user" ? "#16A34A" : th.card,
-              color: msg.from === "user" ? "#fff" : th.text,
-              fontSize: 14, lineHeight: 1.5,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-            }}>
-              {msg.text}
-              <div style={{ fontSize: 10, opacity: 0.6, marginTop: 4, textAlign: "right" }}>
-                {new Date(msg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" })}
-              </div>
+          <div style={{ textAlign: "center", padding: "60px 20px", color: th.sub }}>
+            <div style={{ width: 72, height: 72, borderRadius: 36, background: th.card2, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 32 }}>{store.logo}</div>
+            <div style={{ fontWeight: 700, fontSize: 16, color: th.text, marginBottom: 8 }}>{store.name}</div>
+            <div style={{ fontSize: 13, lineHeight: 1.6 }}>
+              {lang === "uz" ? "Savol yoki buyurtma uchun yozing 👇" : "Напишите вопрос или заявку 👇"}
             </div>
           </div>
-        ))}
+        ) : (
+          <div>
+            {messages.map((msg, i) => {
+              const timeStr = new Date(msg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" });
+              const isUser = msg.from === "user";
+              return (
+                <div key={i} style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 8, alignItems: "flex-end", gap: 8 }}>
+                  {!isUser && (
+                    <div style={{ width: 28, height: 28, borderRadius: 9, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0, marginBottom: 2 }}>
+                      {store.logo}
+                    </div>
+                  )}
+                  <div style={{ maxWidth: "72%" }}>
+                    <div style={{
+                      padding: "10px 14px",
+                      borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                      background: isUser ? "#16A34A" : th.card,
+                      color: isUser ? "#fff" : th.text,
+                      fontSize: 14, lineHeight: 1.5,
+                    }}>
+                      {msg.text}
+                    </div>
+                    <div style={{ fontSize: 10, color: th.sub, marginTop: 4, textAlign: isUser ? "right" : "left", paddingLeft: isUser ? 0 : 4, paddingRight: isUser ? 4 : 0 }}>
+                      {timeStr}{isUser && " ✓✓"}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div style={{ padding: "12px 16px 28px", background: th.card, borderTop: `1px solid ${th.border}`, display: "flex", gap: 10, alignItems: "flex-end" }}>
-        <textarea
-          placeholder={tx.typeMessage}
-          value={text}
-          onChange={e => setText(e.target.value)}
-          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-          style={{ flex: 1, padding: "12px 16px", borderRadius: 20, border: `1.5px solid ${th.border}`, background: th.bg, fontSize: 14, outline: "none", resize: "none", color: th.text, minHeight: 44, maxHeight: 100, fontFamily: "inherit", lineHeight: 1.5 }}
-          rows={1}
-        />
+      {/* Input area */}
+      <div style={{ padding: "10px 12px 28px", background: th.card, borderTop: `1px solid ${th.border}`, display: "flex", gap: 8, alignItems: "flex-end" }}>
+        <div style={{ flex: 1, background: th.card2, borderRadius: 22, padding: "10px 16px", display: "flex", alignItems: "center" }}>
+          <textarea
+            placeholder={lang === "uz" ? "Xabar yozing..." : "Написать сообщение..."}
+            value={text}
+            onChange={e => setText(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+            style={{ flex: 1, background: "none", border: "none", fontSize: 15, outline: "none", resize: "none", color: th.text, minHeight: 24, maxHeight: 90, fontFamily: "inherit", lineHeight: 1.5 }}
+            rows={1}
+          />
+        </div>
         <button onClick={handleSend} disabled={!text.trim()} style={{
-          width: 44, height: 44, borderRadius: 22, background: text.trim() ? "#16A34A" : th.border,
-          border: "none", color: "#fff", fontSize: 18, cursor: "pointer", flexShrink: 0,
-          display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s",
-        }}>➤</button>
+          width: 44, height: 44, borderRadius: 22, background: text.trim() ? "#16A34A" : th.card2,
+          border: "none", cursor: text.trim() ? "pointer" : "default", flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "background 0.2s",
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={text.trim() ? "#fff" : th.sub} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
       </div>
     </div>
   );
@@ -963,152 +1079,224 @@ function StoreAnalytics({ lang, dark, store, coupons, bookings }) {
     </div>
   );
 }
-function MapView({ lang, deals, onDealClick, dark }) {
+function MapView({ lang, deals, stores, onDealClick, dark }) {
   const th = theme(dark);
   const tx = t[lang];
-  const mapRef = useRef(null);
+  const mapRef    = useRef(null);
   const leafletMap = useRef(null);
   const markersRef = useRef([]);
-  const [selected, setSelected] = useState(null);
+  const [selected,    setSelected]    = useState(null);
+  const [mapCat,      setMapCat]      = useState("all");
+  const [sheetOpen,   setSheetOpen]   = useState(false);
+
+  const MAP_CATS = [
+    { id:"all",         uz:"Hammasi",  ru:"Все",      e:"🏷️" },
+    { id:"auto",        uz:"Avto",     ru:"Авто",     e:"🚗" },
+    { id:"food",        uz:"Ovqat",    ru:"Еда",      e:"🍕" },
+    { id:"services",    uz:"Xizmat",   ru:"Услуги",   e:"🛠️" },
+    { id:"pharmacy",    uz:"Dorixona", ru:"Аптека",   e:"💊" },
+    { id:"restaurant",  uz:"Kafe",     ru:"Кафе",     e:"☕" },
+    { id:"beauty",      uz:"Go'zallik",ru:"Красота",  e:"💄" },
+    { id:"medical",     uz:"Tibbiyot", ru:"Медицина", e:"🏥" },
+  ];
+
+  const filteredDeals = mapCat === "all" ? deals : deals.filter(d => d.category === mapCat);
 
   useEffect(() => {
-    if (!window.L) return;
-    if (leafletMap.current) return;
-
+    if (!window.L || leafletMap.current) return;
     const L = window.L;
+
+    // Dark map tiles — CartoDB Dark Matter
     const map = L.map(mapRef.current, {
       center: [41.299, 69.240],
       zoom: 13,
-      zoomControl: true,
+      zoomControl: false,
+      attributionControl: false,
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
-      maxZoom: 19,
-    }).addTo(map);
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      { subdomains: "abcd", maxZoom: 19 }
+    ).addTo(map);
 
     leafletMap.current = map;
 
-    deals.forEach((deal) => {
-      if (!deal.lat || !deal.lng) return;
-
-      const icon = L.divIcon({
-        className: "",
-        html: `<div style="
-          background:${deal.color};
-          color:#fff;
-          border-radius:50%;
-          width:44px;height:44px;
-          display:flex;align-items:center;justify-content:center;
-          font-size:20px;
-          border:3px solid #fff;
-          box-shadow:0 2px 8px rgba(0,0,0,0.3);
-          cursor:pointer;
-        ">${deal.logo}</div>
-        <div style="
-          background:${deal.color};color:#fff;
-          border-radius:8px;padding:2px 7px;
-          font-size:11px;font-weight:800;
-          text-align:center;margin-top:2px;
-          box-shadow:0 1px 4px rgba(0,0,0,0.2);
-        ">-${deal.discount}%</div>`,
-        iconSize: [44, 60],
-        iconAnchor: [22, 60],
-      });
-
-      const marker = L.marker([deal.lat, deal.lng], { icon }).addTo(map);
-      marker.on("click", () => {
-        setSelected(deal);
-      });
-      markersRef.current.push(marker);
-    });
-
-    // Foydalanuvchi joylashuvi
+    // User pin
     const userIcon = L.divIcon({
       className: "",
       html: `<div style="
+        width:16px;height:16px;border-radius:8px;
         background:#16A34A;
-        border-radius:50%;width:18px;height:18px;
         border:3px solid #fff;
-        box-shadow:0 0 0 4px rgba(230,57,70,0.3);
+        box-shadow:0 0 0 6px rgba(22,163,74,0.25);
       "></div>`,
-      iconSize: [18, 18],
-      iconAnchor: [9, 9],
+      iconSize: [16,16], iconAnchor: [8,8],
     });
     L.marker([41.299, 69.240], { icon: userIcon }).addTo(map);
 
+    map.on("click", () => { setSelected(null); setSheetOpen(false); });
   }, []);
 
+  // Markerlarni yangilash (mapCat o'zgarganda)
+  useEffect(() => {
+    if (!window.L || !leafletMap.current) return;
+    const L = window.L;
+    markersRef.current.forEach(m => m.remove());
+    markersRef.current = [];
+
+    filteredDeals.forEach(deal => {
+      if (!deal.lat || !deal.lng) return;
+      const catObj = MAP_CATS.find(c => c.id === deal.category) || MAP_CATS[0];
+      const icon = L.divIcon({
+        className: "",
+        html: `<div style="
+          background:#1C1C1C;
+          color:#fff;
+          border-radius:50%;
+          width:40px;height:40px;
+          display:flex;align-items:center;justify-content:center;
+          font-size:18px;
+          border:2.5px solid #16A34A;
+          box-shadow:0 3px 10px rgba(0,0,0,0.5);
+          cursor:pointer;
+          position:relative;
+        ">${deal.logo}
+          <div style="
+            position:absolute;
+            top:-6px;right:-6px;
+            background:#16A34A;color:#fff;
+            border-radius:6px;padding:1px 4px;
+            font-size:9px;font-weight:800;
+            line-height:1.4;
+          ">-${deal.discount}%</div>
+        </div>`,
+        iconSize: [40, 40], iconAnchor: [20, 20],
+      });
+      const marker = L.marker([deal.lat, deal.lng], { icon }).addTo(leafletMap.current);
+      marker.on("click", e => {
+        e.originalEvent.stopPropagation();
+        setSelected(deal);
+        setSheetOpen(true);
+        leafletMap.current.setView([deal.lat, deal.lng], 15, { animate: true });
+      });
+      markersRef.current.push(marker);
+    });
+  }, [mapCat, deals]);
+
+  const isOpen = selected ? isStoreOpen(stores.find(s => s.id === selected.storeId)) : false;
+
   return (
-    <div style={{ padding: "48px 0 0", background: th.bg, minHeight: "100vh" }}>
-      <div style={{ padding: "0 20px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: th.text }}>🗺️ {tx.nearby}</h2>
-        <span style={{ fontSize: 12, color: th.sub, background: th.card, borderRadius: 20, padding: "4px 12px", border: `1px solid ${th.border}` }}>
-          {deals.length} {lang === "uz" ? "ta joy" : "мест"}
-        </span>
-      </div>
+    <div style={{ position: "relative", background: "#101010", minHeight: "100vh" }}>
+      {/* Dark map */}
+      <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />
 
-      {/* Leaflet Map */}
-      <div style={{ margin: "0 16px", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", height: 320 }}>
-        <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
-      </div>
-
-      {/* Tanlangan deal kartochkasi */}
-      {selected && (
-        <div onClick={() => onDealClick(selected)} style={{
-          margin: "14px 16px 0", background: th.card, borderRadius: 16,
-          padding: 16, display: "flex", alignItems: "center", gap: 14,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.12)", cursor: "pointer",
-          border: `2px solid ${selected.color}44`,
-          animation: "slideUp 0.3s ease",
-        }}>
-          <div style={{
-            background: selected.color + "20", borderRadius: 12, width: 52, height: 52,
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0,
-          }}>
-            {selected.logo}
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{selected.storeName}</div>
-            <div style={{ fontSize: 12, color: th.sub }}>{selected.title[lang]}</div>
-            <div style={{ fontSize: 11, color: th.sub, fontWeight: 600, marginTop: 3 }}>
-              ⏰ {daysLeftLabel(selected.expiryDate, lang)} {tx.left}
-            </div>
-          </div>
-          <div style={{ background: selected.color, color: "#fff", borderRadius: 10, padding: "6px 12px", fontWeight: 800, fontSize: 16 }}>
-            -{selected.discount}%
-          </div>
-        </div>
-      )}
-
-      {/* Deals ro'yxati */}
-      <div style={{ padding: "16px 16px 0" }}>
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: th.sub, margin: "0 0 10px" }}>
-          {lang === "uz" ? "📍 Yaqin atrofdagi chegirmalar" : "📍 Ближайшие скидки"}
-        </h3>
-        {deals.slice(0, 6).map((deal) => (
-          <div key={deal.key} onClick={() => { setSelected(deal); onDealClick(deal); }} style={{
-            background: th.card, borderRadius: 14, padding: "12px 14px", marginBottom: 10,
-            display: "flex", alignItems: "center", gap: 12,
-            boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer",
-            border: `1px solid ${th.border}`,
-          }}>
-            <div style={{
-              background: deal.color + "18", borderRadius: 10, width: 44, height: 44,
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0,
+      {/* Kategoriya chiplar — tepada overlay */}
+      <div style={{
+        position: "absolute", top: 50, left: 0, right: 0, zIndex: 20,
+        padding: "10px 12px 0",
+        display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none",
+      }}>
+        {MAP_CATS.map(cat => {
+          const active = mapCat === cat.id;
+          return (
+            <button key={cat.id} onClick={() => setMapCat(cat.id)} style={{
+              flexShrink: 0, display: "flex", alignItems: "center", gap: 5,
+              padding: "7px 14px", borderRadius: 22,
+              background: active ? "#16A34A" : "rgba(28,28,28,0.92)",
+              border: active ? "none" : "1px solid rgba(255,255,255,0.12)",
+              color: active ? "#fff" : "rgba(255,255,255,0.8)",
+              fontWeight: 600, fontSize: 13, cursor: "pointer",
+              backdropFilter: "blur(8px)",
+              boxShadow: active ? "0 2px 12px rgba(22,163,74,0.4)" : "0 2px 8px rgba(0,0,0,0.4)",
             }}>
-              {deal.logo}
+              <span style={{ fontSize: 15 }}>{cat.e}</span>
+              {lang === "uz" ? cat.uz : cat.ru}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Sol taraf tugmalar */}
+      <div style={{ position: "absolute", left: 12, bottom: sheetOpen ? 220 : 100, zIndex: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+        {[
+          { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>, action: () => {} },
+          { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>, action: () => {} },
+          { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>, action: () => { if(navigator.geolocation) navigator.geolocation.getCurrentPosition(pos => { leafletMap.current?.setView([pos.coords.latitude, pos.coords.longitude], 16); }); } },
+        ].map((btn, i) => (
+          <button key={i} onClick={btn.action} style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(28,28,28,0.92)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
+            {btn.icon}
+          </button>
+        ))}
+      </div>
+
+      {/* Floating + button */}
+      <button style={{
+        position: "absolute", right: 16, bottom: sheetOpen ? 220 : 100, zIndex: 20,
+        width: 52, height: 52, borderRadius: 26,
+        background: "#16A34A",
+        border: "none", cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "0 4px 20px rgba(22,163,74,0.5)",
+      }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+
+      {/* Bottom sheet — tanlangan biznes */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 30,
+        background: "rgba(20,20,20,0.96)",
+        borderRadius: "20px 20px 0 0",
+        backdropFilter: "blur(16px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        transform: sheetOpen ? "translateY(0)" : "translateY(100%)",
+        transition: "transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+        paddingBottom: 90,
+      }}>
+        {/* Handle */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 8px" }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)" }} />
+        </div>
+
+        {selected && (
+          <div style={{ padding: "0 16px 16px" }}>
+            {/* Biznes info */}
+            <div style={{ display: "flex", gap: 14, marginBottom: 14 }} onClick={() => onDealClick(selected)}>
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: selected.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, flexShrink: 0, overflow: "hidden", position: "relative" }}>
+                {selected.photos?.length ? <img src={selected.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : selected.logo}
+                <div style={{ position: "absolute", top: 4, right: 4, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "1px 5px", fontSize: 10, fontWeight: 800 }}>-{selected.discount}%</div>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, color: "#fff", marginBottom: 4 }}>{selected.storeName}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: 4, background: isOpen ? "#16A34A" : "#888", display: "inline-block" }} />
+                  <span style={{ fontSize: 12, color: isOpen ? "#16A34A" : "#888", fontWeight: 600 }}>
+                    {isOpen ? (lang === "uz" ? "Hozir ochiq" : "Сейчас открыто") : (lang === "uz" ? "Yopiq" : "Закрыто")}
+                  </span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>·</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>📍 {selected.storeAddress}</span>
+                </div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>⏰ {daysLeftLabel(selected.expiryDate, lang)} {tx.left}</div>
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{deal.storeName}</div>
-              <div style={{ fontSize: 11, color: th.sub }}>📍 {deal.storeAddress}</div>
-              <div style={{ fontSize: 11, color: th.sub }}>⏰ {daysLeftLabel(deal.expiryDate, lang)} {tx.left}</div>
-            </div>
-            <div style={{ background: deal.color, color: "#fff", borderRadius: 8, padding: "4px 10px", fontWeight: 800, fontSize: 14 }}>
-              -{deal.discount}%
+
+            {/* Action tugmalar */}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => onDealClick(selected)} style={{ flex: 2, padding: "12px 0", borderRadius: 12, background: "#16A34A", border: "none", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+                {lang === "uz" ? "Batafsil" : "Подробнее"}
+              </button>
+              {selected.storePhone && (
+                <button onClick={() => window.location.href = `tel:${selected.storePhone}`}
+                  style={{ flex: 1, padding: "12px 0", borderRadius: 12, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                  📞 {lang === "uz" ? "Qo'ng'iroq" : "Звонок"}
+                </button>
+              )}
+              <button onClick={() => setSheetOpen(false)}
+                style={{ width: 46, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", fontSize: 18, cursor: "pointer" }}>
+                ✕
+              </button>
             </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
@@ -2835,121 +3023,162 @@ export default function App() {
 
       {/* ── HOME TAB ── */}
       {activeTab === "home" && <>
-        {/* HEADER */}
-        <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "48px 20px 12px", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#16A34A,#15803D)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 18, color: "#fff" }}>O</div>
-              <span style={{ fontWeight: 900, fontSize: 17, color: th.text, letterSpacing: -0.5 }}>OsonTop</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <div style={{ display: "flex", background: th.card2, borderRadius: 16, padding: 2, border: `1px solid ${th.border}` }}>
-                {["uz","ru"].map(l => (<button key={l} onClick={() => setLang(l)} style={{ padding: "3px 9px", borderRadius: 13, border: "none", background: lang === l ? "#16A34A" : "transparent", color: lang === l ? "#fff" : th.sub, fontWeight: 700, fontSize: 10, cursor: "pointer" }}>{l.toUpperCase()}</button>))}
+        {/* ─── KARROT STYLE HEADER ─── */}
+        <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "50px 16px 0", position: "sticky", top: 0, zIndex: 50 }}>
+          {/* Row 1: shahar + ikonkalar */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <button onClick={() => {}} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              <span style={{ fontSize: 16 }}>📍</span>
+              <span style={{ fontWeight: 800, fontSize: 17, color: th.text }}>Toshkent</span>
+              <span style={{ fontSize: 12, color: th.sub, marginLeft: 2 }}>›</span>
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ display: "flex", background: th.card2, borderRadius: 16, padding: 2 }}>
+                {["uz","ru"].map(l => (
+                  <button key={l} onClick={() => setLang(l)} style={{ padding: "3px 10px", borderRadius: 13, border: "none", background: lang === l ? "#16A34A" : "transparent", color: lang === l ? "#fff" : th.sub, fontWeight: 700, fontSize: 10, cursor: "pointer" }}>{l.toUpperCase()}</button>
+                ))}
               </div>
-              <button onClick={() => { setActiveTab("profile"); setProfileView("notifications"); }} style={{ position: "relative", background: th.card2, border: `1px solid ${th.border}`, borderRadius: 10, width: 34, height: 34, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
-                🔔{unreadCount > 0 && <span style={{ position: "absolute", top: -3, right: -3, background: "#16A34A", color: "#fff", borderRadius: 6, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{unreadCount}</span>}
+              <button onClick={() => { setActiveTab("profile"); setProfileView("notifications"); }}
+                style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={th.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                {unreadCount > 0 && <span style={{ position: "absolute", top: 0, right: 0, width: 8, height: 8, borderRadius: 4, background: "#16A34A" }} />}
               </button>
-              <button onClick={() => setActiveTab("profile")} style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#16A34A,#15803D)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#fff", fontWeight: 800 }}>
-                {userData.name ? userData.name[0]?.toUpperCase() : "U"}
+              <button onClick={() => setActiveTab("profile")} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={th.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
               </button>
             </div>
           </div>
-          <div style={{ position: "relative" }}>
-            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🔍</span>
-            <input placeholder={lang === "uz" ? "Mahsulot, xizmat yoki biznes..." : "Товар, услуга или бизнес..."} value={search} onChange={e => setSearch(e.target.value)}
-              style={{ width: "100%", padding: "13px 46px 13px 42px", borderRadius: 14, border: `2px solid ${search ? "#16A34A" : th.border}`, background: th.card2, fontSize: 14, outline: "none", boxSizing: "border-box", color: th.text }} />
-            {search ? <button onClick={() => setSearch("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 16, cursor: "pointer", color: "#AAA" }}>✕</button>
-              : <button onClick={() => setShowFilter(true)} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: th.card, border: `1px solid ${th.border}`, borderRadius: 8, padding: "4px 8px", fontSize: 11, cursor: "pointer", color: th.sub, fontWeight: 700 }}>
-                  Filter{(filter.openNow||filter.minDiscount>0||filter.minPrice||filter.maxPrice||filter.type!=="all") ? " 🟢" : ""}
-                </button>}
+          {/* Row 2: qidiruv */}
+          <div style={{ position: "relative", marginBottom: 10 }}>
+            <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </span>
+            <input placeholder={lang === "uz" ? "Biznes, mahsulot, xizmat qidirish..." : "Поиск бизнеса, товара, услуги..."} value={search} onChange={e => setSearch(e.target.value)}
+              style={{ width: "100%", padding: "11px 40px 11px 36px", borderRadius: 10, border: "none", background: th.card2, fontSize: 14, outline: "none", boxSizing: "border-box", color: th.text }} />
+            {search && <button onClick={() => setSearch("")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: th.sub, fontSize: 16 }}>✕</button>}
+          </div>
+          {/* Row 3: kategoriya chiplar */}
+          <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 10 }}>
+            {[
+              { id: "all",         uz: "전체",  ru: "Все",       label_uz: "Hammasi",     label_ru: "Все" },
+              { id: "auto",        uz: "🚗",    ru: "🚗",        label_uz: "Avto",         label_ru: "Авто" },
+              { id: "food",        uz: "🍕",    ru: "🍕",        label_uz: "Ovqat",        label_ru: "Еда" },
+              { id: "services",    uz: "🛠️",   ru: "🛠️",       label_uz: "Xizmat",       label_ru: "Услуги" },
+              { id: "pharmacy",    uz: "💊",    ru: "💊",        label_uz: "Dorixona",     label_ru: "Аптека" },
+              { id: "electronics", uz: "📱",    ru: "📱",        label_uz: "Elektro",      label_ru: "Электро" },
+              { id: "restaurant",  uz: "☕",    ru: "☕",         label_uz: "Restoran",     label_ru: "Кафе" },
+              { id: "beauty",      uz: "💄",    ru: "💄",        label_uz: "Go'zallik",    label_ru: "Красота" },
+              { id: "medical",     uz: "🏥",    ru: "🏥",        label_uz: "Tibbiyot",     label_ru: "Медицина" },
+              { id: "education",   uz: "📚",    ru: "📚",        label_uz: "Ta'lim",       label_ru: "Обучение" },
+            ].map(cat => {
+              const isActive = activeCategory === cat.id;
+              return (
+                <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{
+                  flexShrink: 0, padding: "6px 14px", borderRadius: 20,
+                  border: `1.5px solid ${isActive ? "#16A34A" : th.border}`,
+                  background: isActive ? "#16A34A" : th.card2,
+                  color: isActive ? "#fff" : th.sub,
+                  fontWeight: 600, fontSize: 13, cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}>
+                  {lang === "uz" ? cat.label_uz : cat.label_ru}
+                </button>
+              );
+            })}
           </div>
         </div>
 
+        {/* ─── QIDIRUV NATIJALARI ─── */}
         {search && (
-          <div style={{ padding: "12px 20px 0" }}>
-            {filteredStores.length > 0 && (<div style={{ marginBottom: 16 }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: th.sub, margin: "0 0 10px" }}>🏪 {lang==="uz"?"Do'konlar":"Магазины"}</h3>
-              {filteredStores.map(store => (
-                <div key={store.id} onClick={() => setViewingStoreId(store.id)} style={{ background: th.card, borderRadius: 14, padding: "12px 14px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer" }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: store.color+"18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{store.logo}</div>
-                  <div style={{ flex: 1 }}><div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{store.name}</div><div style={{ fontSize: 11, color: th.sub }}>📍 {store.address}</div></div>
-                  <span style={{ color: "#CCC" }}>›</span>
-                </div>
-              ))}
-            </div>)}
-            {filtered.length > 0 && <h3 style={{ fontSize: 13, fontWeight: 700, color: th.sub, margin: "0 0 12px" }}>🏷️ Aksiyalar ({filtered.length})</h3>}
-            {filtered.map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
-            {filtered.length===0 && filteredStores.length===0 && (<div style={{ textAlign: "center", padding: "60px 20px", color: th.sub }}><div style={{ fontSize: 56, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 700 }}>{tx.noDeals}</div><div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div></div>)}
+          <div style={{ paddingBottom: 100 }}>
+            {filteredStores.length > 0 && (
+              <div>
+                <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>DO'KONLAR</div>
+                {filteredStores.map(store => (
+                  <div key={store.id} onClick={() => setViewingStoreId(store.id)}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: `1px solid ${th.border}`, cursor: "pointer" }}>
+                    <div style={{ width: 48, height: 48, borderRadius: 12, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{store.logo}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{store.name}</div>
+                      <div style={{ fontSize: 12, color: th.sub, marginTop: 2 }}>📍 {store.address}</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </div>
+                ))}
+              </div>
+            )}
+            {filtered.length > 0 && <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>AKSIYALAR</div>}
+            {filtered.map(deal => <KarrotCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+            {filtered.length === 0 && filteredStores.length === 0 && (
+              <div style={{ textAlign: "center", padding: "80px 20px", color: th.sub }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: th.text }}>Hech narsa topilmadi</div>
+                <div style={{ fontSize: 13, marginTop: 6 }}>Boshqa so'z bilan qidiring</div>
+              </div>
+            )}
           </div>
         )}
 
+        {/* ─── ASOSIY LENTA ─── */}
         {!search && (
-          <div style={{ paddingBottom: 20 }}>
-            <div style={{ padding: "20px 20px 0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>{lang==="uz"?"Kategoriyalar":"Категории"}</h2>
-                {activeCategory!=="all" && <button onClick={() => setActiveCategory("all")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang==="uz"?"Barchasi ›":"Все ›"}</button>}
+          <div style={{ paddingBottom: 100 }}>
+            {/* Yaqin bizneslar — gorizontal scroll */}
+            <div style={{ paddingTop: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 10px" }}>
+                <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>📍 {lang === "uz" ? "Yaqin bizneslar" : "Рядом"}</span>
+                <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang === "uz" ? "Xaritada ko'rish ›" : "На карте ›"}</button>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
-                {[{id:"all",e:"🏷️",uz:"Hammasi",ru:"Все",c:"#16A34A"},{id:"food",e:"🍕",uz:"Ovqat",ru:"Продукты",c:"#E17055"},{id:"auto",e:"🚗",uz:"Avto",ru:"Авто",c:"#0652DD"},{id:"pharmacy",e:"💊",uz:"Dorixona",ru:"Аптека",c:"#009432"},{id:"electronics",e:"📱",uz:"Elektro",ru:"Электро",c:"#0984E3"},{id:"services",e:"🛠️",uz:"Xizmat",ru:"Услуги",c:"#636E72"},{id:"restaurant",e:"☕",uz:"Restoran",ru:"Кафе",c:"#FDCB6E"},{id:"clothing",e:"👕",uz:"Kiyim",ru:"Одежда",c:"#2D3436"},{id:"beauty",e:"💄",uz:"Go'zallik",ru:"Красота",c:"#E84393"},{id:"education",e:"📚",uz:"Ta'lim",ru:"Образование",c:"#F79F1F"},{id:"medical",e:"🏥",uz:"Tibbiyot",ru:"Медицина",c:"#ED4C67"},{id:"hotel",e:"🏨",uz:"Hotel",ru:"Отель",c:"#1289A7"}].map(cat => (
-                  <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "12px 4px", borderRadius: 16, cursor: "pointer", background: activeCategory===cat.id ? cat.c+"15" : th.card, border: `2px solid ${activeCategory===cat.id ? cat.c : th.border}`, boxShadow: activeCategory===cat.id ? `0 2px 10px ${cat.c}30` : "0 1px 4px rgba(0,0,0,0.05)", transition: "all 0.15s" }}>
-                    <span style={{ fontSize: 24 }}>{cat.e}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: activeCategory===cat.id ? cat.c : th.sub, textAlign: "center", lineHeight: 1.2 }}>{lang==="uz" ? cat.uz : cat.ru}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ padding: "24px 0 0 20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, paddingRight: 20 }}>
-                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>📍 {lang==="uz"?"Yaqin bizneslar":"Рядом с вами"}</h2>
-                <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang==="uz"?"Xarita ›":"Карта ›"}</button>
-              </div>
-              <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none", paddingRight: 20, paddingBottom: 4 }}>
-                {stores.slice(0,7).map(store => {
+              <div style={{ display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none", padding: "0 16px 4px" }}>
+                {stores.slice(0, 8).map(store => {
                   const isOpen = isStoreOpen(store);
-                  const storeDeals = activeDeals.filter(d => d.storeId === store.id);
+                  const deals = activeDeals.filter(d => d.storeId === store.id);
                   return (
-                    <div key={store.id} onClick={() => setViewingStoreId(store.id)} style={{ flexShrink: 0, width: 150, background: th.card, borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.07)", cursor: "pointer", border: `1px solid ${th.border}` }}>
-                      <div style={{ height: 76, background: `linear-gradient(135deg,${store.color}25,${store.color}50)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, position: "relative" }}>
-                        {store.logo}
-                        {storeDeals.length>0 && <div style={{ position: "absolute", top: 7, right: 7, background: "#16A34A", color: "#fff", borderRadius: 7, padding: "2px 6px", fontSize: 10, fontWeight: 800 }}>-{storeDeals[0].discount}%</div>}
-                      </div>
-                      <div style={{ padding: "9px 11px" }}>
-                        <div style={{ fontWeight: 700, fontSize: 13, color: th.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{store.name}</div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3 }}>
-                          <span style={{ width: 6, height: 6, borderRadius: 3, background: isOpen ? "#16A34A" : "#AAA" }} />
-                          <span style={{ fontSize: 10, color: isOpen ? "#16A34A" : th.sub, fontWeight: 600 }}>{isOpen ? (lang==="uz"?"Ochiq":"Открыто") : (lang==="uz"?"Yopiq":"Закрыто")}</span>
+                    <div key={store.id} onClick={() => setViewingStoreId(store.id)}
+                      style={{ flexShrink: 0, width: 100, cursor: "pointer" }}>
+                      <div style={{ width: 100, height: 100, borderRadius: 16, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, position: "relative", marginBottom: 6, overflow: "hidden" }}>
+                        {store.photos?.length ? <img src={store.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : store.logo}
+                        {deals.length > 0 && (
+                          <div style={{ position: "absolute", top: 6, right: 6, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "2px 5px", fontSize: 10, fontWeight: 800 }}>-{deals[0].discount}%</div>
+                        )}
+                        <div style={{ position: "absolute", bottom: 5, left: 5, display: "flex", alignItems: "center", gap: 3, background: "rgba(0,0,0,0.6)", borderRadius: 6, padding: "2px 5px" }}>
+                          <span style={{ width: 5, height: 5, borderRadius: 3, background: isOpen ? "#16A34A" : "#888", display: "inline-block" }} />
+                          <span style={{ fontSize: 9, color: "#fff", fontWeight: 600 }}>{isOpen ? (lang === "uz" ? "Ochiq" : "Открыто") : (lang === "uz" ? "Yopiq" : "Закрыто")}</span>
                         </div>
                       </div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: th.text, textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{store.name}</div>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {activeCategory!=="all" && filtered.length>0 && (<div style={{ padding: "24px 20px 0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>🏷️ {tx.offers}</h2>
-                <span style={{ fontSize: 13, color: th.sub }}>{filtered.length}</span>
+            {/* Divider */}
+            <div style={{ height: 8, background: th.card2, margin: "12px 0" }} />
+
+            {/* Filtr + sarlavha */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 12px" }}>
+              <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>
+                {activeCategory === "all" ? (lang === "uz" ? "Barcha aksiyalar" : "Все акции") : (lang === "uz" ? "Aksiyalar" : "Акции")}
+                <span style={{ fontSize: 13, color: th.sub, fontWeight: 400, marginLeft: 6 }}>{(activeCategory === "all" ? activeDeals : filtered).length}</span>
+              </span>
+              <button onClick={() => setShowFilter(true)} style={{ display: "flex", alignItems: "center", gap: 5, background: th.card2, border: `1px solid ${th.border}`, borderRadius: 8, padding: "5px 10px", cursor: "pointer" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                <span style={{ fontSize: 12, color: th.sub, fontWeight: 600 }}>{lang === "uz" ? "Filter" : "Фильтр"}</span>
+              </button>
+            </div>
+
+            {/* LIST VIEW — Karrot uslubi */}
+            {(activeCategory === "all" ? activeDeals : filtered).map(deal => (
+              <KarrotCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />
+            ))}
+
+            {activeCategory !== "all" && filtered.length === 0 && (
+              <div style={{ textAlign: "center", padding: "80px 20px", color: th.sub }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: th.text }}>{tx.noDeals}</div>
+                <div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div>
               </div>
-              {filtered.map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
-            </div>)}
-
-            {activeCategory==="all" && activeDeals.filter(d=>d.discount>=30).length>0 && (<div style={{ padding: "24px 20px 0" }}>
-              <h2 style={{ margin:"0 0 14px", fontSize: 16, fontWeight: 800, color: th.text }}>⭐ {lang==="uz"?"Tavsiya etilgan":"Рекомендуем"}</h2>
-              {activeDeals.filter(d=>d.discount>=30).slice(0,4).map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
-            </div>)}
-
-            {activeCategory==="all" && (<div style={{ padding: "24px 20px 0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>🔥 {lang==="uz"?"Barcha aksiyalar":"Все акции"}</h2>
-                <span style={{ fontSize: 13, color: th.sub }}>{activeDeals.length}</span>
-              </div>
-              {activeDeals.map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
-            </div>)}
-
-            {activeCategory!=="all" && filtered.length===0 && (<div style={{ textAlign: "center", padding: "60px 20px", color: th.sub }}><div style={{ fontSize: 56, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 700 }}>{tx.noDeals}</div><div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div></div>)}
+            )}
           </div>
         )}
       </>}
@@ -3036,9 +3265,98 @@ export default function App() {
         </div>
       )}
 
+      {/* ── CHAT TAB — Karrot uslubi ── */}
+      {activeTab === "chat" && (
+        <div style={{ background: th.bg, minHeight: "100vh", paddingBottom: 80 }}>
+          {/* Header */}
+          <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "50px 16px 14px", position: "sticky", top: 0, zIndex: 50 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontWeight: 800, fontSize: 20, color: th.text }}>Chats</span>
+              <div style={{ display: "flex", gap: 14 }}>
+                <button onClick={() => { setActiveTab("profile"); setProfileView("notifications"); }}
+                  style={{ background: "none", border: "none", cursor: "pointer", position: "relative", padding: 4 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={th.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  {unreadCount > 0 && <span style={{ position: "absolute", top: 0, right: 0, width: 8, height: 8, borderRadius: 4, background: "#16A34A" }} />}
+                </button>
+                <button onClick={() => { setActiveTab("profile"); setProfileView("settings"); }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={th.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Chat ro'yxati */}
+          {Object.keys(chatMessages).length === 0 ? (
+            <div style={{ textAlign: "center", padding: "100px 20px", color: th.sub }}>
+              <div style={{ fontSize: 64, marginBottom: 16, opacity: 0.3 }}>💬</div>
+              <div style={{ fontWeight: 700, fontSize: 18, color: th.text, marginBottom: 8 }}>
+                {lang === "uz" ? "Chatlar yo'q" : "Нет чатов"}
+              </div>
+              <div style={{ fontSize: 14, lineHeight: 1.6 }}>
+                {lang === "uz" ? "Do'kon sahifasiga kiring va\n\"Chat\" tugmasini bosing" : "Откройте страницу магазина\nи нажмите «Чат»"}
+              </div>
+            </div>
+          ) : (
+            <div>
+              {Object.entries(chatMessages).map(([storeId, msgs]) => {
+                const st = stores.find(s => s.id === storeId);
+                if (!st || !msgs.length) return null;
+                const lastMsg = msgs[msgs.length - 1];
+                const unreadMsgs = msgs.filter(m => m.from === "store" && !m.read).length;
+                const timeStr = (() => {
+                  const d = new Date(lastMsg.time);
+                  const now = new Date();
+                  const diffDays = Math.floor((now - d) / 86400000);
+                  if (diffDays === 0) return d.toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" });
+                  if (diffDays === 1) return lang === "uz" ? "Kecha" : "Вчера";
+                  if (diffDays < 7) return d.toLocaleDateString("uz", { weekday: "short" });
+                  return d.toLocaleDateString("uz", { month: "short", day: "numeric" });
+                })();
+
+                return (
+                  <div key={storeId} onClick={() => setChatStore(st)}
+                    style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderBottom: `1px solid ${th.border}`, cursor: "pointer", background: unreadMsgs > 0 ? th.card2 + "80" : "transparent" }}>
+                    {/* Avatar */}
+                    <div style={{ position: "relative", flexShrink: 0 }}>
+                      <div style={{ width: 52, height: 52, borderRadius: 16, background: st.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, overflow: "hidden" }}>
+                        {st.photos?.length ? <img src={st.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : st.logo}
+                      </div>
+                      {/* Tasdiqlangan badge */}
+                      <div style={{ position: "absolute", bottom: -2, right: -2, width: 18, height: 18, borderRadius: 9, background: "#16A34A", border: `2px solid ${th.bg}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      </div>
+                    </div>
+
+                    {/* Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                        <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{st.name}</span>
+                        <span style={{ fontSize: 12, color: th.sub }}>{timeStr}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: 13, color: th.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, marginRight: 8 }}>
+                          {lastMsg.from === "user" && <span style={{ color: th.sub2 }}>{lang === "uz" ? "Men: " : "Я: "}</span>}
+                          {lastMsg.text}
+                        </span>
+                        {unreadMsgs > 0 && (
+                          <div style={{ width: 20, height: 20, borderRadius: 10, background: "#16A34A", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <span style={{ fontSize: 11, fontWeight: 800, color: "#fff" }}>{unreadMsgs}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── MAP TAB ── */}
       {activeTab === "map" && (
-        <MapView lang={lang} dark={dark} deals={activeDeals}
+        <MapView lang={lang} dark={dark} deals={activeDeals} stores={stores}
           onDealClick={(d) => setSelectedKey({ storeId: d.storeId, productId: d.productId })} />
       )}
 
@@ -3444,42 +3762,90 @@ export default function App() {
       )}
 
       {/* ── FOOTER NAV ── */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: th.card, borderTop: `1px solid ${th.border}`, display: "flex", padding: "10px 0 20px", boxShadow: "0 -4px 20px rgba(0,0,0,0.08)", zIndex: 100 }}>
+      {/* ── FOOTER NAV — Karrot uslubi ── */}
+      <div style={{
+        position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
+        width: "100%", maxWidth: 430,
+        background: th.card,
+        borderTop: `1px solid ${th.border}`,
+        display: "flex", alignItems: "center",
+        padding: "8px 0 22px",
+        zIndex: 100,
+        boxShadow: "0 -1px 0 rgba(255,255,255,0.04)",
+      }}>
         {[
-          { id: "home",    icon: "🏠", label: lang === "uz" ? "Bosh" : "Главная" },
-          { id: "search",  icon: "🔍", label: lang === "uz" ? "Qidiruv" : "Поиск" },
-          { id: "add",     icon: "➕", label: lang === "uz" ? "Qo'shish" : "Добавить", special: true },
-          { id: "saved",   icon: "❤️", label: lang === "uz" ? "Saqlangan" : "Избранное", badge: savedKeys.length },
-          { id: "profile", icon: "👤", label: lang === "uz" ? "Profil" : "Профиль", badge: unreadCount },
-        ].map((tab) => (
-          <button key={tab.id}
-            onClick={() => {
-              if (tab.id === "add") {
-                if (myStore) { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); }
-                else { setActiveTab("profile"); setProfileView("createStore"); }
-              } else if (tab.id === "search") {
-                setActiveTab("home");
-                setTimeout(() => document.querySelector("input[placeholder]")?.focus(), 100);
-              } else {
-                setActiveTab(tab.id);
-                if (tab.id !== "profile") setProfileView("main");
-              }
-            }}
-            style={{ position: "relative", flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "4px 0" }}>
-            {tab.special ? (
-              <div style={{ width: 44, height: 44, borderRadius: 22, background: "linear-gradient(135deg,#16A34A,#15803D)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, boxShadow: "0 4px 16px rgba(22,163,74,0.4)", marginTop: -16 }}>
-                <span style={{ color: "#fff", fontWeight: 900 }}>+</span>
+          {
+            id: "home", label: lang === "uz" ? "Bosh" : "Главная",
+            icon: (active) => (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "#16A34A" : "none"} stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            ),
+          },
+          {
+            id: "search", label: lang === "uz" ? "Qidiruv" : "Поиск",
+            icon: (active) => (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+            ),
+          },
+          {
+            id: "map", label: lang === "uz" ? "Xarita" : "Карта", special: false,
+            icon: (active) => (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+              </svg>
+            ),
+          },
+          {
+            id: "chat", label: lang === "uz" ? "Chat" : "Чат",
+            badge: Object.values(chatMessages).flat().filter(m => m.from === "store" && !m.read).length,
+            icon: (active) => (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "#16A34A" : "none"} stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            ),
+          },
+          {
+            id: "profile", label: lang === "uz" ? "Profil" : "Профиль",
+            icon: (active) => (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#16A34A" : th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            ),
+          },
+        ].map((tab) => {
+          const isActive = activeTab === tab.id;
+          const badge = tab.badge || 0;
+          return (
+            <button key={tab.id}
+              onClick={() => {
+                if (tab.id === "search") {
+                  setActiveTab("home");
+                  setTimeout(() => document.querySelector("input[placeholder]")?.focus(), 100);
+                } else {
+                  setActiveTab(tab.id);
+                  if (tab.id !== "profile") setProfileView("main");
+                }
+              }}
+              style={{ position: "relative", flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0" }}>
+              {/* Icon + badge */}
+              <div style={{ position: "relative" }}>
+                {tab.icon(isActive)}
+                {badge > 0 && (
+                  <div style={{ position: "absolute", top: -4, right: -6, minWidth: 16, height: 16, borderRadius: 8, background: "#16A34A", display: "flex", alignItems: "center", justifyContent: "center", border: `2px solid ${th.card}` }}>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", padding: "0 3px" }}>{badge > 9 ? "9+" : badge}</span>
+                  </div>
+                )}
               </div>
-            ) : (
-              <span style={{ fontSize: 21, position: "relative" }}>
-                {tab.icon}
-                {tab.badge > 0 && <span style={{ position: "absolute", top: -6, right: -10, background: "#16A34A", color: "#fff", borderRadius: 7, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{tab.badge}</span>}
+              {/* Label */}
+              <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, color: isActive ? "#16A34A" : th.sub }}>
+                {tab.label}
               </span>
-            )}
-            <span style={{ fontSize: 9, fontWeight: 600, color: activeTab === tab.id ? "#16A34A" : th.sub }}>{tab.label}</span>
-            {activeTab === tab.id && !tab.special && <div style={{ width: 4, height: 4, borderRadius: 2, background: "#16A34A" }} />}
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
