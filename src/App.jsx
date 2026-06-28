@@ -1875,9 +1875,233 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
 
 
 // =====================================================
+// LEAFLET MINI MAP PICKER (real xarita)
+// =====================================================
+function LeafletMapPicker({ lang, location, onChange }) {
+  const tx = t[lang];
+  const mapRef = useRef(null);
+  const leafletMap = useRef(null);
+  const markerRef = useRef(null);
+
+  useEffect(() => {
+    if (!window.L || leafletMap.current) return;
+    const L = window.L;
+    const initLat = location?.lat || 41.299;
+    const initLng = location?.lng || 69.240;
+    const map = L.map(mapRef.current, { center: [initLat, initLng], zoom: 14, zoomControl: true });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap", maxZoom: 19,
+    }).addTo(map);
+    const pinIcon = L.divIcon({
+      className: "",
+      html: `<div style="background:#E63946;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>`,
+      iconSize: [28, 28], iconAnchor: [14, 28],
+    });
+    if (location) {
+      markerRef.current = L.marker([location.lat, location.lng], { icon: pinIcon, draggable: true }).addTo(map);
+      markerRef.current.on("dragend", (e) => { const ll = e.target.getLatLng(); onChange({ lat: ll.lat, lng: ll.lng }); });
+    }
+    map.on("click", (e) => {
+      const { lat, lng } = e.latlng;
+      onChange({ lat, lng });
+      if (markerRef.current) markerRef.current.setLatLng([lat, lng]);
+      else { markerRef.current = L.marker([lat, lng], { icon: pinIcon, draggable: true }).addTo(map); markerRef.current.on("dragend", (ev) => { const ll = ev.target.getLatLng(); onChange({ lat: ll.lat, lng: ll.lng }); }); }
+    });
+    leafletMap.current = map;
+  }, []);
+
+  return (
+    <div>
+      <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.12)", height: 240, border: "1.5px solid #E8E8E8" }}>
+        <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+      </div>
+      <p style={{ fontSize: 12, color: location ? "#00B894" : "#AAA", marginTop: 8, fontWeight: 600, textAlign: "center" }}>
+        {location ? (lang === "uz" ? "📍 Joylashuv belgilandi ✓" : "📍 Местоположение указано ✓") : (lang === "uz" ? "Xaritaga bosib joylashuvni belgilang" : "Нажмите на карту чтобы указать место")}
+      </p>
+    </div>
+  );
+}
+
+// =====================================================
+// KATEGORIYA PARAMETRLAR SXEMASI
+// =====================================================
+const CAT_SCHEMA = {
+  auto: {
+    uz: { title: "Avto servis", steps: ["Brend", "Xizmat turi", "Qism"] },
+    ru: { title: "Авто сервис", steps: ["Бренд", "Вид услуги", "Деталь"] },
+    brands: ["Chevrolet","Nexia","Malibu","Lacetti","Spark","Cobalt","Matiz",
+              "Toyota","Hyundai","Kia","BMW","Mercedes","Audi","Lexus","Nissan",
+              "Honda","Ford","Volkswagen","Lada","Daewoo","Boshqa"],
+    services: {
+      uz: ["Dvigatel ta'mirlash","Kuzov ta'mirlash","Elektrik ishlar",
+           "Shinalar almashtirish","Moy almashtirish","Konditsioner",
+           "To'xtatish tizimi","Uzatish qutisi","Diagnostika","Detallash","Boshqa"],
+      ru: ["Ремонт двигателя","Кузовной ремонт","Электрика",
+           "Замена шин","Замена масла","Кондиционер",
+           "Тормозная система","Коробка передач","Диагностика","Детейлинг","Другое"],
+    },
+    parts: {
+      uz: ["Motor","Kuzov","Elektr tizimi","Xadavoy / Podveska","Tormoz tizimi",
+           "Sovutish tizimi","Yoqilg'i tizimi","KPP / Transmissiya",
+           "Konditsioner tizimi","Interer","Shina va disklar","Boshqa"],
+      ru: ["Двигатель","Кузов","Электрика","Ходовая / Подвеска","Тормозная система",
+           "Система охлаждения","Топливная система","КПП / Трансмиссия",
+           "Система кондиционирования","Интерьер","Шины и диски","Другое"],
+    },
+  },
+  food: {
+    types: {
+      uz: ["Sabzavotlar va mevalar","Non va non mahsulotlari","Go'sht va baliq",
+           "Sut mahsulotlari","Shirinliklar","Ichimliklar","Tayyor taomlar","Organik mahsulotlar","Boshqa"],
+      ru: ["Овощи и фрукты","Хлеб и выпечка","Мясо и рыба",
+           "Молочные продукты","Сладости","Напитки","Готовая еда","Органика","Другое"],
+    },
+  },
+  clothing: {
+    types: {
+      uz: ["Erkaklar kiyimi","Ayollar kiyimi","Bolalar kiyimi","Sport kiyimi",
+           "Milliy kiyim","Poyabzal","Aksessuarlar","Sumkalar","Boshqa"],
+      ru: ["Мужская одежда","Женская одежда","Детская одежда","Спортивная одежда",
+           "Национальная одежда","Обувь","Аксессуары","Сумки","Другое"],
+    },
+    sizes: ["XS","S","M","L","XL","XXL","3XL","Bolalar","Universal"],
+  },
+  electronics: {
+    types: {
+      uz: ["Smartfonlar","Noutbuk va kompyuter","Planshetlar","TV va audio",
+           "Maishiy texnika","Foto va video","Aksessuarlar","O'yin qurilmalari","Boshqa"],
+      ru: ["Смартфоны","Ноутбуки и ПК","Планшеты","ТВ и аудио",
+           "Бытовая техника","Фото и видео","Аксессуары","Игровые устройства","Другое"],
+    },
+    brands: ["Apple","Samsung","Xiaomi","Huawei","LG","Sony","Lenovo","Asus","HP","Dell","Boshqa"],
+  },
+  beauty: {
+    types: {
+      uz: ["Parfyumeriya","Soch parvarishi","Yuz parvarishi","Tana parvarishi",
+           "Makiyaj","Tirnoq mahsulotlari","Erkaklar uchun","Professional kosmetika","Boshqa"],
+      ru: ["Парфюмерия","Уход за волосами","Уход за лицом","Уход за телом",
+           "Макияж","Продукты для ногтей","Для мужчин","Профессиональная косметика","Другое"],
+    },
+  },
+  restaurant: {
+    types: {
+      uz: ["O'zbek taomlari","Evropa taomlari","Xitoy taomlari","Tez taomlar",
+           "Sushi va rollar","Pizza","Burger","Qahva va shirinlik","Yetkazib berish","Boshqa"],
+      ru: ["Узбекская кухня","Европейская кухня","Китайская кухня","Фастфуд",
+           "Суши и роллы","Пицца","Бургеры","Кофе и десерты","Доставка","Другое"],
+    },
+  },
+  home_cat: {
+    types: {
+      uz: ["Mebel","Maishiy texnika","Uy bezaklari","Yostiq va ko'rpa",
+           "Oshxona anjomlari","Tozalash vositalari","Bog' anjomlar","Ta'mirlash mollari","Boshqa"],
+      ru: ["Мебель","Бытовая техника","Декор","Подушки и одеяла",
+           "Кухонная посуда","Средства уборки","Садовый инвентарь","Строительные материалы","Другое"],
+    },
+  },
+  sport: {
+    types: {
+      uz: ["Fitnes va bodibilding","Velosiped","Tennis","Futbol",
+           "Basketbol","Suzish","Togʻ turizm","Jangovar san'at","Boshqa"],
+      ru: ["Фитнес и бодибилдинг","Велоспорт","Теннис","Футбол",
+           "Баскетбол","Плавание","Горный туризм","Единоборства","Другое"],
+    },
+  },
+  services: {
+    types: {
+      uz: ["Santexnika","Elektrik","Qurilish","Bo'yoqchi",
+           "Qulf ustasi","Kompyuter ta'mirlash","Yuklovchi","Haydovchi","Boshqa"],
+      ru: ["Сантехника","Электрика","Строительство","Маляр",
+           "Слесарь","Ремонт компьютеров","Грузчик","Водитель","Другое"],
+    },
+  },
+  pharmacy: {
+    types: {
+      uz: ["Dorilar","Vitaminlar","Tibbiy anjomlar","Ko'z linzalari",
+           "Bolalar uchun","Homiladorlar uchun","Fitoterapiya","Boshqa"],
+      ru: ["Лекарства","Витамины","Медицинское оборудование","Контактные линзы",
+           "Для детей","Для беременных","Фитотерапия","Другое"],
+    },
+  },
+  education: {
+    types: {
+      uz: ["Ingliz tili","Matematika","Dasturlash","Grafik dizayn",
+           "Musiqa","Rasm chizish","Sport", "Tayyorlov kurslari","Boshqa"],
+      ru: ["Английский язык","Математика","Программирование","Графический дизайн",
+           "Музыка","Рисование","Спорт","Подготовительные курсы","Другое"],
+    },
+  },
+  hotel: {
+    types: {
+      uz: ["Mehmonxona","Hostel","Kvartira ijarasi","Dam olish uyi",
+           "Sanatoriya","Kottedj","Turistik bazis","Boshqa"],
+      ru: ["Гостиница","Хостел","Аренда квартиры","Дом отдыха",
+           "Санаторий","Коттедж","Туристическая база","Другое"],
+    },
+    stars: ["1 ★","2 ★★","3 ★★★","4 ★★★★","5 ★★★★★"],
+  },
+  repair: {
+    types: {
+      uz: ["Telefon ta'mirlash","Noutbuk ta'mirlash","Maishiy texnika ta'mirlash",
+           "Eshik-deraza ta'mirlash","Mebel ta'mirlash","Santexnika","Elektr ishlari","Boshqa"],
+      ru: ["Ремонт телефонов","Ремонт ноутбуков","Ремонт бытовой техники",
+           "Ремонт дверей и окон","Ремонт мебели","Сантехника","Электрика","Другое"],
+    },
+  },
+  kids: {
+    types: {
+      uz: ["Kiyim","O'yinchoqlar","Kitoblar","Bolalar aravasi",
+           "Maktab buyumlari","Oziq-ovqat","Sport anjomlar","Boshqa"],
+      ru: ["Одежда","Игрушки","Книги","Детские коляски",
+           "Школьные принадлежности","Питание","Спортивный инвентарь","Другое"],
+    },
+    ages: ["0-1 yosh","1-3 yosh","3-7 yosh","7-12 yosh","12+ yosh"],
+  },
+  medical: {
+    types: {
+      uz: ["Terapevt","Stomatolog","Ko'z shifokori","Kardiolog",
+           "Nevropatolog","Jarroh","Dermatolog","Ginekolog","Laboratoriya","Boshqa"],
+      ru: ["Терапевт","Стоматолог","Офтальмолог","Кардиолог",
+           "Невролог","Хирург","Дерматолог","Гинеколог","Лаборатория","Другое"],
+    },
+  },
+  entertainment: {
+    types: {
+      uz: ["Kinoteatr","O'yin markazi","Karaoke","Bowling",
+           "Escape room","Akvapark","Tsirk","Kontsert","Boshqa"],
+      ru: ["Кинотеатр","Игровой центр","Караоке","Боулинг",
+           "Квест-комната","Аквапарк","Цирк","Концерт","Другое"],
+    },
+  },
+  pet: {
+    types: {
+      uz: ["Itlar","Mushuklar","Parrandalar","Baliqlar",
+           "Veterinar xizmati","Oziq-ovqat","Aksessuarlar","Cho'miltirib tarashtirish","Boshqa"],
+      ru: ["Собаки","Кошки","Птицы","Рыбы",
+           "Ветеринарные услуги","Корма","Аксессуары","Груминг","Другое"],
+    },
+  },
+  cleaning: {
+    types: {
+      uz: ["Kvartira tozalash","Ofis tozalash","Oyna tozalash","Gilam yuvish",
+           "Kreslolar tozalash","Avto tozalash","Qurilishdan keyin tozalash","Boshqa"],
+      ru: ["Уборка квартиры","Уборка офиса","Мойка окон","Чистка ковров",
+           "Химчистка мебели","Автомойка","Уборка после ремонта","Другое"],
+    },
+  },
+};
+
+// =====================================================
 // ADD PRODUCT FORM
 // =====================================================
-const emptyProduct = { category: "", name: "", description: "", params: [], originalPrice: "", address: "", location: null, phone: "", photos: [], delivery: false, deliveryPrice: "" };
+const emptyProduct = {
+  category: "", name: "", description: "",
+  catType: "", catBrand: "", catPart: "", catService: "",
+  catSize: "", catAge: "", catStar: "",
+  params: [], originalPrice: "",
+  address: "", location: null, phone: "", photos: [],
+  delivery: false, deliveryPrice: "",
+};
 
 function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
   const tx = t[lang];
@@ -1885,7 +2109,12 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
   const s = mkStyles(dark);
   const cats = listingCategories(lang);
   const [formStep, setFormStep] = useState(1);
-  const [p, setP] = useState({ ...emptyProduct, address: store.address || "", phone: store.phone || "", location: store.lat ? { lat: store.lat, lng: store.lng } : null });
+  const [p, setP] = useState({
+    ...emptyProduct,
+    address: store.address || "",
+    phone: store.phone || "",
+    location: store.lat ? { lat: store.lat, lng: store.lng } : null,
+  });
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
   const update = (patch) => setP((prev) => ({ ...prev, ...patch }));
@@ -1899,9 +2128,19 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
     e.target.value = "";
   };
 
+  const schema = CAT_SCHEMA[p.category];
+  const catInfo = cats.find((c) => c.id === p.category);
+
+  // Har kategoriya uchun step 2 validatsiyasi
   const canGoStep2 = !!p.category;
-  const canGoStep3 = p.name.trim().length > 0;
-  const canSubmit = p.address.trim().length > 0 && p.photos.length > 0;
+  const canGoStep3 = (() => {
+    if (!p.category) return false;
+    if (p.category === "auto") return !!p.catBrand && !!p.catService && !!p.catPart;
+    if (schema?.types) return !!p.catType;
+    if (schema?.brands) return !!p.catBrand && !!p.catType;
+    return p.name.trim().length > 0;
+  })();
+  const canSubmit = p.address.trim().length > 0;
 
   const goNext = () => {
     setError("");
@@ -1909,37 +2148,63 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
     if (formStep === 2 && !canGoStep3) { setError(tx.fillRequired); return; }
     setFormStep((st) => Math.min(4, st + 1));
   };
-  const goBack = () => { setError(""); formStep === 1 ? onCancel() : setFormStep((st) => st - 1); };
-  const catInfo = cats.find((c) => c.id === p.category);
+  const goBack = () => {
+    setError("");
+    formStep === 1 ? onCancel() : setFormStep((st) => st - 1);
+  };
+
+  // Auto-generate name from selections
+  const autoName = (() => {
+    if (p.category === "auto" && p.catBrand && p.catService)
+      return (lang === "uz"
+        ? p.catBrand + " — " + p.catService + (p.catPart ? " (" + p.catPart + ")" : "")
+        : p.catBrand + " — " + p.catService + (p.catPart ? " (" + p.catPart + ")" : ""));
+    if (p.catType) return p.catType + (p.catBrand ? " — " + p.catBrand : "");
+    return "";
+  })();
+
+  const handleSubmit = () => {
+    if (!canSubmit) { setError(tx.fillRequired); return; }
+    const finalName = p.name.trim() || autoName;
+    onSubmit({ ...p, name: finalName });
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: th.bg }}>
+      {/* HEADER */}
       <div style={{ background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", padding: "48px 20px 20px", color: "#fff", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <button onClick={goBack} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer" }}>←</button>
           <div>
             <div style={{ fontSize: 17, fontWeight: 800 }}>{tx.addListing}</div>
-            <div style={{ fontSize: 11, opacity: 0.85 }}>{tx.step} {formStep} {tx.of} 4</div>
+            <div style={{ fontSize: 11, opacity: 0.85 }}>
+              {catInfo?.emoji} {catInfo?.label || tx.chooseCategory} — {tx.step} {formStep} {tx.of} 4
+            </div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 6 }}>
-          {[1, 2, 3, 4].map((n) => <div key={n} style={{ flex: 1, height: 4, borderRadius: 2, background: n <= formStep ? "#fff" : "rgba(255,255,255,0.3)" }} />)}
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} style={{ flex: 1, height: 4, borderRadius: 2, background: n <= formStep ? "#fff" : "rgba(255,255,255,0.3)" }} />
+          ))}
         </div>
       </div>
 
       <div style={{ padding: "20px 20px 110px" }}>
+
+        {/* ══ STEP 1: Kategoriya tanlash ══ */}
         {formStep === 1 && (
           <div>
             <h3 style={s.secTitle}>{tx.chooseCategory}</h3>
             <p style={s.secDesc}>{tx.chooseCategoryDesc}</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {cats.map((c) => (
-                <button key={c.id} onClick={() => update({ category: c.id })} style={{
-                  display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8,
-                  padding: "16px 14px", borderRadius: 16, cursor: "pointer", textAlign: "left",
-                  border: p.category === c.id ? `2px solid ${c.color}` : `2px solid ${th.border}`,
-                  background: p.category === c.id ? c.color + "12" : th.card,
-                }}>
+                <button key={c.id} onClick={() => update({ category: c.id, catType: "", catBrand: "", catPart: "", catService: "" })}
+                  style={{
+                    display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8,
+                    padding: "16px 14px", borderRadius: 16, cursor: "pointer", textAlign: "left",
+                    border: p.category === c.id ? `2px solid ${c.color}` : `2px solid ${th.border}`,
+                    background: p.category === c.id ? c.color + "12" : th.card,
+                  }}>
                   <span style={{ fontSize: 26 }}>{c.emoji}</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: th.text }}>{c.label}</span>
                 </button>
@@ -1947,14 +2212,261 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
             </div>
           </div>
         )}
+        {/* ══ STEP 2: Kategoriya parametrlari ══ */}
         {formStep === 2 && (
           <div>
-            <h3 style={s.secTitle}>{tx.productInfo}</h3>
-            <p style={s.secDesc}>{catInfo?.emoji} {catInfo?.label}</p>
-            <label style={s.label}>{tx.productName} <span style={{ color: "#E63946" }}>{tx.required}</span></label>
-            <input placeholder={tx.productNamePh} value={p.name} onChange={(e) => update({ name: e.target.value })} style={s.input} />
+            <h3 style={s.secTitle}>{catInfo?.emoji} {catInfo?.label}</h3>
+            <p style={s.secDesc}>{lang === "uz" ? "Ma'lumotlarni to'ldiring" : "Заполните информацию"}</p>
+
+            {/* ── AVTO SERVIS ── */}
+            {p.category === "auto" && (() => {
+              const sc = CAT_SCHEMA.auto;
+              return (
+                <div>
+                  {/* Brend */}
+                  <label style={s.label}>🚗 {lang === "uz" ? "Avtomobil brendi" : "Марка автомобиля"} *</label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+                    {sc.brands.map((b) => (
+                      <button key={b} onClick={() => update({ catBrand: b })} style={{
+                        padding: "7px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 600,
+                        border: p.catBrand === b ? "2px solid #0652DD" : `2px solid ${th.border}`,
+                        background: p.catBrand === b ? "#0652DD" : th.card,
+                        color: p.catBrand === b ? "#fff" : th.text,
+                      }}>{b}</button>
+                    ))}
+                  </div>
+
+                  {/* Xizmat turi */}
+                  {p.catBrand && (
+                    <>
+                      <label style={s.label}>🔧 {lang === "uz" ? "Xizmat turi" : "Вид услуги"} *</label>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+                        {sc.services[lang].map((sv) => (
+                          <button key={sv} onClick={() => update({ catService: sv })} style={{
+                            padding: "12px 16px", borderRadius: 12, cursor: "pointer", textAlign: "left",
+                            border: p.catService === sv ? "2px solid #0652DD" : `2px solid ${th.border}`,
+                            background: p.catService === sv ? "#0652DD12" : th.card,
+                            color: p.catService === sv ? "#0652DD" : th.text,
+                            fontWeight: p.catService === sv ? 700 : 500, fontSize: 14,
+                          }}>{p.catService === sv ? "✓ " : ""}{sv}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Qism */}
+                  {p.catService && (
+                    <>
+                      <label style={s.label}>⚙️ {lang === "uz" ? "Qaysi qism?" : "Какая деталь?"} *</label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+                        {sc.parts[lang].map((pt) => (
+                          <button key={pt} onClick={() => update({ catPart: pt })} style={{
+                            padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 600,
+                            border: p.catPart === pt ? "2px solid #E63946" : `2px solid ${th.border}`,
+                            background: p.catPart === pt ? "#E63946" : th.card,
+                            color: p.catPart === pt ? "#fff" : th.text,
+                          }}>{pt}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Preview */}
+                  {p.catBrand && p.catService && (
+                    <div style={{ background: "#0652DD12", borderRadius: 14, padding: "14px 16px", border: "1px solid #0652DD30", marginBottom: 16 }}>
+                      <div style={{ fontSize: 12, color: "#0652DD", fontWeight: 700, marginBottom: 6 }}>
+                        {lang === "uz" ? "📋 Xizmat nomi:" : "📋 Название услуги:"}
+                      </div>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: th.text }}>
+                        {p.catBrand} — {p.catService}{p.catPart ? ` (${p.catPart})` : ""}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* ── ELEKTRONIKA ── */}
+            {p.category === "electronics" && (() => {
+              const sc = CAT_SCHEMA.electronics;
+              return (
+                <div>
+                  <label style={s.label}>📱 {lang === "uz" ? "Turi" : "Тип"} *</label>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+                    {sc.types[lang].map((tp) => (
+                      <button key={tp} onClick={() => update({ catType: tp })} style={{
+                        padding: "12px 16px", borderRadius: 12, cursor: "pointer", textAlign: "left",
+                        border: p.catType === tp ? "2px solid #0984E3" : `2px solid ${th.border}`,
+                        background: p.catType === tp ? "#0984E312" : th.card,
+                        color: p.catType === tp ? "#0984E3" : th.text,
+                        fontWeight: p.catType === tp ? 700 : 500, fontSize: 14,
+                      }}>{p.catType === tp ? "✓ " : ""}{tp}</button>
+                    ))}
+                  </div>
+                  {p.catType && (
+                    <>
+                      <label style={s.label}>🏷️ {lang === "uz" ? "Brend (ixtiyoriy)" : "Бренд (необязательно)"}</label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+                        {sc.brands.map((b) => (
+                          <button key={b} onClick={() => update({ catBrand: p.catBrand === b ? "" : b })} style={{
+                            padding: "7px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 600,
+                            border: p.catBrand === b ? "2px solid #0984E3" : `2px solid ${th.border}`,
+                            background: p.catBrand === b ? "#0984E3" : th.card,
+                            color: p.catBrand === b ? "#fff" : th.text,
+                          }}>{b}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* ── KIYIM ── */}
+            {p.category === "clothing" && (() => {
+              const sc = CAT_SCHEMA.clothing;
+              return (
+                <div>
+                  <label style={s.label}>👕 {lang === "uz" ? "Kiyim turi" : "Тип одежды"} *</label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+                    {sc.types[lang].map((tp) => (
+                      <button key={tp} onClick={() => update({ catType: tp })} style={{
+                        padding: "10px 12px", borderRadius: 12, cursor: "pointer", textAlign: "left", fontSize: 13,
+                        border: p.catType === tp ? "2px solid #2D3436" : `2px solid ${th.border}`,
+                        background: p.catType === tp ? "#2D343612" : th.card,
+                        color: p.catType === tp ? "#2D3436" : th.text,
+                        fontWeight: p.catType === tp ? 700 : 500,
+                      }}>{p.catType === tp ? "✓ " : ""}{tp}</button>
+                    ))}
+                  </div>
+                  {p.catType && (
+                    <>
+                      <label style={s.label}>📏 {lang === "uz" ? "O'lcham (ixtiyoriy)" : "Размер (необязательно)"}</label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+                        {sc.sizes.map((sz) => (
+                          <button key={sz} onClick={() => update({ catSize: p.catSize === sz ? "" : sz })} style={{
+                            padding: "7px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 700,
+                            border: p.catSize === sz ? "2px solid #E63946" : `2px solid ${th.border}`,
+                            background: p.catSize === sz ? "#E63946" : th.card,
+                            color: p.catSize === sz ? "#fff" : th.text,
+                          }}>{sz}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* ── MEHMONXONA ── */}
+            {p.category === "hotel" && (() => {
+              const sc = CAT_SCHEMA.hotel;
+              return (
+                <div>
+                  <label style={s.label}>🏨 {lang === "uz" ? "Tur" : "Тип"} *</label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+                    {sc.types[lang].map((tp) => (
+                      <button key={tp} onClick={() => update({ catType: tp })} style={{
+                        padding: "10px 12px", borderRadius: 12, cursor: "pointer", fontSize: 13,
+                        border: p.catType === tp ? "2px solid #1289A7" : `2px solid ${th.border}`,
+                        background: p.catType === tp ? "#1289A712" : th.card,
+                        color: p.catType === tp ? "#1289A7" : th.text,
+                        fontWeight: p.catType === tp ? 700 : 500,
+                      }}>{tp}</button>
+                    ))}
+                  </div>
+                  {p.catType && (
+                    <>
+                      <label style={s.label}>⭐ {lang === "uz" ? "Yulduzcha (ixtiyoriy)" : "Звёздность (необязательно)"}</label>
+                      <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+                        {sc.stars.map((st) => (
+                          <button key={st} onClick={() => update({ catStar: p.catStar === st ? "" : st })} style={{
+                            padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 600,
+                            border: p.catStar === st ? "2px solid #FFB400" : `2px solid ${th.border}`,
+                            background: p.catStar === st ? "#FFB400" : th.card,
+                            color: p.catStar === st ? "#fff" : th.text,
+                          }}>{st}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* ── BOLALAR ── */}
+            {p.category === "kids" && (() => {
+              const sc = CAT_SCHEMA.kids;
+              return (
+                <div>
+                  <label style={s.label}>🧸 {lang === "uz" ? "Mahsulot turi" : "Тип товара"} *</label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+                    {sc.types[lang].map((tp) => (
+                      <button key={tp} onClick={() => update({ catType: tp })} style={{
+                        padding: "10px 12px", borderRadius: 12, cursor: "pointer", fontSize: 13,
+                        border: p.catType === tp ? "2px solid #FDA7DF" : `2px solid ${th.border}`,
+                        background: p.catType === tp ? "#FDA7DF20" : th.card,
+                        color: p.catType === tp ? "#E84393" : th.text,
+                        fontWeight: p.catType === tp ? 700 : 500,
+                      }}>{tp}</button>
+                    ))}
+                  </div>
+                  {p.catType && (
+                    <>
+                      <label style={s.label}>🎂 {lang === "uz" ? "Yosh guruh (ixtiyoriy)" : "Возрастная группа (необязательно)"}</label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+                        {sc.ages.map((ag) => (
+                          <button key={ag} onClick={() => update({ catAge: p.catAge === ag ? "" : ag })} style={{
+                            padding: "7px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 600,
+                            border: p.catAge === ag ? "2px solid #E84393" : `2px solid ${th.border}`,
+                            background: p.catAge === ag ? "#E84393" : th.card,
+                            color: p.catAge === ag ? "#fff" : th.text,
+                          }}>{ag}</button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* ── BOSHQA KATEGORIYALAR (types bilan) ── */}
+            {!["auto","electronics","clothing","hotel","kids"].includes(p.category) && schema?.types && (
+              <div>
+                <label style={s.label}>{catInfo?.emoji} {lang === "uz" ? "Turi" : "Тип"} *</label>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+                  {schema.types[lang].map((tp) => (
+                    <button key={tp} onClick={() => update({ catType: tp })} style={{
+                      padding: "12px 16px", borderRadius: 12, cursor: "pointer", textAlign: "left",
+                      border: p.catType === tp ? `2px solid ${catInfo?.color || "#E63946"}` : `2px solid ${th.border}`,
+                      background: p.catType === tp ? (catInfo?.color || "#E63946") + "12" : th.card,
+                      color: p.catType === tp ? (catInfo?.color || "#E63946") : th.text,
+                      fontWeight: p.catType === tp ? 700 : 500, fontSize: 14,
+                    }}>{p.catType === tp ? "✓ " : ""}{tp}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── Xizmat nomi (ixtiyoriy) ── */}
+            <label style={s.label}>{tx.productName} {lang === "uz" ? "(ixtiyoriy)" : "(необязательно)"}</label>
+            <input
+              placeholder={autoName || tx.productNamePh}
+              value={p.name}
+              onChange={(e) => update({ name: e.target.value })}
+              style={s.input}
+            />
+            {autoName && !p.name && (
+              <div style={{ fontSize: 12, color: th.sub, marginTop: -14, marginBottom: 14 }}>
+                {lang === "uz" ? `Avtomatik: "${autoName}"` : `Авто: "${autoName}"`}
+              </div>
+            )}
+
             <label style={s.label}>{tx.productDesc}</label>
-            <textarea placeholder={tx.productDescPh} value={p.description} onChange={(e) => update({ description: e.target.value })} style={s.textarea} />
+            <textarea placeholder={tx.productDescPh} value={p.description}
+              onChange={(e) => update({ description: e.target.value })} style={s.textarea} />
+
+            {/* Qo'shimcha parametrlar */}
             {p.params.map((row, idx) => (
               <div key={idx} style={{ display: "flex", gap: 8, marginBottom: 10, alignItems: "center" }}>
                 <input placeholder={tx.paramNamePh} value={row.name}
@@ -1968,36 +2480,155 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
               </div>
             ))}
             <button onClick={() => update({ params: [...p.params, { name: "", value: "" }] })}
-              style={{ width: "100%", padding: "10px", background: th.card, border: `1.5px dashed ${th.border}`, borderRadius: 12, color: th.sub, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>{tx.addParam}</button>
+              style={{ width: "100%", padding: "10px", background: th.card, border: `1.5px dashed ${th.border}`, borderRadius: 12, color: th.sub, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
+              {tx.addParam}
+            </button>
           </div>
         )}
         {formStep === 3 && (
+          {/* ══ STEP 3: Narx ══ */}
           <div>
-            <h3 style={s.secTitle}>{tx.priceInfo}</h3>
-            <label style={s.label}>{tx.originalPrice}</label>
-            <input type="number" min="0" placeholder="500 000" value={p.originalPrice} onChange={(e) => update({ originalPrice: e.target.value })} style={s.input} />
-            <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: th.card2, borderRadius: 14, marginBottom: 18, border: `1px solid ${th.border}` }}>
-              <input type="checkbox" checked={p.delivery} onChange={(e) => update({ delivery: e.target.checked })} style={{ width: 20, height: 20, accentColor: "#E63946", cursor: "pointer" }} />
-              <span style={{ fontSize: 14, color: th.text, fontWeight: 600 }}>🚚 {tx.deliveryAvail}</span>
-            </div>
-            {p.delivery && (
+            <h3 style={s.secTitle}>💰 {tx.priceInfo}</h3>
+            <p style={s.secDesc}>{catInfo?.emoji} {catInfo?.label}</p>
+
+            {/* Kategoriyaga mos narx label */}
+            <label style={s.label}>
+              {p.category === "auto" ? (lang === "uz" ? "Xizmat narxi (so'm)" : "Стоимость услуги (сум)")
+               : p.category === "medical" || p.category === "education" ? (lang === "uz" ? "Sessiya / dars narxi (so'm)" : "Стоимость сеанса / урока (сум)")
+               : p.category === "hotel" ? (lang === "uz" ? "Bir tunlik narxi (so'm)" : "Стоимость за ночь (сум)")
+               : p.category === "cleaning" || p.category === "services" ? (lang === "uz" ? "Xizmat narxi (so'm)" : "Стоимость услуги (сум)")
+               : tx.originalPrice}
+            </label>
+            <input
+              type="number" min="0"
+              placeholder={p.category === "hotel" ? "350 000" : p.category === "auto" ? "200 000" : "500 000"}
+              value={p.originalPrice}
+              onChange={(e) => update({ originalPrice: e.target.value })}
+              style={s.input}
+            />
+
+            {/* Narx preview */}
+            {p.originalPrice > 0 && (
+              <div style={{ background: "#00B89415", borderRadius: 14, padding: "12px 16px", marginBottom: 18, display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #00B89440" }}>
+                <span style={{ color: "#00B894", fontWeight: 600, fontSize: 13 }}>
+                  {lang === "uz" ? "Kiritilgan narx:" : "Введённая цена:"}
+                </span>
+                <span style={{ color: "#00B894", fontWeight: 900, fontSize: 18 }}>
+                  {Number(p.originalPrice).toLocaleString("ru-RU")} {tx.sumShort}
+                </span>
+              </div>
+            )}
+
+            {/* Yetkazib berish — faqat savdo kategoriyalari uchun */}
+            {["food","clothing","electronics","beauty","home_cat","sport","pharmacy","kids","pet"].includes(p.category) && (
               <>
-                <label style={s.label}>{tx.deliveryPrice}</label>
-                <input type="number" min="0" placeholder="5 000" value={p.deliveryPrice} onChange={(e) => update({ deliveryPrice: e.target.value })} style={s.input} />
+                <div onClick={() => update({ delivery: !p.delivery })} style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 16px",
+                  background: p.delivery ? "#00B89412" : th.card2, borderRadius: 14, marginBottom: 18,
+                  border: p.delivery ? "1.5px solid #00B894" : `1px solid ${th.border}`, cursor: "pointer",
+                }}>
+                  <input type="checkbox" checked={p.delivery} onChange={() => {}} style={{ width: 20, height: 20, accentColor: "#00B894" }} />
+                  <span style={{ fontSize: 14, color: p.delivery ? "#00B894" : th.text, fontWeight: 600 }}>🚚 {tx.deliveryAvail}</span>
+                </div>
+                {p.delivery && (
+                  <>
+                    <label style={s.label}>{tx.deliveryPrice}</label>
+                    <input type="number" min="0" placeholder="15 000" value={p.deliveryPrice}
+                      onChange={(e) => update({ deliveryPrice: e.target.value })} style={s.input} />
+                  </>
+                )}
               </>
             )}
+
+            {/* Chegirma bo'limi */}
+            <div style={{ background: th.card2, borderRadius: 14, padding: "16px", border: `1px solid ${th.border}`, marginTop: 4 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: th.sub, marginBottom: 12 }}>
+                🏷️ {lang === "uz" ? "Chegirma (ixtiyoriy)" : "Скидка (необязательно)"}
+              </div>
+              <label style={{ ...s.label, marginBottom: 8 }}>
+                {lang === "uz" ? "Chegirma foizi:" : "Процент скидки:"} {p.discountPercent ? p.discountPercent + "%" : "—"}
+              </label>
+              <input type="range" min="0" max="90" step="5" value={p.discountPercent || 0}
+                onChange={(e) => update({ discountPercent: Number(e.target.value) })}
+                style={{ width: "100%", marginBottom: 8, accentColor: "#E63946" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: th.sub, marginBottom: p.discountPercent > 0 ? 12 : 0 }}>
+                <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>90%</span>
+              </div>
+              {p.discountPercent > 0 && (
+                <>
+                  <label style={s.label}>{tx.expiryDate}</label>
+                  <input type="date" min={new Date().toISOString().slice(0,10)}
+                    value={p.discountExpiry || ""}
+                    onChange={(e) => update({ discountExpiry: e.target.value })}
+                    style={s.input} />
+                  {p.originalPrice > 0 && (
+                    <div style={{ background: "#FFF0F0", borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+                      <span style={{ textDecoration: "line-through", color: "#AAA", fontSize: 13 }}>
+                        {Number(p.originalPrice).toLocaleString("ru-RU")} {tx.sumShort}
+                      </span>
+                      {" → "}
+                      <b style={{ color: "#E63946", fontSize: 16 }}>
+                        {Math.round(p.originalPrice * (1 - p.discountPercent / 100)).toLocaleString("ru-RU")} {tx.sumShort}
+                      </b>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
+
+        {/* ══ STEP 4: Joylashuv (Leaflet xarita) ══ */}
         {formStep === 4 && (
           <div>
-            <h3 style={s.secTitle}>{tx.locationInfo}</h3>
-            <label style={s.label}>{tx.storeAddress} <span style={{ color: "#E63946" }}>{tx.required}</span></label>
-            <input placeholder={tx.storeAddressPh} value={p.address} onChange={(e) => update({ address: e.target.value })} style={s.input} />
-            <label style={s.label}>{tx.pickOnMap}</label>
-            <div style={{ marginBottom: 18 }}><MiniMapPicker lang={lang} location={p.location} onChange={(loc) => update({ location: loc })} /></div>
+            <h3 style={s.secTitle}>📍 {tx.locationInfo}</h3>
+            <p style={s.secDesc}>{lang === "uz" ? "Xaritada aniq joyingizni belgilang" : "Укажите точное место на карте"}</p>
+
+            <label style={s.label}>{tx.storeAddress} <span style={{ color: "#E63946" }}>*</span></label>
+            <input
+              placeholder={tx.storeAddressPh}
+              value={p.address}
+              onChange={(e) => update({ address: e.target.value })}
+              style={s.input}
+            />
+
+            {/* Leaflet xarita */}
+            <label style={s.label}>
+              🗺️ {lang === "uz" ? "Xaritadan aniq joyni belgilang" : "Отметьте точное место на карте"}
+            </label>
+            <div style={{ marginBottom: 18 }}>
+              <LeafletMapPicker
+                lang={lang}
+                location={p.location}
+                onChange={(loc) => {
+                  update({ location: loc });
+                }}
+              />
+            </div>
+
+            {p.location && (
+              <div style={{ background: "#00B89412", borderRadius: 12, padding: "10px 14px", marginBottom: 16, display: "flex", gap: 10, alignItems: "center", border: "1px solid #00B89430" }}>
+                <span style={{ fontSize: 18 }}>📍</span>
+                <div>
+                  <div style={{ fontSize: 12, color: "#00B894", fontWeight: 700 }}>{lang === "uz" ? "Joylashuv belgilandi" : "Местоположение указано"}</div>
+                  <div style={{ fontSize: 11, color: th.sub }}>
+                    {p.location.lat.toFixed(5)}, {p.location.lng.toFixed(5)}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <label style={s.label}>{tx.phone}</label>
-            <input type="tel" placeholder={tx.phonePlaceholder} value={p.phone} onChange={(e) => update({ phone: e.target.value })} style={s.input} />
-            <label style={s.label}>{tx.photos} <span style={{ color: "#E63946" }}>{tx.required}</span></label>
+            <input type="tel" placeholder={tx.phonePlaceholder} value={p.phone}
+              onChange={(e) => update({ phone: e.target.value })} style={s.input} />
+
+            {/* Rasmlar */}
+            <label style={s.label}>
+              📸 {tx.photos}
+              <span style={{ color: th.sub, fontWeight: 500, fontSize: 11, marginLeft: 6 }}>
+                ({lang === "uz" ? "ixtiyoriy" : "необязательно"})
+              </span>
+            </label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
               {p.photos.map((src, idx) => (
                 <div key={idx} style={{ position: "relative", width: 84, height: 84, borderRadius: 12, overflow: "hidden" }}>
@@ -2006,19 +2637,52 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
                     style={{ position: "absolute", top: 3, right: 3, background: "rgba(0,0,0,0.55)", border: "none", borderRadius: 8, color: "#fff", width: 22, height: 22, fontSize: 12, cursor: "pointer" }}>✕</button>
                 </div>
               ))}
-              <button onClick={() => fileInputRef.current?.click()} style={{ width: 84, height: 84, borderRadius: 12, border: `1.5px dashed ${th.border}`, background: th.card, color: "#AAA", fontSize: 24, cursor: "pointer" }}>＋</button>
+              <button onClick={() => fileInputRef.current?.click()} style={{
+                width: 84, height: 84, borderRadius: 12,
+                border: `1.5px dashed ${th.border}`, background: th.card,
+                color: "#AAA", fontSize: 24, cursor: "pointer",
+              }}>＋</button>
             </div>
             <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleFiles} style={{ display: "none" }} />
+
+            {/* Summary */}
+            <div style={{ background: th.card2, borderRadius: 16, padding: 16, border: `1px solid ${th.border}`, marginTop: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: th.sub, marginBottom: 12 }}>
+                📋 {lang === "uz" ? "Xulosa" : "Итог"}
+              </div>
+              {[
+                { label: lang === "uz" ? "Kategoriya" : "Категория", value: catInfo?.emoji + " " + catInfo?.label },
+                { label: lang === "uz" ? "Xizmat/Mahsulot" : "Услуга/Товар", value: p.name || autoName || "—" },
+                p.catBrand ? { label: "Brend", value: p.catBrand } : null,
+                p.catType ? { label: lang === "uz" ? "Turi" : "Тип", value: p.catType } : null,
+                p.catPart ? { label: lang === "uz" ? "Qism" : "Деталь", value: p.catPart } : null,
+                p.originalPrice ? { label: lang === "uz" ? "Narxi" : "Цена", value: Number(p.originalPrice).toLocaleString("ru-RU") + " " + tx.sumShort } : null,
+                p.discountPercent > 0 ? { label: lang === "uz" ? "Chegirma" : "Скидка", value: "-" + p.discountPercent + "%" } : null,
+              ].filter(Boolean).map((row, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${th.border}` }}>
+                  <span style={{ fontSize: 12, color: th.sub }}>{row.label}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: th.text }}>{row.value}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-        {error && <div style={{ color: "#E63946", fontSize: 13, fontWeight: 600, marginTop: 10, textAlign: "center" }}>{error}</div>}
+
+        {error && <div style={{ color: "#E63946", fontSize: 13, fontWeight: 600, marginTop: 12, textAlign: "center" }}>{error}</div>}
       </div>
 
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: th.card, borderTop: `1px solid ${th.border}`, padding: "14px 20px 24px", boxShadow: "0 -4px 20px rgba(0,0,0,0.06)", boxSizing: "border-box" }}>
+      {/* Bottom button */}
+      <div style={{
+        position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
+        width: "100%", maxWidth: 430, background: th.card,
+        borderTop: `1px solid ${th.border}`, padding: "14px 20px 24px",
+        boxShadow: "0 -4px 20px rgba(0,0,0,0.06)", boxSizing: "border-box",
+      }}>
         {formStep < 4
           ? <button onClick={goNext} style={s.btn}>{tx.next}</button>
-          : <button onClick={() => { if (!canSubmit) { setError(tx.fillRequired); return; } onSubmit(p); }}
-              style={{ ...s.btn, opacity: canSubmit ? 1 : 0.6 }}>{tx.submitListing}</button>
+          : <button onClick={handleSubmit} style={{ ...s.btn, opacity: canSubmit ? 1 : 0.6 }}>
+              ✅ {tx.submitListing}
+            </button>
         }
       </div>
     </div>
@@ -2059,7 +2723,7 @@ function CreateStoreForm({ lang, dark, userData, onCreate, onCancel }) {
         <label style={s.label}>{tx.storeAddress} <span style={{ color: "#E63946" }}>{tx.required}</span></label>
         <input placeholder={tx.storeAddressPh} value={address} onChange={(e) => setAddress(e.target.value)} style={s.input} />
         <label style={s.label}>{tx.pickOnMap}</label>
-        <div style={{ marginBottom: 22 }}><MiniMapPicker lang={lang} location={location} onChange={setLocation} /></div>
+        <div style={{ marginBottom: 22 }}><LeafletMapPicker lang={lang} location={location} onChange={setLocation} /></div>
         <button onClick={() => canCreate && onCreate({ name, logo, address, location, phone: userData.phone || "" })}
           style={{ ...s.btn, opacity: canCreate ? 1 : 0.5 }}>{tx.createStoreBtn}</button>
       </div>
@@ -2351,13 +3015,29 @@ export default function App() {
   };
 
   const addProductToStore = (storeId, p) => {
+    const finalName = p.name || [p.catBrand, p.catService || p.catType, p.catPart].filter(Boolean).join(" — ") || "Yangi mahsulot";
+    const extraParams = [
+      p.catBrand   ? { name: "Brend",   value: p.catBrand }   : null,
+      p.catType    ? { name: "Tur",     value: p.catType }     : null,
+      p.catService ? { name: "Xizmat",  value: p.catService }  : null,
+      p.catPart    ? { name: "Qism",    value: p.catPart }     : null,
+      p.catSize    ? { name: "O'lcham", value: p.catSize }     : null,
+      p.catAge     ? { name: "Yosh",    value: p.catAge }      : null,
+      p.catStar    ? { name: "Yulduz",  value: p.catStar }     : null,
+    ].filter(Boolean);
     const newProd = {
       id: "prod-" + Date.now(), category: p.category,
-      name: { uz: p.name, ru: p.name }, description: { uz: p.description, ru: p.description },
-      params: p.params.filter((r) => r.name && r.value),
-      originalPrice: parseFloat(p.originalPrice) || 0, photos: p.photos,
-      delivery: p.delivery, deliveryPrice: parseFloat(p.deliveryPrice) || 0,
-      discount: null, reviews: [],
+      name: { uz: finalName, ru: finalName },
+      description: { uz: p.description || "", ru: p.description || "" },
+      params: [...extraParams, ...p.params.filter((r) => r.name && r.value)],
+      originalPrice: parseFloat(p.originalPrice) || 0,
+      photos: p.photos,
+      delivery: p.delivery,
+      deliveryPrice: parseFloat(p.deliveryPrice) || 0,
+      discount: (p.discountPercent > 0 && p.discountExpiry)
+        ? { percent: p.discountPercent, expiryDate: p.discountExpiry }
+        : null,
+      reviews: [],
     };
     setStores((prev) => prev.map((st) => {
       if (st.id !== storeId) return st;
