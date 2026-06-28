@@ -2101,7 +2101,7 @@ const emptyFormData = {
   category: "",
   name: "", description: "",
   catType: "", catBrand: "", catPart: "", catService: "",
-  catSize: "", catAge: "", catStar: "", catStar: "",
+  catSize: "", catAge: "", catStar: "",
   sizes: [], colors: [], gender: "", condition: "", material: "",
   unit: "", expiryDate: "", stock: "",
   salonType: "", serviceName: "", duration: "", workTime: "",
