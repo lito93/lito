@@ -24,8 +24,8 @@ const theme = (dark) => ({
   text: dark ? "#F0F0FF" : "#1A1A2E",
   sub: dark ? "#8888AA" : "#888888",
   border: dark ? "#2A2A4A" : "#EBEBEB",
-  accent: "#E63946",
-  accentDark: "#C1121F",
+  accent: "#16A34A",
+  accentDark: "#15803D",
 });
 
 
@@ -34,12 +34,12 @@ const theme = (dark) => ({
 // =====================================================
 const t = {
   uz: {
-    appName: "Chegirma.uz", welcome: "Xush kelibsiz", enterName: "Ism", enterSurname: "Familiya",
+    appName: "OsonTop", welcome: "Xush kelibsiz", enterName: "Ism", enterSurname: "Familiya",
     enterPhone: "Telefon raqam", next: "Davom etish", confirm: "Tasdiqlash", smsCode: "SMS kod",
     smsHint: "Raqamingizga 4 xonali kod yuborildi", resend: "Qayta yuborish",
     addPhoto: "Profil rasmi qo'shish", skip: "O'tkazib yuborish",
     allowNotif: "Bildirishnomalarni yoqing", notifDesc: "Yangi chegirmalardan xabardor bo'ling",
-    enable: "Yoqish", greeting: "Xush kelibsiz 👋", search: "Do'kon yoki chegirma qidirish...",
+    enable: "Yoqish", greeting: "Xush kelibsiz 👋", search: "Mahsulot, xizmat yoki biznes qidiring...",
     all: "Hammasi", food: "Oziq-ovqat", clothing: "Kiyim-kechak", electronics: "Elektronika",
     beauty: "Go'zallik", restaurant: "Restoran/Kafe", home_cat: "Uy-ro'zg'or", sport: "Sport",
     services: "Xizmatlar", auto: "Avto servis", pharmacy: "Dorixona", education: "Ta'lim",
@@ -130,12 +130,12 @@ const t = {
     payUzum: "Uzum Pay", payCash: "Naqd pul", payNow: "To'lovni amalga oshirish",
   },
   ru: {
-    appName: "Chegirma.uz", welcome: "Добро пожаловать", enterName: "Имя", enterSurname: "Фамилия",
+    appName: "OsonTop", welcome: "Добро пожаловать", enterName: "Имя", enterSurname: "Фамилия",
     enterPhone: "Номер телефона", next: "Продолжить", confirm: "Подтвердить", smsCode: "SMS код",
     smsHint: "На ваш номер отправлен 4-значный код", resend: "Отправить снова",
     addPhoto: "Добавить фото профиля", skip: "Пропустить",
     allowNotif: "Включите уведомления", notifDesc: "Узнавайте о новых скидках первыми",
-    enable: "Включить", greeting: "Добро пожаловать 👋", search: "Поиск магазина или скидки...",
+    enable: "Включить", greeting: "Добро пожаловать 👋", search: "Найдите товар, услугу или бизнес...",
     all: "Все", food: "Продукты", clothing: "Одежда", electronics: "Электроника",
     beauty: "Красота", restaurant: "Рестораны/Кафе", home_cat: "Дом и быт", sport: "Спорт",
     services: "Услуги", auto: "Авто сервис", pharmacy: "Аптека", education: "Образование",
@@ -313,7 +313,7 @@ const isStoreOpen = (store) => {
 // =====================================================
 // LOCALSTORAGE HELPERS
 // =====================================================
-const LS_KEY = "chegirma_uz_state";
+const LS_KEY = "osontop_state";
 const saveToLS = (data) => {
   try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch {}
 };
@@ -475,13 +475,13 @@ const mkStyles = (dark) => {
       minHeight: 80, resize: "vertical", fontFamily: "inherit",
     },
     btn: {
-      width: "100%", padding: "16px", background: "#E63946", color: "#fff",
+      width: "100%", padding: "16px", background: "#16A34A", color: "#fff",
       border: "none", borderRadius: 16, fontSize: 16, fontWeight: 800, cursor: "pointer",
       boxShadow: "0 4px 16px rgba(230,57,70,0.3)",
     },
     ghostBtn: {
-      width: "100%", padding: "14px", background: th.card, color: "#E63946",
-      border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer",
+      width: "100%", padding: "14px", background: th.card, color: "#16A34A",
+      border: "1.5px solid #16A34A", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer",
     },
     secTitle: { fontSize: 15, fontWeight: 800, color: th.text, margin: "0 0 4px" },
     secDesc: { fontSize: 12, color: th.sub, margin: "0 0 16px" },
@@ -533,7 +533,7 @@ function ModalSheet({ onClose, children, maxHeight = "85vh", dark }) {
 // =====================================================
 // QR CODE (pseudo)
 // =====================================================
-function QRCode({ code, color = "#E63946" }) {
+function QRCode({ code, color = "#16A34A" }) {
   const size = 120;
   const cells = 10;
   const cell = size / cells;
@@ -555,7 +555,7 @@ function QRCode({ code, color = "#E63946" }) {
 // =====================================================
 function Confetti({ active }) {
   if (!active) return null;
-  const colors = ["#E63946", "#FFB400", "#00B894", "#0984E3", "#E84393", "#6C5CE7"];
+  const colors = ["#16A34A", "#FFB400", "#00B894", "#0984E3", "#E84393", "#6C5CE7"];
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none", overflow: "hidden" }}>
       {Array.from({ length: 30 }).map((_, i) => {
@@ -594,7 +594,7 @@ function SortFilterBar({ lang, sort, setSort, dark }) {
         <button key={o.id} onClick={() => setSort(o.id)} style={{
           flexShrink: 0, padding: "6px 14px", borderRadius: 50, border: "none", cursor: "pointer",
           fontSize: 12, fontWeight: 600,
-          background: sort === o.id ? "#E63946" : th.card,
+          background: sort === o.id ? "#16A34A" : th.card,
           color: sort === o.id ? "#fff" : th.sub,
           boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
         }}>{o.label}</button>
@@ -604,6 +604,53 @@ function SortFilterBar({ lang, sort, setSort, dark }) {
   );
 }
 
+
+// =====================================================
+// DEAL CARD — yangi katta kartochka
+// =====================================================
+function DealCard({ deal, th, lang, tx, savedKeys, heartAnim, toggleSave, setSelectedKey, setViewingStoreId }) {
+  return (
+    <div style={{ background: th.card, borderRadius: 18, marginBottom: 12, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: `1px solid ${th.border}` }}>
+      <div style={{ display: "flex", gap: 12, padding: 14 }}>
+        {/* Logo / Rasm */}
+        <div onClick={() => setSelectedKey({ storeId: deal.storeId, productId: deal.productId })}
+          style={{ width: 72, height: 72, borderRadius: 16, overflow: "hidden", flexShrink: 0, background: deal.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, cursor: "pointer", position: "relative" }}>
+          {deal.photos?.length ? <img src={deal.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : deal.logo}
+          <div style={{ position: "absolute", bottom: 4, right: 4, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "1px 5px", fontSize: 10, fontWeight: 800 }}>-{deal.discount}%</div>
+        </div>
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 800, fontSize: 14, color: th.text, marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{deal.storeName}</div>
+          <div style={{ fontSize: 12, color: th.sub, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{deal.title[lang]}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            {deal.originalPrice > 0 && (
+              <span style={{ fontWeight: 700, fontSize: 13, color: th.text }}>
+                {Math.round(deal.originalPrice * (1 - deal.discount / 100)).toLocaleString("ru-RU")} {lang === "uz" ? "so'm" : "сум"}
+              </span>
+            )}
+            <span style={{ fontSize: 10, color: th.sub }}>⏰ {daysLeftLabel(deal.expiryDate, lang)}</span>
+            {deal.delivery && <span style={{ fontSize: 10, color: "#16A34A", fontWeight: 700 }}>🚚</span>}
+          </div>
+        </div>
+        {/* Save */}
+        <button onClick={() => toggleSave(deal.key)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", alignSelf: "flex-start", animation: heartAnim === deal.key ? "heartPop 0.6s ease" : undefined }}>
+          {savedKeys.includes(deal.key) ? "❤️" : "🤍"}
+        </button>
+      </div>
+      {/* Actions */}
+      <div style={{ display: "flex", gap: 0, borderTop: `1px solid ${th.border}` }}>
+        <button onClick={() => setSelectedKey({ storeId: deal.storeId, productId: deal.productId })}
+          style={{ flex: 1, padding: "10px 0", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, color: "#16A34A", borderRight: `1px solid ${th.border}` }}>
+          🏷️ {lang === "uz" ? "Aksiya" : "Акция"}
+        </button>
+        <button onClick={() => setViewingStoreId(deal.storeId)}
+          style={{ flex: 1, padding: "10px 0", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, color: th.sub }}>
+          🏪 {lang === "uz" ? "Do'kon" : "Магазин"}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // =====================================================
 // MAP VIEW
@@ -623,7 +670,7 @@ function FilterModal({ lang, dark, filter, onClose, onApply }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <h3 style={{ ...s.secTitle, margin: 0 }}>🎛️ {tx.filterTitle}</h3>
         <button onClick={() => { update({ minPrice: "", maxPrice: "", minDiscount: 0, openNow: false, type: "all" }); }}
-          style={{ background: "none", border: "none", color: "#E63946", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>{tx.resetFilter}</button>
+          style={{ background: "none", border: "none", color: "#16A34A", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>{tx.resetFilter}</button>
       </div>
 
       {/* Hozir ochiq */}
@@ -646,9 +693,9 @@ function FilterModal({ lang, dark, filter, onClose, onApply }) {
         {[["all", tx.storeTypeAll, "🏷️"], ["sell", tx.storeTypeSell, "🛍️"], ["service", tx.storeTypeService, "🛠️"]].map(([val, label, icon]) => (
           <button key={val} onClick={() => update({ type: val })} style={{
             flex: 1, padding: "10px 6px", borderRadius: 12, cursor: "pointer",
-            border: f.type === val ? "2px solid #E63946" : `2px solid ${th.border}`,
-            background: f.type === val ? "#FFF0F0" : th.card,
-            color: f.type === val ? "#E63946" : th.sub,
+            border: f.type === val ? "2px solid #16A34A" : `2px solid ${th.border}`,
+            background: f.type === val ? "#F0FDF4" : th.card,
+            color: f.type === val ? "#16A34A" : th.sub,
             fontWeight: 700, fontSize: 12,
           }}>{icon} {label}</button>
         ))}
@@ -669,7 +716,7 @@ function FilterModal({ lang, dark, filter, onClose, onApply }) {
       <label style={s.label}>🏷️ {lang === "uz" ? `Minimum chegirma: ${f.minDiscount}%` : `Минимальная скидка: ${f.minDiscount}%`}</label>
       <input type="range" min="0" max="90" step="5" value={f.minDiscount}
         onChange={e => update({ minDiscount: Number(e.target.value) })}
-        style={{ width: "100%", marginBottom: 8, accentColor: "#E63946" }} />
+        style={{ width: "100%", marginBottom: 8, accentColor: "#16A34A" }} />
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: th.sub, marginBottom: 20 }}>
         <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>90%</span>
       </div>
@@ -742,9 +789,9 @@ function BookingModal({ lang, dark, store, onClose, onSuccess }) {
             {times.map(t2 => (
               <button key={t2} onClick={() => setTime(t2)} style={{
                 padding: "8px 14px", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13,
-                border: time === t2 ? "2px solid #E63946" : `2px solid ${th.border}`,
-                background: time === t2 ? "#FFF0F0" : th.card,
-                color: time === t2 ? "#E63946" : th.sub,
+                border: time === t2 ? "2px solid #16A34A" : `2px solid ${th.border}`,
+                background: time === t2 ? "#F0FDF4" : th.card,
+                color: time === t2 ? "#16A34A" : th.sub,
               }}>{t2}</button>
             ))}
           </div>
@@ -790,7 +837,7 @@ function ChatModal({ lang, dark, store, messages, onClose, onSend }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: th.bg, zIndex: 300, maxWidth: 430, margin: "0 auto", display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg,#E63946,#C1121F)", padding: "48px 20px 16px", color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ background: "linear-gradient(135deg,#16A34A,#15803D)", padding: "48px 20px 16px", color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
         <button onClick={onClose} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer" }}>←</button>
         <div style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>{store.logo}</div>
         <div>
@@ -810,7 +857,7 @@ function ChatModal({ lang, dark, store, messages, onClose, onSend }) {
           <div key={i} style={{ display: "flex", justifyContent: msg.from === "user" ? "flex-end" : "flex-start", marginBottom: 10 }}>
             <div style={{
               maxWidth: "75%", padding: "10px 14px", borderRadius: msg.from === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-              background: msg.from === "user" ? "#E63946" : th.card,
+              background: msg.from === "user" ? "#16A34A" : th.card,
               color: msg.from === "user" ? "#fff" : th.text,
               fontSize: 14, lineHeight: 1.5,
               boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
@@ -836,7 +883,7 @@ function ChatModal({ lang, dark, store, messages, onClose, onSend }) {
           rows={1}
         />
         <button onClick={handleSend} disabled={!text.trim()} style={{
-          width: 44, height: 44, borderRadius: 22, background: text.trim() ? "#E63946" : th.border,
+          width: 44, height: 44, borderRadius: 22, background: text.trim() ? "#16A34A" : th.border,
           border: "none", color: "#fff", fontSize: 18, cursor: "pointer", flexShrink: 0,
           display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s",
         }}>➤</button>
@@ -863,7 +910,7 @@ function StoreAnalytics({ lang, dark, store, coupons, bookings }) {
 
   const stats = [
     { icon: "👁️", label: tx.analyticsViews, value: (store.views || 0).toLocaleString(), color: "#0984E3", bg: "#0984E315" },
-    { icon: "🎟️", label: tx.analyticsCoupons, value: storeCoupons.length, color: "#E63946", bg: "#E6394615" },
+    { icon: "🎟️", label: tx.analyticsCoupons, value: storeCoupons.length, color: "#16A34A", bg: "#16A34A15" },
     { icon: "📅", label: tx.analyticsBookings, value: storeBookings.length, color: "#00B894", bg: "#00B89415" },
     { icon: "🔔", label: tx.statsSubscribers, value: store.subscriberBase || 0, color: "#FFB400", bg: "#FFB40015" },
   ];
@@ -876,7 +923,7 @@ function StoreAnalytics({ lang, dark, store, coupons, bookings }) {
           {[["week", tx.analyticsWeek], ["month", tx.analyticsMonth]].map(([val, label]) => (
             <button key={val} onClick={() => setPeriod(val)} style={{
               padding: "4px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 700,
-              background: period === val ? "#E63946" : "transparent",
+              background: period === val ? "#16A34A" : "transparent",
               color: period === val ? "#fff" : th.sub,
             }}>{label}</button>
           ))}
@@ -903,7 +950,7 @@ function StoreAnalytics({ lang, dark, store, coupons, bookings }) {
               <div style={{ fontSize: 9, color: th.sub, fontWeight: 600 }}>{val}</div>
               <div style={{
                 width: "100%", borderRadius: "4px 4px 0 0",
-                background: `linear-gradient(180deg, #E63946, #C1121F)`,
+                background: `linear-gradient(180deg, #16A34A, #15803D)`,
                 height: `${Math.round((val / maxView) * 60)}px`,
                 minHeight: 4, transition: "height 0.3s",
                 opacity: i === 4 ? 1 : 0.6,
@@ -980,7 +1027,7 @@ function MapView({ lang, deals, onDealClick, dark }) {
     const userIcon = L.divIcon({
       className: "",
       html: `<div style="
-        background:#E63946;
+        background:#16A34A;
         border-radius:50%;width:18px;height:18px;
         border:3px solid #fff;
         box-shadow:0 0 0 4px rgba(230,57,70,0.3);
@@ -1089,8 +1136,8 @@ function MiniMapPicker({ lang, location, onChange }) {
           <MapBackground />
           {location && (
             <g>
-              <circle cx={pinX} cy={pinY} r="16" fill="#E63946" opacity="0.25" />
-              <circle cx={pinX} cy={pinY} r="9" fill="#E63946" stroke="#fff" strokeWidth="2.5" />
+              <circle cx={pinX} cy={pinY} r="16" fill="#16A34A" opacity="0.25" />
+              <circle cx={pinX} cy={pinY} r="9" fill="#16A34A" stroke="#fff" strokeWidth="2.5" />
               <text x={pinX} y={pinY + 4} textAnchor="middle" fontSize="11">📍</text>
             </g>
           )}
@@ -1229,7 +1276,7 @@ function PaymentModal({ lang, dark, total, onClose, onSuccess }) {
 
       {/* Jami summa */}
       <div style={{
-        background: "linear-gradient(135deg, #E63946, #C1121F)",
+        background: "linear-gradient(135deg, #16A34A, #15803D)",
         borderRadius: 16, padding: "16px 20px", marginBottom: 20,
         display: "flex", justifyContent: "space-between", alignItems: "center",
       }}>
@@ -1259,8 +1306,8 @@ function PaymentModal({ lang, dark, total, onClose, onSuccess }) {
 
       <button onClick={handlePay} disabled={paying} style={{
         ...s.btn,
-        background: paying ? "#AAA" : (selectedMethod?.color || "#E63946"),
-        boxShadow: `0 4px 16px ${(selectedMethod?.color || "#E63946")}50`,
+        background: paying ? "#AAA" : (selectedMethod?.color || "#16A34A"),
+        boxShadow: `0 4px 16px ${(selectedMethod?.color || "#16A34A")}50`,
         marginBottom: 10,
         display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
       }}>
@@ -1295,9 +1342,9 @@ function CouponModal({ lang, dark, deal, onClose, onGetCoupon }) {
         <div style={{ fontSize: 56, marginBottom: 8 }}>🎟️</div>
         <h3 style={{ fontSize: 18, fontWeight: 800, color: "#1A1A2E", margin: "0 0 6px" }}>{tx.couponTitle}</h3>
         <p style={{ color: "#888", fontSize: 13, margin: "0 0 20px" }}>{tx.couponSaved}</p>
-        <div style={{ background: "#FFF0F0", borderRadius: 16, padding: "18px 20px", marginBottom: 16 }}>
+        <div style={{ background: "#F0FDF4", borderRadius: 16, padding: "18px 20px", marginBottom: 16 }}>
           <div style={{ fontSize: 12, color: "#AAA", fontWeight: 600, marginBottom: 6 }}>{tx.couponCode}</div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: "#E63946", letterSpacing: 3, fontFamily: "monospace" }}>{code}</div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#16A34A", letterSpacing: 3, fontFamily: "monospace" }}>{code}</div>
         </div>
         <QRCode code={code} color={deal.color} />
         <div style={{ background: "#F7F8FA", borderRadius: 12, padding: "12px 16px", display: "flex", justifyContent: "space-between", marginTop: 12 }}>
@@ -1395,7 +1442,7 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
         ))}
         <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10 }}>
           <span style={{ fontWeight: 700, color: th.text }}>{tx.total}</span>
-          <span style={{ fontWeight: 900, fontSize: 16, color: "#E63946" }}>{formatPrice(cartTotal)} {tx.sumShort}</span>
+          <span style={{ fontWeight: 900, fontSize: 16, color: "#16A34A" }}>{formatPrice(cartTotal)} {tx.sumShort}</span>
         </div>
       </div>
 
@@ -1405,15 +1452,15 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
         {[["pickup", tx.pickup, "🏪"], ["delivery", tx.delivery, "🚚"]].map(([val, label, icon]) => (
           <button key={val} onClick={() => setDeliveryMethod(val)} style={{
             flex: 1, padding: "12px 8px", borderRadius: 12, fontWeight: 700, fontSize: 13, cursor: "pointer",
-            border: deliveryMethod === val ? "2px solid #E63946" : `2px solid ${th.border}`,
-            background: deliveryMethod === val ? "#FFF0F0" : th.card,
-            color: deliveryMethod === val ? "#E63946" : th.sub,
+            border: deliveryMethod === val ? "2px solid #16A34A" : `2px solid ${th.border}`,
+            background: deliveryMethod === val ? "#F0FDF4" : th.card,
+            color: deliveryMethod === val ? "#16A34A" : th.sub,
           }}>{icon} {label}</button>
         ))}
       </div>
       {deliveryMethod === "delivery" && (
         <>
-          <label style={s.label}>{tx.deliveryAddress} <span style={{ color: "#E63946" }}>*</span></label>
+          <label style={s.label}>{tx.deliveryAddress} <span style={{ color: "#16A34A" }}>*</span></label>
           <input placeholder={tx.deliveryAddressPh} value={address} onChange={(e) => setAddress(e.target.value)} style={s.input} />
         </>
       )}
@@ -1456,7 +1503,7 @@ function CheckoutModal({ lang, dark, cartDetailed, cartTotal, onClose, onSuccess
       <button onClick={handleOrder} disabled={!canOrder || loading} style={{
         ...s.btn,
         opacity: canOrder && !loading ? 1 : 0.6,
-        background: loading ? "#AAA" : "#E63946",
+        background: loading ? "#AAA" : "#16A34A",
       }}>
         {loading ? (lang === "uz" ? "⏳ Kutilmoqda..." : "⏳ Ожидание...") : `${tx.placeOrder} — ${formatPrice(cartTotal)} ${tx.sumShort}`}
       </button>
@@ -1478,7 +1525,7 @@ function OrderSuccess({ lang, dark, orderNumber, onDone }) {
         <p style={{ color: "#888", fontSize: 13, margin: "0 0 20px" }}>{tx.orderSuccessDesc}</p>
         <div style={{ background: "#F7F8FA", borderRadius: 12, padding: "12px 16px", marginBottom: 24 }}>
           <div style={{ fontSize: 12, color: "#AAA" }}>{tx.orderNumber}</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: "#E63946", fontFamily: "monospace" }}>#{orderNumber}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: "#16A34A", fontFamily: "monospace" }}>#{orderNumber}</div>
         </div>
         <button onClick={onDone} style={s.btn}>{tx.orderSuccessBtn}</button>
       </div>
@@ -1529,10 +1576,10 @@ function DiscountModal({ lang, dark, product, onClose, onApply }) {
       <input type="date" value={expiry} min={new Date().toISOString().slice(0, 10)}
         onChange={(e) => setExpiry(e.target.value)} style={s.input} />
       {product.originalPrice > 0 && percent && (
-        <div style={{ background: "#FFF0F0", borderRadius: 14, padding: 16, marginBottom: 16, textAlign: "center" }}>
+        <div style={{ background: "#F0FDF4", borderRadius: 14, padding: 16, marginBottom: 16, textAlign: "center" }}>
           <span style={{ textDecoration: "line-through", color: "#AAA", fontSize: 13 }}>{formatPrice(product.originalPrice)} {tx.sumShort}</span>
           {" → "}
-          <b style={{ color: "#E63946", fontSize: 17 }}>{formatPrice(product.originalPrice * (1 - Number(percent) / 100))} {tx.sumShort}</b>
+          <b style={{ color: "#16A34A", fontSize: 17 }}>{formatPrice(product.originalPrice * (1 - Number(percent) / 100))} {tx.sumShort}</b>
         </div>
       )}
       <button onClick={() => canApply && onApply({ percent: Number(percent), expiryDate: expiry })}
@@ -1575,7 +1622,7 @@ function StoreStats({ lang, dark, store, coupons }) {
   const usedCoupons = storeCoupons.filter((c) => c.used).length;
   const stats = [
     { icon: "👁️", label: tx.statsViews, value: (store.views || 0).toLocaleString("ru-RU"), color: "#0984E3" },
-    { icon: "🎟️", label: tx.statsCoupons, value: storeCoupons.length, color: "#E63946" },
+    { icon: "🎟️", label: tx.statsCoupons, value: storeCoupons.length, color: "#16A34A" },
     { icon: "🔔", label: tx.statsSubscribers, value: (store.subscriberBase || 0), color: "#00B894" },
     { icon: "💰", label: tx.statsRevenue, value: formatPrice(usedCoupons * 50000) + " " + tx.sumShort, color: "#FFB400" },
   ];
@@ -1603,7 +1650,7 @@ function CouponCard({ coupon, lang, dark, onUse }) {
   const th = theme(dark);
   const tx = t[lang];
   const [showQR, setShowQR] = useState(false);
-  const color = coupon.deal?.color || "#E63946";
+  const color = coupon.deal?.color || "#16A34A";
   const storeName = coupon.deal?.storeName || coupon.storeName || "";
   const productName = coupon.deal?.title?.[lang] || coupon.productName?.[lang] || "";
   const discount = coupon.deal?.discount || coupon.discount || 0;
@@ -1638,7 +1685,7 @@ function CouponCard({ coupon, lang, dark, onUse }) {
             <div style={{ fontSize: 12, color: th.sub, marginBottom: 12 }}>{tx.couponHint}</div>
             {!coupon.used ? (
               <button onClick={() => onUse(coupon.code)} style={{
-                background: "#E63946", color: "#fff", border: "none", borderRadius: 12,
+                background: "#16A34A", color: "#fff", border: "none", borderRadius: 12,
                 padding: "10px 24px", fontWeight: 700, cursor: "pointer", fontSize: 13,
               }}>{tx.useCoupon}</button>
             ) : (
@@ -1656,7 +1703,7 @@ function CouponCard({ coupon, lang, dark, onUse }) {
               <div style={{ fontFamily: "monospace", fontSize: 15, fontWeight: 900, color: coupon.used ? "#aaa" : color }}>{coupon.code}</div>
             </div>
             <button onClick={() => setShowQR(true)} style={{
-              background: coupon.used ? th.card2 : "#E63946",
+              background: coupon.used ? th.card2 : "#16A34A",
               color: coupon.used ? th.sub : "#fff", border: "none", borderRadius: 12,
               padding: "8px 16px", fontWeight: 700, cursor: "pointer", fontSize: 12,
             }}>
@@ -1718,13 +1765,13 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
     else { const p = (store.phone || "").replace(/\D/g, ""); window.open(`https://t.me/+${p}`, "_blank"); }
   };
   const handleShare = () => {
-    const text = `${store.name} — Chegirma.uz`;
+    const text = `${store.name} — OsonTop`;
     if (navigator.share) navigator.share({ title: store.name, text });
   };
 
   return (
     <div style={{ minHeight: "100vh", background: th.bg, maxWidth: 430, margin: "0 auto", paddingBottom: 30 }}>
-      <div style={{ background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", padding: "48px 20px 22px", color: "#fff" }}>
+      <div style={{ background: "linear-gradient(135deg,#16A34A 0%,#15803D 100%)", padding: "48px 20px 22px", color: "#fff" }}>
         <button onClick={onBack} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer", marginBottom: 16 }}>←</button>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 64, height: 64, borderRadius: 18, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, flexShrink: 0 }}>{store.logo}</div>
@@ -1765,7 +1812,7 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
         )}
         {isOwner
           ? <div style={{ marginTop: 12, background: "rgba(255,255,255,0.2)", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, textAlign: "center" }}>{tx.ownStoreBadge}</div>
-          : <button onClick={onSubscribeToggle} style={{ marginTop: 12, width: "100%", padding: "12px", borderRadius: 14, border: "none", cursor: "pointer", fontWeight: 800, fontSize: 14, background: isSubscribed ? "rgba(255,255,255,0.25)" : "#fff", color: isSubscribed ? "#fff" : "#E63946" }}>
+          : <button onClick={onSubscribeToggle} style={{ marginTop: 12, width: "100%", padding: "12px", borderRadius: 14, border: "none", cursor: "pointer", fontWeight: 800, fontSize: 14, background: isSubscribed ? "rgba(255,255,255,0.25)" : "#fff", color: isSubscribed ? "#fff" : "#16A34A" }}>
               {isSubscribed ? tx.subscribed : tx.subscribe}
             </button>
         }
@@ -1775,7 +1822,7 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
         {isOwner && <StoreAnalytics lang={lang} dark={dark} store={store} coupons={coupons || []} bookings={bookings || []} />}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>{tx.productsInStore}</h3>
-          {isOwner && <button onClick={onAddProduct} style={{ background: "#E63946", color: "#fff", border: "none", borderRadius: 10, padding: "7px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{tx.addProductBtn}</button>}
+          {isOwner && <button onClick={onAddProduct} style={{ background: "#16A34A", color: "#fff", border: "none", borderRadius: 10, padding: "7px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{tx.addProductBtn}</button>}
         </div>
 
         {store.products.length === 0 ? (
@@ -1802,7 +1849,7 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
                     hasDiscount ? (
                       <div style={{ fontSize: 12 }}>
                         <span style={{ textDecoration: "line-through", color: "#AAA" }}>{formatPrice(prod.originalPrice)}</span>{" "}
-                        <b style={{ color: "#E63946" }}>{formatPrice(prod.originalPrice * (1 - prod.discount.percent / 100))} {tx.sumShort}</b>
+                        <b style={{ color: "#16A34A" }}>{formatPrice(prod.originalPrice * (1 - prod.discount.percent / 100))} {tx.sumShort}</b>
                       </div>
                     ) : <div style={{ fontSize: 12, color: th.text, fontWeight: 700 }}>{formatPrice(prod.originalPrice)} {tx.sumShort}</div>
                   )}
@@ -1813,11 +1860,11 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
                     {hasDiscount && <span style={{ background: store.color, color: "#fff", borderRadius: 7, padding: "2px 7px", fontSize: 11, fontWeight: 800, marginLeft: "auto" }}>-{prod.discount.percent}%</span>}
                   </div>
                 </div>
-                {isOwner && <button onClick={() => setDeleteTarget(prod.id)} style={{ background: "none", border: "none", color: "#E63946", fontSize: 13, cursor: "pointer", alignSelf: "flex-start" }}>✕</button>}
+                {isOwner && <button onClick={() => setDeleteTarget(prod.id)} style={{ background: "none", border: "none", color: "#16A34A", fontSize: 13, cursor: "pointer", alignSelf: "flex-start" }}>✕</button>}
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                 {isOwner ? (
-                  <button onClick={() => setDiscountTarget(prod)} style={{ flex: 1, padding: "9px", borderRadius: 10, border: "none", background: hasDiscount ? th.card2 : "#FFF0F0", color: hasDiscount ? th.sub : "#E63946", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
+                  <button onClick={() => setDiscountTarget(prod)} style={{ flex: 1, padding: "9px", borderRadius: 10, border: "none", background: hasDiscount ? th.card2 : "#F0FDF4", color: hasDiscount ? th.sub : "#16A34A", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
                     {hasDiscount ? tx.editDiscount : tx.makeDiscount}
                   </button>
                 ) : (
@@ -1834,7 +1881,7 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
         <div style={{ marginTop: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>{tx.storeReviews}</h3>
-            {!isOwner && <button onClick={() => setReviewTarget("store")} style={{ background: th.card, border: "1.5px solid #E63946", color: "#E63946", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{tx.leaveReview}</button>}
+            {!isOwner && <button onClick={() => setReviewTarget("store")} style={{ background: th.card, border: "1.5px solid #16A34A", color: "#16A34A", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{tx.leaveReview}</button>}
           </div>
           {store.reviews.length === 0 ? (
             <p style={{ color: th.sub, fontSize: 13 }}>{tx.noReviews}</p>
@@ -1866,7 +1913,7 @@ function StoreView({ lang, dark, store, isOwner, isSubscribed, coupons, bookings
           <p style={{ fontSize: 15, color: th.text, fontWeight: 600, marginBottom: 20, textAlign: "center" }}>{tx.confirmDelete}</p>
           <div style={{ display: "flex", gap: 10 }}>
             <button onClick={() => setDeleteTarget(null)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1.5px solid ${th.border}`, background: th.card, color: th.text, fontWeight: 700, cursor: "pointer" }}>{tx.no}</button>
-            <button onClick={() => { onDeleteProduct(deleteTarget); setDeleteTarget(null); }} style={{ flex: 1, padding: 12, borderRadius: 12, border: "none", background: "#E63946", color: "#fff", fontWeight: 700, cursor: "pointer" }}>{tx.yes}</button>
+            <button onClick={() => { onDeleteProduct(deleteTarget); setDeleteTarget(null); }} style={{ flex: 1, padding: 12, borderRadius: 12, border: "none", background: "#16A34A", color: "#fff", fontWeight: 700, cursor: "pointer" }}>{tx.yes}</button>
           </div>
         </ModalSheet>
       )}
@@ -1895,7 +1942,7 @@ function LeafletMapPicker({ lang, location, onChange }) {
     }).addTo(map);
     const pinIcon = L.divIcon({
       className: "",
-      html: `<div style="background:#E63946;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>`,
+      html: `<div style="background:#16A34A;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>`,
       iconSize: [28, 28], iconAnchor: [14, 28],
     });
     if (location) {
@@ -2144,7 +2191,7 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
   if (!selectedCat) {
     return (
       <div style={{ minHeight: "100vh", background: th.bg }}>
-        <div style={{ background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", padding: "48px 20px 20px", color: "#fff" }}>
+        <div style={{ background: "linear-gradient(135deg,#16A34A 0%,#15803D 100%)", padding: "48px 20px 20px", color: "#fff" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
             <button onClick={onCancel} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer" }}>←</button>
             <div>
@@ -2172,7 +2219,7 @@ function AddProductForm({ lang, dark, store, onCancel, onSubmit }) {
   const catInfo = cats.find(c => c.id === selectedCat);
   return (
     <div style={{ minHeight: "100vh", background: th.bg }}>
-      <div style={{ background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", padding: "48px 20px 16px", color: "#fff", position: "sticky", top: 0, zIndex: 10 }}>
+      <div style={{ background: "linear-gradient(135deg,#16A34A 0%,#15803D 100%)", padding: "48px 20px 16px", color: "#fff", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => setSelectedCat("")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer" }}>←</button>
           <div>
@@ -2211,7 +2258,7 @@ function CreateStoreForm({ lang, dark, userData, onCreate, onCancel }) {
 
   return (
     <div style={{ minHeight: "100vh", background: th.bg }}>
-      <div style={{ background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", padding: "48px 20px 22px", color: "#fff" }}>
+      <div style={{ background: "linear-gradient(135deg,#16A34A 0%,#15803D 100%)", padding: "48px 20px 22px", color: "#fff" }}>
         <button onClick={onCancel} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 10, width: 34, height: 34, color: "#fff", fontSize: 16, cursor: "pointer", marginBottom: 16 }}>←</button>
         <div style={{ fontSize: 19, fontWeight: 900 }}>{tx.createStore}</div>
         <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>{tx.createStoreSub}</div>
@@ -2220,12 +2267,12 @@ function CreateStoreForm({ lang, dark, userData, onCreate, onCancel }) {
         <label style={s.label}>{tx.storeLogo}</label>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
           {logos.map((l) => (
-            <button key={l} onClick={() => setLogo(l)} style={{ width: 46, height: 46, borderRadius: 12, fontSize: 22, cursor: "pointer", border: logo === l ? "2px solid #E63946" : `2px solid ${th.border}`, background: logo === l ? "#FFF0F0" : th.card }}>{l}</button>
+            <button key={l} onClick={() => setLogo(l)} style={{ width: 46, height: 46, borderRadius: 12, fontSize: 22, cursor: "pointer", border: logo === l ? "2px solid #16A34A" : `2px solid ${th.border}`, background: logo === l ? "#F0FDF4" : th.card }}>{l}</button>
           ))}
         </div>
-        <label style={s.label}>{tx.storeName} <span style={{ color: "#E63946" }}>{tx.required}</span></label>
+        <label style={s.label}>{tx.storeName} <span style={{ color: "#16A34A" }}>{tx.required}</span></label>
         <input placeholder={tx.storeNamePh} value={name} onChange={(e) => setName(e.target.value)} style={s.input} />
-        <label style={s.label}>{tx.storeAddress} <span style={{ color: "#E63946" }}>{tx.required}</span></label>
+        <label style={s.label}>{tx.storeAddress} <span style={{ color: "#16A34A" }}>{tx.required}</span></label>
         <input placeholder={tx.storeAddressPh} value={address} onChange={(e) => setAddress(e.target.value)} style={s.input} />
         <label style={s.label}>{tx.pickOnMap}</label>
         <div style={{ marginBottom: 22 }}><LeafletMapPicker lang={lang} location={location} onChange={setLocation} /></div>
@@ -2252,20 +2299,22 @@ function OnboardingStep({ step, setStep, lang, setLang, dark, userData, setUserD
   };
 
   if (step === 0) return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#E63946 0%,#C1121F 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32, color: "#fff" }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#16A34A 0%,#15803D 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32, color: "#fff" }}>
       <div style={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 6 }}>
         {["uz", "ru"].map((l) => (
-          <button key={l} onClick={() => setLang(l)} style={{ padding: "6px 14px", borderRadius: 20, border: "none", background: lang === l ? "#fff" : "rgba(255,255,255,0.25)", color: lang === l ? "#E63946" : "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+          <button key={l} onClick={() => setLang(l)} style={{ padding: "6px 14px", borderRadius: 20, border: "none", background: lang === l ? "#fff" : "rgba(255,255,255,0.25)", color: lang === l ? "#16A34A" : "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
             {l === "uz" ? "🇺🇿 UZ" : "🇷🇺 RU"}
           </button>
         ))}
       </div>
-      <div style={{ fontSize: 80, marginBottom: 16 }}>🏷️</div>
-      <h1 style={{ fontSize: 36, fontWeight: 900, margin: "0 0 8px", letterSpacing: -1 }}>Chegirma.uz</h1>
+      <div style={{ fontSize: 72, marginBottom: 12, lineHeight: 1 }}>
+        <div style={{ width: 80, height: 80, borderRadius: 24, background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontWeight: 900, fontSize: 42, color: "#fff" }}>O</div>
+      </div>
+      <h1 style={{ fontSize: 36, fontWeight: 900, margin: "0 0 8px", letterSpacing: -1 }}>OsonTop</h1>
       <p style={{ opacity: 0.85, fontSize: 16, textAlign: "center", marginBottom: 48 }}>
-        {lang === "uz" ? "O'zbekistondagi eng yaxshi chegirmalar" : "Лучшие скидки в Узбекистане"}
+        {lang === "uz" ? "O'zbekistondagi barcha bizneslar platformasi" : "Платформа всех бизнесов Узбекистана"}
       </p>
-      <button onClick={() => setStep(1)} style={{ background: "#fff", color: "#E63946", border: "none", borderRadius: 16, padding: "16px 48px", fontSize: 17, fontWeight: 800, cursor: "pointer", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", marginBottom: 12, width: "100%", maxWidth: 280 }}>
+      <button onClick={() => setStep(1)} style={{ background: "#fff", color: "#16A34A", border: "none", borderRadius: 16, padding: "16px 48px", fontSize: 17, fontWeight: 800, cursor: "pointer", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", marginBottom: 12, width: "100%", maxWidth: 280 }}>
         {lang === "uz" ? "Boshlash" : "Начать"} →
       </button>
       <button onClick={onGuest} style={{ background: "rgba(255,255,255,0.15)", color: "#fff", border: "1.5px solid rgba(255,255,255,0.4)", borderRadius: 16, padding: "14px 48px", fontSize: 15, fontWeight: 700, cursor: "pointer", width: "100%", maxWidth: 280 }}>
@@ -2298,12 +2347,12 @@ function OnboardingStep({ step, setStep, lang, setLang, dark, userData, setUserD
       <div style={{ display: "flex", gap: 12, justifyContent: "center", marginBottom: 28 }}>
         {code.map((c, i) => (
           <input key={i} ref={codeRefs[i]} value={c} onChange={(e) => handleCode(e.target.value, i)} maxLength={1}
-            style={{ width: 60, height: 64, textAlign: "center", fontSize: 26, fontWeight: 800, border: `2px solid ${c ? "#E63946" : th.border}`, borderRadius: 14, background: th.card, outline: "none", color: th.text }} />
+            style={{ width: 60, height: 64, textAlign: "center", fontSize: 26, fontWeight: 800, border: `2px solid ${c ? "#16A34A" : th.border}`, borderRadius: 14, background: th.card, outline: "none", color: th.text }} />
         ))}
       </div>
       <p style={{ textAlign: "center", color: "#AAA", fontSize: 13, marginBottom: 32 }}>
         {lang === "uz" ? "Kodni olmadingizmi? " : "Не получили код? "}
-        <span style={{ color: "#E63946", fontWeight: 600, cursor: "pointer" }}>{tx.resend}</span>
+        <span style={{ color: "#16A34A", fontWeight: 600, cursor: "pointer" }}>{tx.resend}</span>
       </p>
       <div style={{ flex: 1 }} />
       <button onClick={() => setStep(3)} style={{ ...s.btn, opacity: code.every((c) => c) ? 1 : 0.5 }}>{tx.confirm}</button>
@@ -2315,7 +2364,7 @@ function OnboardingStep({ step, setStep, lang, setLang, dark, userData, setUserD
       <div style={{ fontSize: 40, marginBottom: 8 }}>📸</div>
       <h2 style={{ fontSize: 26, fontWeight: 800, color: th.text, margin: "0 0 6px", textAlign: "center" }}>{tx.addPhoto}</h2>
       <p style={{ color: th.sub, marginBottom: 32, fontSize: 14, textAlign: "center" }}>{lang === "uz" ? "Profilingizni yanada shaxsiylashtiring" : "Персонализируйте свой профиль"}</p>
-      <div style={{ width: 120, height: 120, borderRadius: 60, background: userData.photo ? "#E63946" : th.card2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: userData.photo ? 56 : 40, marginBottom: 20, cursor: "pointer", border: "3px dashed #E63946" }}
+      <div style={{ width: 120, height: 120, borderRadius: 60, background: userData.photo ? "#16A34A" : th.card2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: userData.photo ? 56 : 40, marginBottom: 20, cursor: "pointer", border: "3px dashed #16A34A" }}
         onClick={() => setUserData({ ...userData, photo: "📸" })}>
         {userData.photo ? "😊" : "📷"}
       </div>
@@ -2513,7 +2562,7 @@ export default function App() {
 
   const createStore = ({ name, logo, address, location, phone }) => {
     const id = "mystore-" + Date.now();
-    setStores((prev) => [...prev, { id, name, logo, color: "#E63946", address, phone, lat: location?.lat || 41.299, lng: location?.lng || 69.240, views: 0, subscriberBase: 0, reviews: [], products: [] }]);
+    setStores((prev) => [...prev, { id, name, logo, color: "#16A34A", address, phone, lat: location?.lat || 41.299, lng: location?.lng || 69.240, views: 0, subscriberBase: 0, reviews: [], products: [] }]);
     setMyStoreId(id);
     setProfileView("main");
     setViewingStoreId(id);
@@ -2746,7 +2795,7 @@ export default function App() {
           ))}
           <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
             <button onClick={() => addToCart(selectedDeal.storeId, selectedDeal.productId)} style={{ ...s.btn, flex: 2, marginBottom: 0 }}>{tx.addToCart}</button>
-            <button onClick={() => setCouponModalDeal(selectedDeal)} style={{ flex: 1, padding: "14px", background: "#FFF0F0", color: "#E63946", border: "none", borderRadius: 14, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>🎟️</button>
+            <button onClick={() => setCouponModalDeal(selectedDeal)} style={{ flex: 1, padding: "14px", background: "#F0FDF4", color: "#16A34A", border: "none", borderRadius: 14, fontWeight: 800, fontSize: 14, cursor: "pointer" }}>🎟️</button>
           </div>
           {/* Habar yozish tugmasi — chatga ulaydi */}
           <button onClick={() => {
@@ -2786,130 +2835,123 @@ export default function App() {
 
       {/* ── HOME TAB ── */}
       {activeTab === "home" && <>
-        <div style={{ background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", padding: "48px 20px 24px", color: "#fff" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <div>
-              <p style={{ margin: 0, opacity: 0.85, fontSize: 13 }}>{tx.greeting}</p>
-              <h1 style={{ margin: 0, fontSize: 22, fontWeight: 900, letterSpacing: -0.5 }}>
-                {isGuest ? "👁️ Mehmon" : (userData.name || tx.appName)}
-              </h1>
+        {/* HEADER */}
+        <div style={{ background: th.card, borderBottom: `1px solid ${th.border}`, padding: "48px 20px 12px", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#16A34A,#15803D)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 18, color: "#fff" }}>O</div>
+              <span style={{ fontWeight: 900, fontSize: 17, color: th.text, letterSpacing: -0.5 }}>OsonTop</span>
             </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <div style={{ display: "flex", background: "rgba(255,255,255,0.2)", borderRadius: 20, padding: 3 }}>
-                {["uz", "ru"].map((l) => (
-                  <button key={l} onClick={() => setLang(l)} style={{ padding: "4px 10px", borderRadius: 16, border: "none", background: lang === l ? "#fff" : "transparent", color: lang === l ? "#E63946" : "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{l.toUpperCase()}</button>
-                ))}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ display: "flex", background: th.card2, borderRadius: 16, padding: 2, border: `1px solid ${th.border}` }}>
+                {["uz","ru"].map(l => (<button key={l} onClick={() => setLang(l)} style={{ padding: "3px 9px", borderRadius: 13, border: "none", background: lang === l ? "#16A34A" : "transparent", color: lang === l ? "#fff" : th.sub, fontWeight: 700, fontSize: 10, cursor: "pointer" }}>{l.toUpperCase()}</button>))}
               </div>
-              <button onClick={() => { setActiveTab("profile"); setProfileView("notifications"); }}
-                style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", color: "#fff", position: "relative" }}>
-                🔔{unreadCount > 0 && <span style={{ position: "absolute", top: -4, right: -4, background: "#fff", color: "#E63946", borderRadius: 6, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{unreadCount}</span>}
+              <button onClick={() => { setActiveTab("profile"); setProfileView("notifications"); }} style={{ position: "relative", background: th.card2, border: `1px solid ${th.border}`, borderRadius: 10, width: 34, height: 34, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
+                🔔{unreadCount > 0 && <span style={{ position: "absolute", top: -3, right: -3, background: "#16A34A", color: "#fff", borderRadius: 6, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{unreadCount}</span>}
               </button>
-              <button onClick={() => setActiveTab("cart")} style={{ position: "relative", background: cartAnim ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.2)", border: "none", borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", color: "#fff", animation: cartAnim ? "cartBounce 0.4s ease" : undefined }}>
-                🛒{cartCount > 0 && <span style={{ position: "absolute", top: -6, right: -6, background: "#fff", color: "#E63946", borderRadius: 8, fontSize: 10, fontWeight: 800, padding: "1px 5px" }}>{cartCount}</span>}
+              <button onClick={() => setActiveTab("profile")} style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#16A34A,#15803D)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#fff", fontWeight: 800 }}>
+                {userData.name ? userData.name[0]?.toUpperCase() : "U"}
               </button>
             </div>
           </div>
-          <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 16, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ fontSize: 44, fontWeight: 900, color: "rgba(255,255,255,0.3)", lineHeight: 1 }}>%</div>
-            <div>
-              <div style={{ fontSize: 15, fontWeight: 700 }}>{lang === "uz" ? `Bugun ${activeDeals.length} ta taklif` : `Сегодня ${activeDeals.length} акций`}</div>
-              <div style={{ fontSize: 12, opacity: 0.8 }}>{lang === "uz" ? "Eng yaxshi chegirmalar siz uchun" : "Лучшие скидки для вас"}</div>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ padding: "16px 20px 0" }}>
           <div style={{ position: "relative" }}>
             <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🔍</span>
-            <input placeholder={tx.search} value={search} onChange={(e) => setSearch(e.target.value)}
-              style={{ width: "100%", padding: "13px 14px 13px 42px", borderRadius: 14, border: `1.5px solid ${th.border}`, background: th.card, fontSize: 14, outline: "none", boxSizing: "border-box", color: th.text, boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }} />
-            {search && <button onClick={() => setSearch("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 16, cursor: "pointer", color: "#AAA" }}>✕</button>}
+            <input placeholder={lang === "uz" ? "Mahsulot, xizmat yoki biznes..." : "Товар, услуга или бизнес..."} value={search} onChange={e => setSearch(e.target.value)}
+              style={{ width: "100%", padding: "13px 46px 13px 42px", borderRadius: 14, border: `2px solid ${search ? "#16A34A" : th.border}`, background: th.card2, fontSize: 14, outline: "none", boxSizing: "border-box", color: th.text }} />
+            {search ? <button onClick={() => setSearch("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 16, cursor: "pointer", color: "#AAA" }}>✕</button>
+              : <button onClick={() => setShowFilter(true)} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: th.card, border: `1px solid ${th.border}`, borderRadius: 8, padding: "4px 8px", fontSize: 11, cursor: "pointer", color: th.sub, fontWeight: 700 }}>
+                  Filter{(filter.openNow||filter.minDiscount>0||filter.minPrice||filter.maxPrice||filter.type!=="all") ? " 🟢" : ""}
+                </button>}
           </div>
         </div>
 
-        {search && filteredStores.length > 0 && filtered.length === 0 && (
+        {search && (
           <div style={{ padding: "12px 20px 0" }}>
-            <h3 style={{ fontSize: 13, fontWeight: 700, color: th.sub, margin: "0 0 10px" }}>{tx.storesTitle}</h3>
-            {filteredStores.map((store) => (
-              <div key={store.id} onClick={() => setViewingStoreId(store.id)} style={{ background: th.card, borderRadius: 14, padding: "12px 14px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer" }}>
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: store.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{store.logo}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{store.name}</div>
-                  <div style={{ fontSize: 11, color: th.sub }}>📍 {store.address}</div>
+            {filteredStores.length > 0 && (<div style={{ marginBottom: 16 }}>
+              <h3 style={{ fontSize: 13, fontWeight: 700, color: th.sub, margin: "0 0 10px" }}>🏪 {lang==="uz"?"Do'konlar":"Магазины"}</h3>
+              {filteredStores.map(store => (
+                <div key={store.id} onClick={() => setViewingStoreId(store.id)} style={{ background: th.card, borderRadius: 14, padding: "12px 14px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 1px 6px rgba(0,0,0,0.06)", cursor: "pointer" }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: store.color+"18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{store.logo}</div>
+                  <div style={{ flex: 1 }}><div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{store.name}</div><div style={{ fontSize: 11, color: th.sub }}>📍 {store.address}</div></div>
+                  <span style={{ color: "#CCC" }}>›</span>
                 </div>
-                <span style={{ color: "#CCC", fontSize: 16 }}>›</span>
-              </div>
-            ))}
+              ))}
+            </div>)}
+            {filtered.length > 0 && <h3 style={{ fontSize: 13, fontWeight: 700, color: th.sub, margin: "0 0 12px" }}>🏷️ Aksiyalar ({filtered.length})</h3>}
+            {filtered.map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+            {filtered.length===0 && filteredStores.length===0 && (<div style={{ textAlign: "center", padding: "60px 20px", color: th.sub }}><div style={{ fontSize: 56, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 700 }}>{tx.noDeals}</div><div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div></div>)}
           </div>
         )}
 
-        <div style={{ padding: "14px 0 0 20px", display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none" }}>
-          {browseCategories(lang).map((cat) => (
-            <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{ flexShrink: 0, padding: "8px 16px", borderRadius: 50, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: activeCategory === cat.id ? "#E63946" : th.card, color: activeCategory === cat.id ? "#fff" : th.sub, boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-              {cat.emoji} {cat.label}
-            </button>
-          ))}
-          <div style={{ width: 20, flexShrink: 0 }} />
-        </div>
-
-        <SortFilterBar lang={lang} sort={sort} setSort={setSort} dark={dark} />
-        {/* Filter tugmasi */}
-        <div style={{ padding: "8px 20px 0", display: "flex", justifyContent: "flex-end" }}>
-          <button onClick={() => setShowFilter(true)} style={{
-            display: "flex", alignItems: "center", gap: 6, padding: "7px 14px",
-            borderRadius: 20, border: `1.5px solid ${(filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") ? "#E63946" : th.border}`,
-            background: (filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") ? "#FFF0F0" : th.card,
-            color: (filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") ? "#E63946" : th.sub,
-            fontWeight: 700, fontSize: 12, cursor: "pointer",
-          }}>
-            🎛️ {tx.filterTitle}
-            {(filter.openNow || filter.minDiscount > 0 || filter.minPrice || filter.maxPrice || filter.type !== "all") && (
-              <span style={{ background: "#E63946", color: "#fff", borderRadius: 6, padding: "1px 5px", fontSize: 10, fontWeight: 800 }}>
-                {[filter.openNow, filter.minDiscount > 0, !!filter.minPrice, !!filter.maxPrice, filter.type !== "all"].filter(Boolean).length}
-              </span>
-            )}
-          </button>
-        </div>
-
-        <div style={{ padding: "14px 20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: th.text }}>{tx.offers}</h2>
-            <span style={{ fontSize: 13, color: th.sub }}>{filtered.length} {lang === "uz" ? "ta" : "шт"}</span>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {filtered.map((deal) => (
-              <div key={deal.key} style={{ background: th.card, borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}>
-                <div onClick={() => setSelectedKey({ storeId: deal.storeId, productId: deal.productId })}
-                  style={{ background: deal.color + "18", padding: "18px 16px 12px", position: "relative", minHeight: 60, cursor: "pointer" }}>
-                  {deal.photos?.length
-                    ? <img src={deal.photos[0]} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-                    : <div style={{ fontSize: 36 }}>{deal.logo}</div>}
-                  <div style={{ position: "absolute", top: 12, right: 12, background: deal.color, color: "#fff", borderRadius: 8, padding: "3px 8px", fontSize: 13, fontWeight: 800 }}>-{deal.discount}%</div>
-                  {deal.delivery && <div style={{ position: "absolute", top: 12, left: 10, background: "#00B894", color: "#fff", borderRadius: 8, padding: "2px 6px", fontSize: 10, fontWeight: 700 }}>🚚</div>}
-                  <button onClick={(e) => { e.stopPropagation(); toggleSave(deal.key); }}
-                    style={{ position: "absolute", bottom: 10, right: 12, background: "none", border: "none", fontSize: 18, cursor: "pointer", animation: heartAnim === deal.key ? "heartPop 0.6s ease" : undefined }}>
-                    {savedKeys.includes(deal.key) ? "❤️" : "🤍"}
-                  </button>
-                </div>
-                <div onClick={() => setSelectedKey({ storeId: deal.storeId, productId: deal.productId })} style={{ padding: "10px 12px 4px", cursor: "pointer" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: th.text, marginBottom: 2 }}>{deal.storeName}</div>
-                  <div style={{ fontSize: 11, color: th.sub, marginBottom: 4 }}>{deal.title[lang]}</div>
-                  <div style={{ fontSize: 10, color: th.sub, fontWeight: 600 }}>⏰ {daysLeftLabel(deal.expiryDate, lang)} {tx.left}</div>
-                </div>
-                <div style={{ padding: "0 12px 12px" }}>
-                  <button onClick={() => setViewingStoreId(deal.storeId)} style={{ width: "100%", padding: "7px", borderRadius: 9, border: `1.5px solid ${th.border}`, background: th.card, color: th.sub, fontWeight: 700, fontSize: 11, cursor: "pointer" }}>{tx.goToStore}</button>
-                </div>
+        {!search && (
+          <div style={{ paddingBottom: 20 }}>
+            <div style={{ padding: "20px 20px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>{lang==="uz"?"Kategoriyalar":"Категории"}</h2>
+                {activeCategory!=="all" && <button onClick={() => setActiveCategory("all")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang==="uz"?"Barchasi ›":"Все ›"}</button>}
               </div>
-            ))}
-          </div>
-          {filtered.length === 0 && (
-            <div style={{ textAlign: "center", padding: "40px 0", color: th.sub }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-              <div style={{ fontWeight: 600 }}>{tx.noDeals}</div>
-              <div style={{ fontSize: 13, marginTop: 4 }}>{tx.noDealsDesc}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
+                {[{id:"all",e:"🏷️",uz:"Hammasi",ru:"Все",c:"#16A34A"},{id:"food",e:"🍕",uz:"Ovqat",ru:"Продукты",c:"#E17055"},{id:"auto",e:"🚗",uz:"Avto",ru:"Авто",c:"#0652DD"},{id:"pharmacy",e:"💊",uz:"Dorixona",ru:"Аптека",c:"#009432"},{id:"electronics",e:"📱",uz:"Elektro",ru:"Электро",c:"#0984E3"},{id:"services",e:"🛠️",uz:"Xizmat",ru:"Услуги",c:"#636E72"},{id:"restaurant",e:"☕",uz:"Restoran",ru:"Кафе",c:"#FDCB6E"},{id:"clothing",e:"👕",uz:"Kiyim",ru:"Одежда",c:"#2D3436"},{id:"beauty",e:"💄",uz:"Go'zallik",ru:"Красота",c:"#E84393"},{id:"education",e:"📚",uz:"Ta'lim",ru:"Образование",c:"#F79F1F"},{id:"medical",e:"🏥",uz:"Tibbiyot",ru:"Медицина",c:"#ED4C67"},{id:"hotel",e:"🏨",uz:"Hotel",ru:"Отель",c:"#1289A7"}].map(cat => (
+                  <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "12px 4px", borderRadius: 16, cursor: "pointer", background: activeCategory===cat.id ? cat.c+"15" : th.card, border: `2px solid ${activeCategory===cat.id ? cat.c : th.border}`, boxShadow: activeCategory===cat.id ? `0 2px 10px ${cat.c}30` : "0 1px 4px rgba(0,0,0,0.05)", transition: "all 0.15s" }}>
+                    <span style={{ fontSize: 24 }}>{cat.e}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: activeCategory===cat.id ? cat.c : th.sub, textAlign: "center", lineHeight: 1.2 }}>{lang==="uz" ? cat.uz : cat.ru}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
+
+            <div style={{ padding: "24px 0 0 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, paddingRight: 20 }}>
+                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>📍 {lang==="uz"?"Yaqin bizneslar":"Рядом с вами"}</h2>
+                <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang==="uz"?"Xarita ›":"Карта ›"}</button>
+              </div>
+              <div style={{ display: "flex", gap: 12, overflowX: "auto", scrollbarWidth: "none", paddingRight: 20, paddingBottom: 4 }}>
+                {stores.slice(0,7).map(store => {
+                  const isOpen = isStoreOpen(store);
+                  const storeDeals = activeDeals.filter(d => d.storeId === store.id);
+                  return (
+                    <div key={store.id} onClick={() => setViewingStoreId(store.id)} style={{ flexShrink: 0, width: 150, background: th.card, borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.07)", cursor: "pointer", border: `1px solid ${th.border}` }}>
+                      <div style={{ height: 76, background: `linear-gradient(135deg,${store.color}25,${store.color}50)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, position: "relative" }}>
+                        {store.logo}
+                        {storeDeals.length>0 && <div style={{ position: "absolute", top: 7, right: 7, background: "#16A34A", color: "#fff", borderRadius: 7, padding: "2px 6px", fontSize: 10, fontWeight: 800 }}>-{storeDeals[0].discount}%</div>}
+                      </div>
+                      <div style={{ padding: "9px 11px" }}>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: th.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{store.name}</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3 }}>
+                          <span style={{ width: 6, height: 6, borderRadius: 3, background: isOpen ? "#16A34A" : "#AAA" }} />
+                          <span style={{ fontSize: 10, color: isOpen ? "#16A34A" : th.sub, fontWeight: 600 }}>{isOpen ? (lang==="uz"?"Ochiq":"Открыто") : (lang==="uz"?"Yopiq":"Закрыто")}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {activeCategory!=="all" && filtered.length>0 && (<div style={{ padding: "24px 20px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>🏷️ {tx.offers}</h2>
+                <span style={{ fontSize: 13, color: th.sub }}>{filtered.length}</span>
+              </div>
+              {filtered.map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+            </div>)}
+
+            {activeCategory==="all" && activeDeals.filter(d=>d.discount>=30).length>0 && (<div style={{ padding: "24px 20px 0" }}>
+              <h2 style={{ margin:"0 0 14px", fontSize: 16, fontWeight: 800, color: th.text }}>⭐ {lang==="uz"?"Tavsiya etilgan":"Рекомендуем"}</h2>
+              {activeDeals.filter(d=>d.discount>=30).slice(0,4).map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+            </div>)}
+
+            {activeCategory==="all" && (<div style={{ padding: "24px 20px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: th.text }}>🔥 {lang==="uz"?"Barcha aksiyalar":"Все акции"}</h2>
+                <span style={{ fontSize: 13, color: th.sub }}>{activeDeals.length}</span>
+              </div>
+              {activeDeals.map(deal => <DealCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+            </div>)}
+
+            {activeCategory!=="all" && filtered.length===0 && (<div style={{ textAlign: "center", padding: "60px 20px", color: th.sub }}><div style={{ fontSize: 56, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 700 }}>{tx.noDeals}</div><div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div></div>)}
+          </div>
+        )}
       </>}
 
 
@@ -2959,7 +3001,7 @@ export default function App() {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: 13, color: th.text }}>{item.name}</div>
                     <div style={{ fontSize: 11, color: th.sub, marginBottom: 4 }}>{item.storeName}</div>
-                    <div style={{ fontWeight: 800, fontSize: 13, color: "#E63946" }}>{formatPrice(item.price)} {tx.sumShort}</div>
+                    <div style={{ fontWeight: 800, fontSize: 13, color: "#16A34A" }}>{formatPrice(item.price)} {tx.sumShort}</div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
                     <button onClick={() => removeFromCart(item.storeId, item.productId)} style={{ background: "none", border: "none", color: "#CCC", fontSize: 14, cursor: "pointer" }}>✕</button>
@@ -2985,7 +3027,7 @@ export default function App() {
                 <div style={{ height: 1, background: th.border, margin: "8px 0" }} />
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span style={{ fontWeight: 800, color: th.text, fontSize: 16 }}>{tx.total}</span>
-                  <span style={{ fontWeight: 900, fontSize: 20, color: "#E63946" }}>{formatPrice(cartTotal + deliveryTotal)} {tx.sumShort}</span>
+                  <span style={{ fontWeight: 900, fontSize: 20, color: "#16A34A" }}>{formatPrice(cartTotal + deliveryTotal)} {tx.sumShort}</span>
                 </div>
               </div>
               <button onClick={() => setShowCheckout(true)} style={{ ...s.btn, marginTop: 14 }}>{tx.checkout} →</button>
@@ -3005,7 +3047,7 @@ export default function App() {
       {activeTab === "profile" && profileView === "main" && (
         <div style={{ padding: "48px 20px 20px", background: th.bg, minHeight: "100vh" }}>
           <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ width: 80, height: 80, background: "linear-gradient(135deg,#E63946,#C1121F)", borderRadius: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, margin: "0 auto 12px", cursor: "pointer" }} onClick={() => setShowEditProfile(true)}>
+            <div style={{ width: 80, height: 80, background: "linear-gradient(135deg,#16A34A,#15803D)", borderRadius: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, margin: "0 auto 12px", cursor: "pointer" }} onClick={() => setShowEditProfile(true)}>
               {isGuest ? "👁️" : (userData.photo ? "😊" : "👤")}
             </div>
             <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: th.text }}>
@@ -3019,7 +3061,7 @@ export default function App() {
 
           {!isGuest && (
             <button onClick={() => myStore ? setViewingStoreId(myStore.id) : setProfileView("createStore")}
-              style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "linear-gradient(135deg,#E63946 0%,#C1121F 100%)", border: "none", borderRadius: 16, padding: "16px 18px", marginBottom: 10, cursor: "pointer", boxShadow: "0 4px 16px rgba(230,57,70,0.25)" }}>
+              style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "linear-gradient(135deg,#16A34A 0%,#15803D 100%)", border: "none", borderRadius: 16, padding: "16px 18px", marginBottom: 10, cursor: "pointer", boxShadow: "0 4px 16px rgba(230,57,70,0.25)" }}>
               <span style={{ fontSize: 26 }}>{myStore ? myStore.logo : "🏪"}</span>
               <span style={{ flex: 1 }}>
                 <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "#fff" }}>{myStore ? myStore.name : tx.myStore}</span>
@@ -3039,13 +3081,13 @@ export default function App() {
             <div key={i} onClick={item.action} style={{ background: th.card, borderRadius: 14, padding: "16px 18px", marginBottom: 10, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer", border: `1px solid ${th.border}` }}>
               <span style={{ fontSize: 22 }}>{item.icon}</span>
               <span style={{ flex: 1, fontWeight: 600, fontSize: 14, color: th.text }}>{item.label}</span>
-              {item.count > 0 && <span style={{ background: "#E63946", color: "#fff", borderRadius: 8, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>{item.count}</span>}
+              {item.count > 0 && <span style={{ background: "#16A34A", color: "#fff", borderRadius: 8, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>{item.count}</span>}
               <span style={{ color: "#CCC" }}>›</span>
             </div>
           ))}
 
           <button onClick={() => { if (isGuest) { setIsGuest(false); setStep(0); } else { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); } }}
-            style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 10 }}>
+            style={{ width: "100%", padding: "14px", background: th.card, color: "#16A34A", border: "1.5px solid #16A34A", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 10 }}>
             {lang === "uz" ? "Chiqish" : "Выйти"}
           </button>
         </div>
@@ -3062,7 +3104,7 @@ export default function App() {
           </div>
 
           {/* Avatar va asosiy ma'lumot */}
-          <div style={{ background: "linear-gradient(135deg,#E63946,#C1121F)", borderRadius: 24, padding: "28px 20px", marginBottom: 16, textAlign: "center", boxShadow: "0 8px 32px rgba(230,57,70,0.3)" }}>
+          <div style={{ background: "linear-gradient(135deg,#16A34A,#15803D)", borderRadius: 24, padding: "28px 20px", marginBottom: 16, textAlign: "center", boxShadow: "0 8px 32px rgba(230,57,70,0.3)" }}>
             <div style={{ width: 88, height: 88, borderRadius: 44, background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 42, margin: "0 auto 14px", border: "3px solid rgba(255,255,255,0.5)" }}>
               {userData.photo ? "😊" : "👤"}
             </div>
@@ -3107,7 +3149,7 @@ export default function App() {
               </span>
             </span>
             {Object.keys(chatMessages).length > 0 && (
-              <span style={{ background: "#E63946", color: "#fff", borderRadius: 8, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>
+              <span style={{ background: "#16A34A", color: "#fff", borderRadius: 8, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>
                 {Object.keys(chatMessages).length}
               </span>
             )}
@@ -3123,7 +3165,7 @@ export default function App() {
             ].map((s, i) => (
               <div key={i} style={{ background: th.card, borderRadius: 16, padding: "16px 8px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", border: `1px solid ${th.border}` }}>
                 <div style={{ fontSize: 26 }}>{s.icon}</div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: "#E63946", marginTop: 4 }}>{s.value}</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: "#16A34A", marginTop: 4 }}>{s.value}</div>
                 <div style={{ fontSize: 11, color: th.sub, marginTop: 2 }}>{s.label}</div>
               </div>
             ))}
@@ -3139,16 +3181,16 @@ export default function App() {
                   <div style={{ fontWeight: 800, fontSize: 15, color: th.text }}>{myStore.name}</div>
                   <div style={{ fontSize: 12, color: th.sub }}>{myStore.products.length} {tx.productsInStore.toLowerCase()}</div>
                 </div>
-                <span style={{ color: "#E63946", fontSize: 18 }}>›</span>
+                <span style={{ color: "#16A34A", fontSize: 18 }}>›</span>
               </div>
             ) : (
               <div onClick={() => setProfileView("createStore")} style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "#FFF0F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>🏪</div>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: "#F0FDF4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>🏪</div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "#E63946" }}>{tx.createStore}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "#16A34A" }}>{tx.createStore}</div>
                   <div style={{ fontSize: 12, color: th.sub }}>{tx.createStoreSub}</div>
                 </div>
-                <span style={{ color: "#E63946", fontSize: 18 }}>›</span>
+                <span style={{ color: "#16A34A", fontSize: 18 }}>›</span>
               </div>
             )}
           </div>
@@ -3170,7 +3212,7 @@ export default function App() {
               );
             })}
             {subscriptions.length > 3 && (
-              <div onClick={() => setProfileView("subscribed")} style={{ fontSize: 12, color: "#E63946", fontWeight: 700, marginTop: 8, cursor: "pointer", textAlign: "center" }}>
+              <div onClick={() => setProfileView("subscribed")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, marginTop: 8, cursor: "pointer", textAlign: "center" }}>
                 {lang === "uz" ? `+ yana ${subscriptions.length - 3} ta ko'rish` : `+ ещё ${subscriptions.length - 3}`}
               </div>
             )}
@@ -3178,7 +3220,7 @@ export default function App() {
 
           {/* Chiqish */}
           <button onClick={() => { if (isGuest) { setIsGuest(false); setStep(0); } else { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); } }}
-            style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 6 }}>
+            style={{ width: "100%", padding: "14px", background: th.card, color: "#16A34A", border: "1.5px solid #16A34A", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 6 }}>
             {lang === "uz" ? "🚪 Chiqish" : "🚪 Выйти"}
           </button>
         </div>
@@ -3210,11 +3252,11 @@ export default function App() {
             const unread = msgs.filter(m => m.from === "store" && !m.read).length;
             return (
               <div key={storeId} onClick={() => setChatStore(st)}
-                style={{ background: th.card, borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", cursor: "pointer", border: `1px solid ${unread > 0 ? "#E63946" : th.border}` }}>
+                style={{ background: th.card, borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", cursor: "pointer", border: `1px solid ${unread > 0 ? "#16A34A" : th.border}` }}>
                 <div style={{ width: 50, height: 50, borderRadius: 14, background: st.color + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0, position: "relative" }}>
                   {st.logo}
                   {unread > 0 && (
-                    <span style={{ position: "absolute", top: -4, right: -4, background: "#E63946", color: "#fff", borderRadius: 8, fontSize: 9, fontWeight: 800, padding: "1px 5px", minWidth: 16, textAlign: "center" }}>{unread}</span>
+                    <span style={{ position: "absolute", top: -4, right: -4, background: "#16A34A", color: "#fff", borderRadius: 8, fontSize: 9, fontWeight: 800, padding: "1px 5px", minWidth: 16, textAlign: "center" }}>{unread}</span>
                   )}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -3228,7 +3270,7 @@ export default function App() {
                     {new Date(lastMsg.time).toLocaleTimeString("uz", { hour: "2-digit", minute: "2-digit" })}
                   </div>
                   {unread > 0 && (
-                    <div style={{ marginTop: 4, background: "#E63946", color: "#fff", borderRadius: 8, fontSize: 10, fontWeight: 800, padding: "1px 6px", display: "inline-block" }}>{unread}</div>
+                    <div style={{ marginTop: 4, background: "#16A34A", color: "#fff", borderRadius: 8, fontSize: 10, fontWeight: 800, padding: "1px 6px", display: "inline-block" }}>{unread}</div>
                   )}
                 </div>
               </div>
@@ -3258,7 +3300,7 @@ export default function App() {
           ) : bookings.map((b, i) => (
             <div key={i} style={{ background: th.card, borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", border: `1px solid ${th.border}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: (b.storeColor || "#E63946") + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{b.storeLogo || "🏪"}</div>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: (b.storeColor || "#16A34A") + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{b.storeLogo || "🏪"}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{b.storeName}</div>
                   <div style={{ fontSize: 11, color: th.sub }}>#{b.id}</div>
@@ -3299,7 +3341,7 @@ export default function App() {
             <div onClick={toggleDark} style={{ padding: "16px 18px", display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}>
               <span style={{ fontSize: 22 }}>{dark ? "☀️" : "🌙"}</span>
               <span style={{ flex: 1, fontWeight: 600, fontSize: 14, color: th.text }}>{tx.darkMode}</span>
-              <div style={{ width: 48, height: 26, borderRadius: 13, background: dark ? "#E63946" : th.border, position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
+              <div style={{ width: 48, height: 26, borderRadius: 13, background: dark ? "#16A34A" : th.border, position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
                 <div style={{ position: "absolute", top: 3, left: dark ? 24 : 3, width: 20, height: 20, borderRadius: 10, background: "#fff", transition: "left 0.3s", boxShadow: "0 1px 4px rgba(0,0,0,0.25)" }} />
               </div>
             </div>
@@ -3314,9 +3356,9 @@ export default function App() {
               {[["uz", "🇺🇿 O'zbekcha"], ["ru", "🇷🇺 Русский"]].map(([l, label]) => (
                 <button key={l} onClick={() => setLang(l)} style={{
                   flex: 1, padding: "12px 8px", borderRadius: 12, cursor: "pointer",
-                  border: lang === l ? "2px solid #E63946" : `2px solid ${th.border}`,
-                  background: lang === l ? "#FFF0F0" : th.card,
-                  color: lang === l ? "#E63946" : th.text,
+                  border: lang === l ? "2px solid #16A34A" : `2px solid ${th.border}`,
+                  background: lang === l ? "#F0FDF4" : th.card,
+                  color: lang === l ? "#16A34A" : th.text,
                   fontWeight: 700, fontSize: 13,
                 }}>{label}</button>
               ))}
@@ -3342,7 +3384,7 @@ export default function App() {
 
           {/* Hisobni o'chirish */}
           <button onClick={() => { setStep(0); setUserData({ name: "", surname: "", phone: "", photo: "" }); saveToLS(null); }}
-            style={{ width: "100%", padding: "14px", background: th.card, color: "#E63946", border: "1.5px solid #E63946", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+            style={{ width: "100%", padding: "14px", background: th.card, color: "#16A34A", border: "1.5px solid #16A34A", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
             {lang === "uz" ? "🚪 Chiqish" : "🚪 Выйти"}
           </button>
         </div>
@@ -3363,10 +3405,10 @@ export default function App() {
             </div>
           ) : notifications.map((n) => (
             <div key={n.id} onClick={() => { setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x)); setViewingStoreId(n.storeId); }}
-              style={{ background: n.read ? th.card : "#FFF0F0", borderRadius: 14, padding: 14, marginBottom: 10, display: "flex", gap: 12, alignItems: "center", boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer", border: n.read ? `1px solid ${th.border}` : "1px solid #E6394622" }}>
+              style={{ background: n.read ? th.card : "#F0FDF4", borderRadius: 14, padding: 14, marginBottom: 10, display: "flex", gap: 12, alignItems: "center", boxShadow: "0 1px 6px rgba(0,0,0,0.05)", cursor: "pointer", border: n.read ? `1px solid ${th.border}` : "1px solid #16A34A22" }}>
               <span style={{ fontSize: 20 }}>🔔</span>
               <span style={{ flex: 1, fontSize: 13, color: th.text, fontWeight: n.read ? 500 : 700 }}>{n.message}</span>
-              {!n.read && <span style={{ width: 8, height: 8, borderRadius: 4, background: "#E63946", flexShrink: 0 }} />}
+              {!n.read && <span style={{ width: 8, height: 8, borderRadius: 4, background: "#16A34A", flexShrink: 0 }} />}
             </div>
           ))}
         </div>
@@ -3394,7 +3436,7 @@ export default function App() {
                   <div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{store.name}</div>
                   <div style={{ fontSize: 12, color: th.sub }}>📍 {store.address}</div>
                 </div>
-                <button onClick={(e) => { e.stopPropagation(); toggleSubscribe(sid); }} style={{ background: "#FFF0F0", border: "none", borderRadius: 10, padding: "6px 12px", color: "#E63946", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>✕</button>
+                <button onClick={(e) => { e.stopPropagation(); toggleSubscribe(sid); }} style={{ background: "#F0FDF4", border: "none", borderRadius: 10, padding: "6px 12px", color: "#16A34A", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>✕</button>
               </div>
             );
           })}
@@ -3404,20 +3446,38 @@ export default function App() {
       {/* ── FOOTER NAV ── */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: th.card, borderTop: `1px solid ${th.border}`, display: "flex", padding: "10px 0 20px", boxShadow: "0 -4px 20px rgba(0,0,0,0.08)", zIndex: 100 }}>
         {[
-          { id: "home", icon: "🏠", label: tx.home },
-          { id: "saved", icon: "❤️", label: tx.saved },
-          { id: "cart", icon: "🛒", label: tx.cart, badge: cartCount },
-          { id: "map", icon: "🗺️", label: tx.map },
-          { id: "profile", icon: "👤", label: tx.profile, badge: unreadCount },
+          { id: "home",    icon: "🏠", label: lang === "uz" ? "Bosh" : "Главная" },
+          { id: "search",  icon: "🔍", label: lang === "uz" ? "Qidiruv" : "Поиск" },
+          { id: "add",     icon: "➕", label: lang === "uz" ? "Qo'shish" : "Добавить", special: true },
+          { id: "saved",   icon: "❤️", label: lang === "uz" ? "Saqlangan" : "Избранное", badge: savedKeys.length },
+          { id: "profile", icon: "👤", label: lang === "uz" ? "Profil" : "Профиль", badge: unreadCount },
         ].map((tab) => (
-          <button key={tab.id} onClick={() => { setActiveTab(tab.id); if (tab.id !== "profile") setProfileView("main"); }}
+          <button key={tab.id}
+            onClick={() => {
+              if (tab.id === "add") {
+                if (myStore) { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); }
+                else { setActiveTab("profile"); setProfileView("createStore"); }
+              } else if (tab.id === "search") {
+                setActiveTab("home");
+                setTimeout(() => document.querySelector("input[placeholder]")?.focus(), 100);
+              } else {
+                setActiveTab(tab.id);
+                if (tab.id !== "profile") setProfileView("main");
+              }
+            }}
             style={{ position: "relative", flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "4px 0" }}>
-            <span style={{ fontSize: 21, position: "relative" }}>
-              {tab.icon}
-              {tab.badge > 0 && <span style={{ position: "absolute", top: -6, right: -10, background: "#E63946", color: "#fff", borderRadius: 7, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{tab.badge}</span>}
-            </span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: activeTab === tab.id ? "#E63946" : th.sub }}>{tab.label}</span>
-            {activeTab === tab.id && <div style={{ width: 4, height: 4, borderRadius: 2, background: "#E63946" }} />}
+            {tab.special ? (
+              <div style={{ width: 44, height: 44, borderRadius: 22, background: "linear-gradient(135deg,#16A34A,#15803D)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, boxShadow: "0 4px 16px rgba(22,163,74,0.4)", marginTop: -16 }}>
+                <span style={{ color: "#fff", fontWeight: 900 }}>+</span>
+              </div>
+            ) : (
+              <span style={{ fontSize: 21, position: "relative" }}>
+                {tab.icon}
+                {tab.badge > 0 && <span style={{ position: "absolute", top: -6, right: -10, background: "#16A34A", color: "#fff", borderRadius: 7, fontSize: 9, fontWeight: 800, padding: "1px 4px" }}>{tab.badge}</span>}
+              </span>
+            )}
+            <span style={{ fontSize: 9, fontWeight: 600, color: activeTab === tab.id ? "#16A34A" : th.sub }}>{tab.label}</span>
+            {activeTab === tab.id && !tab.special && <div style={{ width: 4, height: 4, borderRadius: 2, background: "#16A34A" }} />}
           </button>
         ))}
       </div>

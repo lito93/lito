@@ -61,7 +61,7 @@ function Label({ children, required, dark }) {
   const th = L(dark);
   return (
     <label style={{ fontSize: 13, fontWeight: 600, color: th.sub, marginBottom: 6, display: "block" }}>
-      {children} {required && <span style={{ color: "#E63946" }}>*</span>}
+      {children} {required && <span style={{ color: "#16A34A" }}>*</span>}
     </label>
   );
 }
@@ -98,7 +98,7 @@ function Toggle({ label, value, onChange, dark }) {
   );
 }
 
-function Chips({ options, value, onChange, color = "#E63946", multi = false, dark }) {
+function Chips({ options, value, onChange, color = "#16A34A", multi = false, dark }) {
   const th = L(dark);
   const selected = multi ? (Array.isArray(value) ? value : []) : value;
   const toggle = (opt) => {
@@ -144,7 +144,7 @@ export function MapPicker({ lang, location, onChange, dark }) {
   const [gpsLoading, setGpsLoading] = useState(false);
   const [searchVal, setSearchVal] = useState("");
 
-  const pinIconHtml = `<div style="background:#E63946;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.35)"></div>`;
+  const pinIconHtml = `<div style="background:#16A34A;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.35)"></div>`;
 
   useEffect(() => {
     if (!window.L || leafletMap.current) return;
@@ -211,7 +211,7 @@ export function MapPicker({ lang, location, onChange, dark }) {
         <input value={searchVal} onChange={e => setSearchVal(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSearch()}
           placeholder={lang === "uz" ? "Manzil qidirish..." : "Поиск адреса..."}
           style={{ flex: 1, padding: "10px 14px", borderRadius: 12, border: `1.5px solid ${th.border}`, background: th.card, fontSize: 14, outline: "none", color: th.text }} />
-        <button onClick={handleSearch} style={{ padding: "10px 14px", borderRadius: 12, background: "#E63946", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", fontSize: 13 }}>🔍</button>
+        <button onClick={handleSearch} style={{ padding: "10px 14px", borderRadius: 12, background: "#16A34A", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", fontSize: 13 }}>🔍</button>
         <button onClick={handleGPS} style={{ padding: "10px 14px", borderRadius: 12, background: "#0984E3", border: "none", color: "#fff", fontWeight: 700, cursor: "pointer", fontSize: 13 }}>
           {gpsLoading ? "⏳" : "📍 GPS"}
         </button>
@@ -303,15 +303,15 @@ export function AutoForm({ lang, dark, data, onChange, onSubmit, onBack }) {
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
           {STEPS.map((s, i) => (
             <div key={i} style={{ flex: 1, textAlign: "center" }}>
-              <div style={{ width: 28, height: 28, borderRadius: 14, margin: "0 auto 4px", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", background: step > i + 1 ? "#00B894" : step === i + 1 ? "#E63946" : th.border, color: step >= i + 1 ? "#fff" : th.sub }}>
+              <div style={{ width: 28, height: 28, borderRadius: 14, margin: "0 auto 4px", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", background: step > i + 1 ? "#00B894" : step === i + 1 ? "#16A34A" : th.border, color: step >= i + 1 ? "#fff" : th.sub }}>
                 {step > i + 1 ? "✓" : i + 1}
               </div>
-              <div style={{ fontSize: 9, color: step === i + 1 ? "#E63946" : th.sub, fontWeight: step === i + 1 ? 700 : 400 }}>{s}</div>
+              <div style={{ fontSize: 9, color: step === i + 1 ? "#16A34A" : th.sub, fontWeight: step === i + 1 ? 700 : 400 }}>{s}</div>
             </div>
           ))}
         </div>
         <div style={{ height: 4, borderRadius: 2, background: th.border, overflow: "hidden" }}>
-          <div style={{ height: "100%", background: "linear-gradient(90deg,#E63946,#C1121F)", width: `${((step - 1) / (TOTAL - 1)) * 100}%`, transition: "width 0.3s" }} />
+          <div style={{ height: "100%", background: "linear-gradient(90deg,#16A34A,#15803D)", width: `${((step - 1) / (TOTAL - 1)) * 100}%`, transition: "width 0.3s" }} />
         </div>
       </div>
 
@@ -362,7 +362,7 @@ export function AutoForm({ lang, dark, data, onChange, onSubmit, onBack }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {services.map(sv => (
               <button key={sv} onClick={() => u({ autoService: sv })}
-                style={{ padding: "12px 16px", borderRadius: 12, cursor: "pointer", textAlign: "left", fontWeight: data.autoService === sv ? 700 : 500, fontSize: 14, border: data.autoService === sv ? "2px solid #E63946" : `2px solid ${th.border}`, background: data.autoService === sv ? "#FFF0F0" : th.card, color: data.autoService === sv ? "#E63946" : th.text }}>
+                style={{ padding: "12px 16px", borderRadius: 12, cursor: "pointer", textAlign: "left", fontWeight: data.autoService === sv ? 700 : 500, fontSize: 14, border: data.autoService === sv ? "2px solid #16A34A" : `2px solid ${th.border}`, background: data.autoService === sv ? "#F0FDF4" : th.card, color: data.autoService === sv ? "#16A34A" : th.text }}>
                 {data.autoService === sv ? "✓ " : ""}{sv}
               </button>
             ))}
@@ -385,7 +385,7 @@ export function AutoForm({ lang, dark, data, onChange, onSubmit, onBack }) {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
             {[0,10,15,20,25,30,40,50].map(pct => (
               <button key={pct} onClick={() => u({ discountPercent: pct })}
-                style={{ padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontWeight: 700, fontSize: 13, border: (data.discountPercent || 0) === pct ? "2px solid #E63946" : `2px solid ${th.border}`, background: (data.discountPercent || 0) === pct ? "#E63946" : th.card, color: (data.discountPercent || 0) === pct ? "#fff" : th.text }}>
+                style={{ padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontWeight: 700, fontSize: 13, border: (data.discountPercent || 0) === pct ? "2px solid #16A34A" : `2px solid ${th.border}`, background: (data.discountPercent || 0) === pct ? "#16A34A" : th.card, color: (data.discountPercent || 0) === pct ? "#fff" : th.text }}>
                 {pct === 0 ? (lang === "uz" ? "Yo'q" : "Нет") : `-${pct}%`}
               </button>
             ))}
@@ -453,12 +453,12 @@ export function AutoForm({ lang, dark, data, onChange, onSubmit, onBack }) {
         </button>
         {step < TOTAL ? (
           <button onClick={() => canNext && setStep(s => s + 1)}
-            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: canNext ? "#E63946" : th.border, color: canNext ? "#fff" : th.sub, fontWeight: 800, cursor: canNext ? "pointer" : "default", fontSize: 14, boxShadow: canNext ? "0 4px 16px rgba(230,57,70,0.3)" : "none" }}>
+            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: canNext ? "#16A34A" : th.border, color: canNext ? "#fff" : th.sub, fontWeight: 800, cursor: canNext ? "pointer" : "default", fontSize: 14, boxShadow: canNext ? "0 4px 16px rgba(230,57,70,0.3)" : "none" }}>
             {lang === "uz" ? "Davom etish" : "Продолжить"} →
           </button>
         ) : (
           <button onClick={() => data.address ? onSubmit(data) : null}
-            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: data.address ? "#E63946" : th.border, color: data.address ? "#fff" : th.sub, fontWeight: 800, cursor: data.address ? "pointer" : "default", fontSize: 14, boxShadow: data.address ? "0 4px 16px rgba(230,57,70,0.3)" : "none" }}>
+            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: data.address ? "#16A34A" : th.border, color: data.address ? "#fff" : th.sub, fontWeight: 800, cursor: data.address ? "pointer" : "default", fontSize: 14, boxShadow: data.address ? "0 4px 16px rgba(230,57,70,0.3)" : "none" }}>
             ✅ {lang === "uz" ? "Saqlash" : "Сохранить"}
           </button>
         )}
@@ -484,8 +484,8 @@ function PriceStep({ lang, dark, data, onChange, pricePlaceholder = "100 000", p
         {DISCOUNTS.map(pct => (
           <button key={pct} onClick={() => u({ discountPercent: pct })}
             style={{ padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontWeight: 700, fontSize: 13,
-              border: (data.discountPercent || 0) === pct ? "2px solid #E63946" : `2px solid ${th.border}`,
-              background: (data.discountPercent || 0) === pct ? "#E63946" : th.card,
+              border: (data.discountPercent || 0) === pct ? "2px solid #16A34A" : `2px solid ${th.border}`,
+              background: (data.discountPercent || 0) === pct ? "#16A34A" : th.card,
               color: (data.discountPercent || 0) === pct ? "#fff" : th.text }}>
             {pct === 0 ? (lang === "uz" ? "Yo'q" : "Нет") : `-${pct}%`}
           </button>
@@ -533,8 +533,8 @@ function MultiStepForm({ steps, lang, dark, canNext, onBack, onSubmit, data, chi
       <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
         {steps.map((s, i) => (
           <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-            <div style={{ width: "100%", height: 4, borderRadius: 2, background: step > i ? "#E63946" : th.border }} />
-            <span style={{ fontSize: 9, color: step === i + 1 ? "#E63946" : th.sub, fontWeight: step === i + 1 ? 700 : 400 }}>{s}</span>
+            <div style={{ width: "100%", height: 4, borderRadius: 2, background: step > i ? "#16A34A" : th.border }} />
+            <span style={{ fontSize: 9, color: step === i + 1 ? "#16A34A" : th.sub, fontWeight: step === i + 1 ? 700 : 400 }}>{s}</span>
           </div>
         ))}
       </div>
@@ -548,12 +548,12 @@ function MultiStepForm({ steps, lang, dark, canNext, onBack, onSubmit, data, chi
         </button>
         {!isLast ? (
           <button onClick={() => (canNext ? canNext(step) : true) && setStep(s => s + 1)}
-            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: (canNext ? canNext(step) : true) ? "#E63946" : th.border, color: (canNext ? canNext(step) : true) ? "#fff" : th.sub, fontWeight: 800, cursor: "pointer", fontSize: 14, boxShadow: "0 4px 16px rgba(230,57,70,0.25)" }}>
+            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: (canNext ? canNext(step) : true) ? "#16A34A" : th.border, color: (canNext ? canNext(step) : true) ? "#fff" : th.sub, fontWeight: 800, cursor: "pointer", fontSize: 14, boxShadow: "0 4px 16px rgba(230,57,70,0.25)" }}>
             {lang === "uz" ? "Davom etish" : "Продолжить"} →
           </button>
         ) : (
           <button onClick={() => canSubmit && onSubmit(data)}
-            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: canSubmit ? "#E63946" : th.border, color: canSubmit ? "#fff" : th.sub, fontWeight: 800, cursor: canSubmit ? "pointer" : "default", fontSize: 14, boxShadow: canSubmit ? "0 4px 16px rgba(230,57,70,0.3)" : "none" }}>
+            style={{ flex: 2, padding: "14px", borderRadius: 14, border: "none", background: canSubmit ? "#16A34A" : th.border, color: canSubmit ? "#fff" : th.sub, fontWeight: 800, cursor: canSubmit ? "pointer" : "default", fontSize: 14, boxShadow: canSubmit ? "0 4px 16px rgba(230,57,70,0.3)" : "none" }}>
             ✅ {lang === "uz" ? "Saqlash" : "Сохранить"}
           </button>
         )}
@@ -1120,6 +1120,6 @@ export default function DynamicCategoryForm({ category, lang, dark, data, onChan
     case "entertainment": return <EntertainmentForm {...props} />;
     case "pet":           return <PetForm {...props} />;
     case "cleaning":      return <CleaningForm {...props} />;
-    default:              return <SimpleForm {...props} catLabel="📦 Boshqa" types={{ uz: ["Boshqa"], ru: ["Другое"] }} color="#E63946" pricePlaceholder="100 000" />;
+    default:              return <SimpleForm {...props} catLabel="📦 Boshqa" types={{ uz: ["Boshqa"], ru: ["Другое"] }} color="#16A34A" pricePlaceholder="100 000" />;
   }
 }
