@@ -635,6 +635,87 @@ function SortFilterBar({ lang, sort, setSort, dark }) {
 
 
 // =====================================================
+// BUSINESS CARD — biznes kartochkasi (yangi)
+// =====================================================
+function BusinessCard({ store, th, lang, onClick }) {
+  const isOpen = isStoreOpen(store);
+  const rating = avgRating(store.reviews);
+  const catInfo = CATEGORY_LIST.find(c => store.products[0]?.category === c.id);
+  const storeDeals = store.products.filter(p => p.discount && !isExpired(p.discount?.expiryDate));
+  const topDiscount = storeDeals.length > 0 ? Math.max(...storeDeals.map(p => p.discount?.percent || 0)) : 0;
+  const distance = Math.round(Math.random() * 2000 + 300) + " m";
+  const days = ["sun","mon","tue","wed","thu","fri","sat"];
+  const dayKey = days[new Date().getDay()];
+  const todayHours = store.workHours?.[dayKey];
+
+  return (
+    <div onClick={onClick} style={{
+      background: th.card, borderRadius: 16, overflow: "hidden",
+      cursor: "pointer", border: `1px solid ${th.border}`,
+      marginBottom: 12,
+    }}>
+      <div style={{ display: "flex", gap: 12, padding: "14px 14px 12px" }}>
+        {/* Logo */}
+        <div style={{
+          width: 52, height: 52, borderRadius: 14, flexShrink: 0,
+          background: store.color + "22",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 26, overflow: "hidden", border: `1px solid ${store.color}33`,
+        }}>
+          {store.photos?.length ? <img src={store.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : store.logo}
+        </div>
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Nomi + badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+            <span style={{ fontWeight: 700, fontSize: 15, color: th.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{store.name}</span>
+            {topDiscount > 0 && (
+              <span style={{ background: "#16A34A", color: "#fff", borderRadius: 6, padding: "1px 6px", fontSize: 10, fontWeight: 800, flexShrink: 0 }}>-{topDiscount}%</span>
+            )}
+          </div>
+          {/* Kategoriya */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+            {catInfo && <span style={{ fontSize: 11 }}>{catInfo.emoji}</span>}
+            <span style={{ fontSize: 12, color: th.sub }}>{catInfo ? categoryLabel(catInfo.id, lang) : (lang === "uz" ? "Biznes" : "Бизнес")}</span>
+          </div>
+          {/* Reyting */}
+          {rating > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 4 }}>
+              {[1,2,3,4,5].map(n => (
+                <span key={n} style={{ fontSize: 11, color: n <= Math.round(rating) ? "#FFB400" : "#E0E0E0" }}>★</span>
+              ))}
+              <span style={{ fontSize: 11, fontWeight: 700, color: th.text, marginLeft: 2 }}>{rating.toFixed(1)}</span>
+              <span style={{ fontSize: 11, color: th.sub }}>({store.reviews.length})</span>
+            </div>
+          )}
+          {/* Masofa + ochiq/yopiq */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: th.sub }}>📍 {distance}</span>
+            <span style={{
+              fontSize: 10, fontWeight: 700, borderRadius: 5, padding: "1px 6px",
+              background: isOpen ? "#16A34A20" : "#55555520",
+              color: isOpen ? "#16A34A" : th.sub,
+            }}>
+              {isOpen ? (lang === "uz" ? "Ochiq" : "Открыто") : (lang === "uz" ? "Yopiq" : "Закрыто")}
+            </span>
+            {todayHours && todayHours !== "Yopiq" && todayHours !== "Закрыто" && (
+              <span style={{ fontSize: 10, color: th.sub }}>{todayHours}</span>
+            )}
+          </div>
+        </div>
+        {/* Telefon tugmasi */}
+        {store.phone && (
+          <button onClick={e => { e.stopPropagation(); window.location.href = `tel:${store.phone}`; }}
+            style={{ background: "#16A34A20", border: "none", borderRadius: 10, width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, alignSelf: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.4 2 2 0 0 1 3.55 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
 // KARROT CARD — list view (Karrot uslubi)
 // =====================================================
 function KarrotCard({ deal, th, lang, tx, savedKeys, heartAnim, toggleSave, setSelectedKey, setViewingStoreId }) {
@@ -2657,6 +2738,7 @@ export default function App() {
   const [bookings, setBookings] = useState(saved?.bookings ?? []);
   const [chatStore, setChatStore] = useState(null);
   const [chatMessages, setChatMessages] = useState(saved?.chatMessages ?? {});
+  const [showAddSheet, setShowAddSheet] = useState(false);
 
   const th = theme(dark);
   const s = mkStyles(dark);
@@ -3120,27 +3202,46 @@ export default function App() {
           </div>
         </div>
 
-        {/* ─── QIDIRUV NATIJALARI ─── */}
+        {/* ─── QIDIRUV NATIJALARI — Live suggestions ─── */}
         {search && (
           <div style={{ paddingBottom: 100 }}>
+            {/* 🏪 Bizneslar */}
             {filteredStores.length > 0 && (
               <div>
-                <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>DO'KONLAR</div>
-                {filteredStores.map(store => (
-                  <div key={store.id} onClick={() => setViewingStoreId(store.id)}
-                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: `1px solid ${th.border}`, cursor: "pointer" }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 12, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{store.logo}</div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{store.name}</div>
-                      <div style={{ fontSize: 12, color: th.sub, marginTop: 2 }}>📍 {store.address}</div>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                  </div>
-                ))}
+                <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>🏪 {lang === "uz" ? "BIZNESLAR" : "БИЗНЕСЫ"}</div>
+                <div style={{ padding: "0 16px" }}>
+                  {filteredStores.map(store => (
+                    <BusinessCard key={store.id} store={store} th={th} lang={lang} onClick={() => setViewingStoreId(store.id)} />
+                  ))}
+                </div>
               </div>
             )}
-            {filtered.length > 0 && <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>AKSIYALAR</div>}
-            {filtered.map(deal => <KarrotCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+            {/* 📦 Mahsulotlar */}
+            {filtered.length > 0 && (
+              <div>
+                <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>📦 {lang === "uz" ? "MAHSULOTLAR" : "ТОВАРЫ"}</div>
+                {filtered.map(deal => <KarrotCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />)}
+              </div>
+            )}
+            {/* 🔧 Xizmatlar */}
+            {(() => {
+              const serviceStores = stores.filter(st =>
+                st.products.some(p => ["services","auto","medical"].includes(p.category)) &&
+                !filteredStores.find(fs => fs.id === st.id) &&
+                st.products.some(p => (p.name?.uz || "").toLowerCase().includes(search.toLowerCase()))
+              );
+              if (serviceStores.length === 0) return null;
+              return (
+                <div>
+                  <div style={{ padding: "16px 16px 8px", fontSize: 12, fontWeight: 700, color: th.sub }}>🔧 {lang === "uz" ? "XIZMATLAR" : "УСЛУГИ"}</div>
+                  <div style={{ padding: "0 16px" }}>
+                    {serviceStores.slice(0, 3).map(store => (
+                      <BusinessCard key={store.id} store={store} th={th} lang={lang} onClick={() => setViewingStoreId(store.id)} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
             {filtered.length === 0 && filteredStores.length === 0 && (
               <div style={{ textAlign: "center", padding: "80px 20px", color: th.sub }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
@@ -3154,9 +3255,8 @@ export default function App() {
         {/* ─── ASOSIY LENTA ─── */}
         {!search && (
           <div style={{ paddingBottom: 100 }}>
-            {/* Yaqin bizneslar — gorizontal scroll */}
+            {/* ─── KATEGORIYA GRID 4x3 ─── */}
             <div style={{ paddingTop: 16 }}>
-              {/* Kategoriya GRID — 3x4 rangli (rasm uslubida) */}
               <div style={{ padding: "0 16px 16px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
                   {[
@@ -3196,93 +3296,92 @@ export default function App() {
                   })}
                 </div>
               </div>
+            </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 10px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontSize: 16 }}>📍</span>
-                  <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{lang === "uz" ? "Yaqin bizneslar" : "Рядом"}</span>
+            {/* ─── YAQIN BIZNESLAR ─── */}
+            <div style={{ height: 8, background: th.card2, margin: "4px 0 12px" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 10px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 16 }}>📍</span>
+                <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{lang === "uz" ? "Yaqin bizneslar" : "Рядом"}</span>
+              </div>
+              <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang === "uz" ? "Barchasi ›" : "Все ›"}</button>
+            </div>
+            <div style={{ padding: "0 16px" }}>
+              {stores.filter(s => activeCategory === "all" || s.products.some(p => p.category === activeCategory)).slice(0, 5).map(store => (
+                <BusinessCard key={store.id} store={store} th={th} lang={lang} onClick={() => setViewingStoreId(store.id)} />
+              ))}
+            </div>
+
+            {/* ─── TOP RATED BIZNESLAR ─── */}
+            <div style={{ height: 8, background: th.card2, margin: "4px 0 12px" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 10px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 16 }}>⭐</span>
+                <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{lang === "uz" ? "Eng baholangan" : "Топ рейтинг"}</span>
+              </div>
+            </div>
+            <div style={{ padding: "0 16px" }}>
+              {[...stores]
+                .filter(s => s.reviews.length > 0 && (activeCategory === "all" || s.products.some(p => p.category === activeCategory)))
+                .sort((a, b) => avgRating(b.reviews) - avgRating(a.reviews))
+                .slice(0, 3)
+                .map(store => (
+                  <BusinessCard key={store.id} store={store} th={th} lang={lang} onClick={() => setViewingStoreId(store.id)} />
+                ))}
+              {stores.filter(s => s.reviews.length > 0).length === 0 && (
+                <div style={{ padding: "0 0 12px", color: th.sub, fontSize: 13, textAlign: "center" }}>
+                  {lang === "uz" ? "Hozircha sharhlar yo'q" : "Пока нет отзывов"}
                 </div>
-                <button onClick={() => setActiveTab("map")} style={{ fontSize: 12, color: "#16A34A", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>{lang === "uz" ? "Barchasi ›" : "Все ›"}</button>
-              </div>
-              <div style={{ display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none", padding: "0 16px 4px" }}>
-                {stores.filter(s => activeCategory === "all" || s.products.some(p => p.category === activeCategory)).slice(0, 8).map(store => {
-                  const isOpen = isStoreOpen(store);
-                  const storeDeals = activeDeals.filter(d => d.storeId === store.id);
-                  const rating = avgRating(store.reviews);
-                  const catInfo = CATEGORY_LIST.find(c => store.products[0]?.category === c.id);
-                  return (
-                    <div key={store.id} onClick={() => setViewingStoreId(store.id)}
-                      style={{ flexShrink: 0, width: 180, background: th.card, borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${th.border}` }}>
-                      {/* Rasm */}
-                      <div style={{ height: 100, background: store.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 42, position: "relative" }}>
-                        {store.photos?.length ? <img src={store.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : store.logo}
-                        {/* Badge */}
-                        <div style={{
-                          position: "absolute", top: 8, right: 8,
-                          background: isOpen ? "#16A34A" : "#555",
-                          color: "#fff", borderRadius: 6, padding: "2px 8px",
-                          fontSize: 11, fontWeight: 700,
-                        }}>
-                          {isOpen ? (lang === "uz" ? "Ochiq" : "Открыто") : (lang === "uz" ? "Yopiq" : "Закрыто")}
-                        </div>
-                        {storeDeals.length > 0 && (
-                          <div style={{ position: "absolute", top: 8, left: 8, background: "#16A34A", color: "#fff", borderRadius: 6, padding: "2px 6px", fontSize: 10, fontWeight: 800 }}>
-                            -{storeDeals[0].discount}%
-                          </div>
-                        )}
-                      </div>
-                      {/* Info */}
-                      <div style={{ padding: "10px 12px" }}>
-                        <div style={{ fontWeight: 700, fontSize: 14, color: th.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: 4 }}>{store.name}</div>
-                        {/* Reyting */}
-                        {rating > 0 && (
-                          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFB400" stroke="#FFB400" strokeWidth="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            <span style={{ fontSize: 12, fontWeight: 700, color: th.text }}>{rating.toFixed(1)}</span>
-                            <span style={{ fontSize: 11, color: th.sub }}>({store.reviews.length})</span>
-                          </div>
-                        )}
-                        {/* Kategoriya + masofa */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                          {catInfo && <span style={{ fontSize: 10, color: th.sub }}>{catInfo.emoji}</span>}
-                          <span style={{ fontSize: 11, color: th.sub, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {catInfo ? categoryLabel(catInfo.id, lang) : ""}
-                          </span>
-                          <span style={{ fontSize: 11, color: th.sub }}>📍 ~1.2 km</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              )}
             </div>
 
-            {/* Divider */}
-            <div style={{ height: 8, background: th.card2, margin: "12px 0" }} />
-
-            {/* Filtr + sarlavha */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 12px" }}>
-              <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>
-                {activeCategory === "all" ? (lang === "uz" ? "Barcha aksiyalar" : "Все акции") : (lang === "uz" ? "Aksiyalar" : "Акции")}
-                <span style={{ fontSize: 13, color: th.sub, fontWeight: 400, marginLeft: 6 }}>{(activeCategory === "all" ? activeDeals : filtered).length}</span>
-              </span>
-              <button onClick={() => setShowFilter(true)} style={{ display: "flex", alignItems: "center", gap: 5, background: th.card2, border: `1px solid ${th.border}`, borderRadius: 8, padding: "5px 10px", cursor: "pointer" }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                <span style={{ fontSize: 12, color: th.sub, fontWeight: 600 }}>{lang === "uz" ? "Filter" : "Фильтр"}</span>
-              </button>
+            {/* ─── YANGI BIZNESLAR ─── */}
+            <div style={{ height: 8, background: th.card2, margin: "4px 0 12px" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 10px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 16 }}>🆕</span>
+                <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>{lang === "uz" ? "Yangi bizneslar" : "Новые бизнесы"}</span>
+              </div>
+            </div>
+            <div style={{ padding: "0 16px" }}>
+              {[...stores]
+                .filter(s => activeCategory === "all" || s.products.some(p => p.category === activeCategory))
+                .slice(-4)
+                .reverse()
+                .map(store => (
+                  <BusinessCard key={store.id} store={store} th={th} lang={lang} onClick={() => setViewingStoreId(store.id)} />
+                ))}
             </div>
 
-            {/* LIST VIEW — Karrot uslubi */}
-            {(activeCategory === "all" ? activeDeals : filtered).map(deal => (
-              <KarrotCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />
-            ))}
-
-            {activeCategory !== "all" && filtered.length === 0 && (
-              <div style={{ textAlign: "center", padding: "80px 20px", color: th.sub }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-                <div style={{ fontWeight: 700, fontSize: 16, color: th.text }}>{tx.noDeals}</div>
-                <div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div>
-              </div>
+            {/* ─── MAXSUS TAKLIFLAR (Special Offers) ─── */}
+            {activeDeals.length > 0 && (
+              <>
+                <div style={{ height: 8, background: th.card2, margin: "4px 0 12px" }} />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 12px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 16 }}>🏷️</span>
+                    <span style={{ fontWeight: 700, fontSize: 15, color: th.text }}>
+                      {lang === "uz" ? "Maxsus takliflar" : "Специальные предложения"}
+                      <span style={{ fontSize: 13, color: th.sub, fontWeight: 400, marginLeft: 6 }}>{(activeCategory === "all" ? activeDeals : filtered).length}</span>
+                    </span>
+                  </div>
+                  <button onClick={() => setShowFilter(true)} style={{ display: "flex", alignItems: "center", gap: 5, background: th.card2, border: `1px solid ${th.border}`, borderRadius: 8, padding: "5px 10px", cursor: "pointer" }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    <span style={{ fontSize: 12, color: th.sub, fontWeight: 600 }}>{lang === "uz" ? "Filter" : "Фильтр"}</span>
+                  </button>
+                </div>
+                {(activeCategory === "all" ? activeDeals : filtered).map(deal => (
+                  <KarrotCard key={deal.key} deal={deal} th={th} lang={lang} tx={tx} savedKeys={savedKeys} heartAnim={heartAnim} toggleSave={toggleSave} setSelectedKey={setSelectedKey} setViewingStoreId={setViewingStoreId} />
+                ))}
+                {activeCategory !== "all" && filtered.length === 0 && (
+                  <div style={{ textAlign: "center", padding: "40px 20px", color: th.sub }}>
+                    <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+                    <div style={{ fontWeight: 700, fontSize: 16, color: th.text }}>{tx.noDeals}</div>
+                    <div style={{ fontSize: 13, marginTop: 6 }}>{tx.noDealsDesc}</div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
@@ -3891,7 +3990,49 @@ export default function App() {
         </div>
       )}
 
-      {/* ── FOOTER NAV — Karrot uslubi ── */}
+      {/* ── + ADD SHEET ── */}
+      {showAddSheet && (
+        <ModalSheet onClose={() => setShowAddSheet(false)} dark={dark} maxHeight="40vh">
+          <h3 style={{ fontWeight: 800, fontSize: 16, color: th.text, textAlign: "center", marginBottom: 20 }}>
+            {lang === "uz" ? "Nima qo'shmoqchisiz?" : "Что хотите добавить?"}
+          </h3>
+          {[
+            {
+              icon: "🏪",
+              label: lang === "uz" ? "Biznes yaratish" : "Создать бизнес",
+              desc: lang === "uz" ? "Do'koningizni ro'yxatga oling" : "Зарегистрируйте ваш магазин",
+              action: () => { setShowAddSheet(false); setActiveTab("profile"); setProfileView("createStore"); },
+            },
+            {
+              icon: "📦",
+              label: lang === "uz" ? "Mahsulot qo'shish" : "Добавить товар",
+              desc: lang === "uz" ? "Do'koningizga mahsulot qo'shing" : "Добавьте товар в ваш магазин",
+              action: () => { setShowAddSheet(false); if (myStore) { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); } else { setActiveTab("profile"); setProfileView("createStore"); } },
+            },
+            {
+              icon: "🔧",
+              label: lang === "uz" ? "Xizmat qo'shish" : "Добавить услугу",
+              desc: lang === "uz" ? "Xizmatlaringizni e'lon qiling" : "Опубликуйте ваши услуги",
+              action: () => { setShowAddSheet(false); if (myStore) { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); } else { setActiveTab("profile"); setProfileView("createStore"); } },
+            },
+          ].map((item, i) => (
+            <div key={i} onClick={item.action} style={{
+              display: "flex", alignItems: "center", gap: 14, padding: "14px 16px",
+              background: th.card2, borderRadius: 14, marginBottom: 10, cursor: "pointer",
+              border: `1px solid ${th.border}`,
+            }}>
+              <span style={{ fontSize: 28 }}>{item.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: th.text }}>{item.label}</div>
+                <div style={{ fontSize: 12, color: th.sub, marginTop: 2 }}>{item.desc}</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          ))}
+        </ModalSheet>
+      )}
+
+      {/* ── FOOTER NAV: Home | Search | [+] | Map | Profile ── */}
       <div style={{
         position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
         width: "100%", maxWidth: 430,
@@ -3902,31 +4043,22 @@ export default function App() {
         zIndex: 100,
       }}>
         {/* Home */}
-        {[
-          { id: "home", label: lang==="uz"?"Bosh sahifa":"Главная",
-            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill={a?"#16A34A":"none"} stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-          },
-          { id: "search", label: lang==="uz"?"Qidiruv":"Поиск",
-            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
-          },
-        ].map(tab => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button key={tab.id} onClick={() => { if(tab.id==="search"){setActiveTab("home");setTimeout(()=>document.querySelector("input[placeholder]")?.focus(),100);}else{setActiveTab(tab.id);setProfileView("main");} }}
-              style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0" }}>
-              {tab.icon(isActive)}
-              <span style={{ fontSize:10, fontWeight:isActive?700:500, color:isActive?"#16A34A":th.sub }}>{tab.label}</span>
-            </button>
-          );
-        })}
+        <button onClick={() => { setActiveTab("home"); setProfileView("main"); }}
+          style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill={activeTab==="home"?"#16A34A":"none"} stroke={activeTab==="home"?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span style={{ fontSize:10, fontWeight:activeTab==="home"?700:500, color:activeTab==="home"?"#16A34A":th.sub }}>{lang==="uz"?"Bosh":"Главная"}</span>
+        </button>
+
+        {/* Search */}
+        <button onClick={() => { setActiveTab("home"); setTimeout(()=>document.querySelector("input[placeholder]")?.focus(),100); }}
+          style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span style={{ fontSize:10, fontWeight:500, color:th.sub }}>{lang==="uz"?"Qidiruv":"Поиск"}</span>
+        </button>
 
         {/* Markaziy + tugma */}
         <div style={{ flex:1, display:"flex", justifyContent:"center", alignItems:"flex-end" }}>
-          <button
-            onClick={() => {
-              if (myStore) { setViewingStoreId(myStore.id); setTimeout(() => setProfileView("storeAddProduct"), 100); }
-              else { setActiveTab("profile"); setProfileView("createStore"); }
-            }}
+          <button onClick={() => setShowAddSheet(true)}
             style={{
               width: 54, height: 54, borderRadius: 27,
               background: "linear-gradient(135deg,#16A34A,#15803D)",
@@ -3939,32 +4071,26 @@ export default function App() {
           </button>
         </div>
 
-        {/* Saved + Profil */}
-        {[
-          { id: "saved", label: lang==="uz"?"Saqlangan":"Избранное", badge: savedKeys.length,
-            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill={a?"#16A34A":"none"} stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-          },
-          { id: "profile", label: lang==="uz"?"Profil":"Профиль", badge: unreadCount,
-            icon: (a) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={a?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-          },
-        ].map(tab => {
-          const isActive = activeTab === tab.id;
-          const badge = tab.badge || 0;
-          return (
-            <button key={tab.id} onClick={() => { setActiveTab(tab.id); if(tab.id!=="profile") setProfileView("main"); }}
-              style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0", position:"relative" }}>
-              <div style={{ position:"relative" }}>
-                {tab.icon(isActive)}
-                {badge > 0 && (
-                  <div style={{ position:"absolute", top:-4, right:-6, minWidth:16, height:16, borderRadius:8, background:"#16A34A", display:"flex", alignItems:"center", justifyContent:"center", border:`2px solid ${th.card}` }}>
-                    <span style={{ fontSize:9, fontWeight:800, color:"#fff", padding:"0 3px" }}>{badge>9?"9+":badge}</span>
-                  </div>
-                )}
+        {/* Map */}
+        <button onClick={() => setActiveTab("map")}
+          style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={activeTab==="map"?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          <span style={{ fontSize:10, fontWeight:activeTab==="map"?700:500, color:activeTab==="map"?"#16A34A":th.sub }}>{lang==="uz"?"Xarita":"Карта"}</span>
+        </button>
+
+        {/* Profile */}
+        <button onClick={() => { setActiveTab("profile"); }}
+          style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:"4px 0", position:"relative" }}>
+          <div style={{ position:"relative" }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={activeTab==="profile"?"#16A34A":th.sub} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            {unreadCount > 0 && (
+              <div style={{ position:"absolute", top:-4, right:-6, minWidth:16, height:16, borderRadius:8, background:"#16A34A", display:"flex", alignItems:"center", justifyContent:"center", border:`2px solid ${th.card}` }}>
+                <span style={{ fontSize:9, fontWeight:800, color:"#fff", padding:"0 3px" }}>{unreadCount>9?"9+":unreadCount}</span>
               </div>
-              <span style={{ fontSize:10, fontWeight:isActive?700:500, color:isActive?"#16A34A":th.sub }}>{tab.label}</span>
-            </button>
-          );
-        })}
+            )}
+          </div>
+          <span style={{ fontSize:10, fontWeight:activeTab==="profile"?700:500, color:activeTab==="profile"?"#16A34A":th.sub }}>{lang==="uz"?"Profil":"Профиль"}</span>
+        </button>
       </div>
 
     </div>
