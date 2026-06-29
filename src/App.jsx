@@ -2,6 +2,72 @@ import { useState, useRef, useEffect } from "react";
 import DynamicCategoryForm from "./CategoryForms.jsx";
 
 // =====================================================
+// PWA INSTALL PROMPT
+// =====================================================
+function PWAInstallPrompt({ dark }) {
+  const th = theme(dark);
+  const [prompt, setPrompt] = useState(null);
+  const [show, setShow] = useState(false);
+  const [installed, setInstalled] = useState(false);
+
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setInstalled(true);
+      return;
+    }
+    const handler = (e) => {
+      e.preventDefault();
+      setPrompt(e);
+      // Show after 3 seconds
+      setTimeout(() => setShow(true), 3000);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!prompt) return;
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
+    if (outcome === 'accepted') setInstalled(true);
+    setShow(false);
+  };
+
+  if (!show || installed) return null;
+
+  return (
+    <div style={{
+      position: 'fixed', bottom: 90, left: '50%', transform: 'translateX(-50%)',
+      width: 'calc(100% - 32px)', maxWidth: 400,
+      background: th.card, borderRadius: 20,
+      padding: '16px 20px',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+      border: `1px solid ${th.border}`,
+      zIndex: 999,
+      display: 'flex', alignItems: 'center', gap: 14,
+      animation: 'slideUp 0.4s ease',
+    }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg,#16A34A,#15803D)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <span style={{ color: '#fff', fontWeight: 900, fontSize: 26 }}>O</span>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 700, fontSize: 14, color: th.text, marginBottom: 2 }}>OsonTop ni o'rnating</div>
+        <div style={{ fontSize: 12, color: th.sub }}>Tezroq ishlaydi, offline ham!</div>
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button onClick={() => setShow(false)} style={{ padding: '8px 12px', borderRadius: 10, background: th.card2, border: 'none', color: th.sub, fontSize: 12, cursor: 'pointer' }}>
+          Keyinroq
+        </button>
+        <button onClick={handleInstall} style={{ padding: '8px 14px', borderRadius: 10, background: '#16A34A', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+          O'rnatish
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
 // DARK MODE HOOK
 // =====================================================
 const useDark = () => {
@@ -3013,6 +3079,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'Segoe UI',sans-serif", background: th.bg, minHeight: "100vh", maxWidth: 430, margin: "0 auto", position: "relative", paddingBottom: 85 }}>
       <Confetti active={showConfetti} />
+      <PWAInstallPrompt dark={dark} />
       <style>{`
         @keyframes heartPop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
         @keyframes cartBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
