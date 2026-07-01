@@ -6,14 +6,4 @@ export default defineConfig({
   server: {
     allowedHosts: true,
   },
-  build: {
-    // Optimize bundle
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-        },
-      },
-    },
-  },
 })
